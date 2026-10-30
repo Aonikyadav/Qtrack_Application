@@ -5,11 +5,23 @@ export interface CardProps {
   className?: string
   style?: CSSProperties
   onClick?: () => void
+  hoverable?: boolean
 }
 
-export function Card({ children, className = "", style, onClick }: CardProps) {
+export function Card({
+  children,
+  className = "",
+  style,
+  onClick,
+  hoverable = false,
+}: CardProps) {
+  const isInteractive = Boolean(onClick) || hoverable
   return (
-    <div className={`card ${className}`} style={style} onClick={onClick}>
+    <div
+      className={`card ${isInteractive ? "card-interactive" : ""} ${className}`}
+      style={style}
+      onClick={onClick}
+    >
       {children}
     </div>
   )

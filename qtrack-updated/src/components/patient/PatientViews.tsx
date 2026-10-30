@@ -1013,11 +1013,19 @@ export function HistoryPageView() {
 }
 
 export function ProfilePageView() {
-  const { patient, updatePatientProfile, setPage } = useQueue()
+  const {
+    patient,
+    updatePatientProfile,
+    setPatientPassword,
+    patientLogout,
+    setPage,
+  } = useQueue()
   const [name, setName] = useState(patient.name)
   const [phone, setPhone] = useState(patient.phone)
   const [lang, setLang] = useState(patient.preferredLanguage)
+  const [newPassword, setNewPassword] = useState("")
   const [saved, setSaved] = useState(false)
+  const [passwordSaved, setPasswordSaved] = useState(false)
 
   const handleSave = () => {
     updatePatientProfile({ name, phone, preferredLanguage: lang })
@@ -1025,44 +1033,155 @@ export function ProfilePageView() {
     setTimeout(() => setSaved(false), 3000)
   }
 
+  const handleSetPassword = () => {
+    if (newPassword.trim().length >= 6) {
+      setPatientPassword(newPassword.trim())
+      setPasswordSaved(true)
+      setNewPassword("")
+      setTimeout(() => setPasswordSaved(false), 3000)
+    }
+  }
+
   return (
     <div className="content-stack patient-width">
-      <PageTitle
-        title="Profile"
-        subtitle="Manage your contact details, family, and health records."
-      />
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          flexWrap: "wrap",
+          gap: "12px",
+        }}
+      >
+        <div>
+          <Text size="xl" weight="bold">
+            Patient Profile & Security
+          </Text>
+          <Text tone="muted">
+            Manage your credentials, referral code, and family health records.
+          </Text>
+        </div>
+        <Button variant="danger" onClick={patientLogout}>
+          Sign out
+        </Button>
+      </div>
+
       {saved && (
         <div className="toast">
           <CheckCircle2 size={20} />
-          <Text weight="semibold">Profile updated successfully</Text>
+          <Text weight="semibold">Personal details updated successfully</Text>
         </div>
       )}
-      <div className="two-col">
-        <Card>
-          <Text size="lg" weight="bold">
-            Personal details
+
+      {passwordSaved && (
+        <div className="toast">
+          <CheckCircle2 size={20} />
+          <Text weight="semibold">
+            Account password updated! You can now log in using password.
           </Text>
-          <Field
-            label="Full name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-          <Field
-            label="Phone"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-          />
-          <SelectField
-            label="Preferred language"
-            value={lang}
-            onChange={(e) => setLang(e.target.value)}
-          >
-            <option value="English">English</option>
-            <option value="हिन्दी">हिन्दी</option>
-            <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
-          </SelectField>
-          <Button onClick={handleSave}>Save changes</Button>
-        </Card>
+        </div>
+      )}
+
+      {/* Patient Identifiers Banner */}
+      <Card style={{ background: "#f0fdfa", border: "1px solid #ccfbf1" }}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            flexWrap: "wrap",
+            gap: "16px",
+          }}
+        >
+          <div>
+            <Text size="xs" weight="bold" tone="teal">
+              OFFICIAL PATIENT IDENTIFIER
+            </Text>
+            <Text size="xl" weight="bold" tone="teal">
+              {patient.id}
+            </Text>
+            <Text size="sm" tone="muted">
+              Use this easy-to-remember ID when visiting reception or speaking
+              to clinic staff.
+            </Text>
+          </div>
+          <div style={{ textAlign: "right" }}>
+            <Text size="xs" weight="bold" tone="muted">
+              REFERRAL ID
+            </Text>
+            <div
+              style={{
+                display: "inline-block",
+                padding: "4px 12px",
+                background: "#0f766e",
+                color: "#ffffff",
+                borderRadius: "6px",
+                fontWeight: "bold",
+              }}
+            >
+              {patient.referralId}
+            </div>
+            <div
+              style={{ fontSize: "12px", color: "#64706e", marginTop: "4px" }}
+            >
+              Share with family to link accounts
+            </div>
+          </div>
+        </div>
+      </Card>
+
+      <div className="two-col">
+        <div className="content-stack">
+          <Card>
+            <Text size="lg" weight="bold">
+              Personal details
+            </Text>
+            <Field
+              label="Full name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+            />
+            <Field
+              label="Phone"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+            />
+            <SelectField
+              label="Preferred language"
+              value={lang}
+              onChange={(e) => setLang(e.target.value)}
+            >
+              <option value="English">English</option>
+              <option value="हिन्दी">हिन्दी</option>
+              <option value="Kannada">ಕನ್ನಡ (Kannada)</option>
+            </SelectField>
+            <Button onClick={handleSave}>Save changes</Button>
+          </Card>
+
+          <Card>
+            <Text size="lg" weight="bold">
+              Password login security
+            </Text>
+            <Text size="sm" tone="muted">
+              Set or update your password to sign in directly without waiting
+              for mobile SMS OTP.
+            </Text>
+            <Field
+              label="New account password"
+              placeholder="Minimum 6 characters"
+              type="password"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+            />
+            <Button
+              variant="secondary"
+              onClick={handleSetPassword}
+              disabled={newPassword.length < 6}
+            >
+              Save login password
+            </Button>
+          </Card>
+        </div>
 
         <div className="content-stack">
           <Card>
@@ -1078,23 +1197,29 @@ export function ProfilePageView() {
                 Add
               </Button>
             </div>
-            {patient.familyMembers.map((fam) => (
-              <div className="person-row" key={fam.id}>
-                <span className="avatar">
-                  {fam.name
-                    .split(" ")
-                    .map((n) => n[0])
-                    .join("")
-                    .substring(0, 2)}
-                </span>
-                <div>
-                  <Text weight="semibold">{fam.name}</Text>
-                  <Text size="sm" tone="muted">
-                    {fam.relationship} · {fam.age} years
-                  </Text>
+            {patient.familyMembers.length === 0 ? (
+              <Text size="sm" tone="muted">
+                No family members registered yet.
+              </Text>
+            ) : (
+              patient.familyMembers.map((fam) => (
+                <div className="person-row" key={fam.id}>
+                  <span className="avatar">
+                    {fam.name
+                      .split(" ")
+                      .map((n) => n[0])
+                      .join("")
+                      .substring(0, 2)}
+                  </span>
+                  <div>
+                    <Text weight="semibold">{fam.name}</Text>
+                    <Text size="sm" tone="muted">
+                      {fam.relationship} · {fam.age} years
+                    </Text>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </Card>
 
           <Card>

@@ -34,8 +34,13 @@ export function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export function LandingPage() {
   const [mobileNav, setMobileNav] = useState(false)
-  const { queue, activePatientToken, enterPatientView, enterStaffView } =
-    useQueue()
+  const {
+    queue,
+    activePatientToken,
+    setPortal,
+    setPatientPage,
+    isPatientLoggedIn,
+  } = useQueue()
 
   // Find active patient's queue item or default
   const activeItem =
@@ -58,9 +63,24 @@ export function LandingPage() {
   ).length
   const checkedInCount = queue.filter((q) => q.status === "Checked in").length
 
-  const handleBook = () => enterPatientView("Find a doctor")
-  const handleTrack = () => enterPatientView("My queue")
-  const handleStaff = () => enterStaffView("Receptionist", "Staff login")
+  const handleBook = () => {
+    setPortal("patient")
+    setPatientPage("Find a doctor")
+  }
+  const handleTrack = () => {
+    setPortal("patient")
+    setPatientPage("My queue")
+  }
+  const handlePatientPortal = () => {
+    setPortal("patient")
+    setPatientPage("Home")
+  }
+  const handleStaff = () => {
+    setPortal("receptionist")
+  }
+  const handleDisplay = () => {
+    setPortal("display")
+  }
 
   const features = [
     {
@@ -119,6 +139,17 @@ export function LandingPage() {
           </a>
           <button
             className="q-nav-signin"
+            type="button"
+            onClick={() => {
+              setMobileNav(false)
+              handleDisplay()
+            }}
+          >
+            TV Token Board
+          </button>
+          <button
+            className="q-nav-signin"
+            type="button"
             onClick={() => {
               setMobileNav(false)
               handleStaff()
@@ -128,12 +159,13 @@ export function LandingPage() {
           </button>
           <button
             className="q-button q-button-primary q-nav-cta"
+            type="button"
             onClick={() => {
               setMobileNav(false)
               handleBook()
             }}
           >
-            Book an appointment <ArrowRight size={17} />
+            Book appointment <ArrowRight size={17} />
           </button>
         </nav>
       </header>

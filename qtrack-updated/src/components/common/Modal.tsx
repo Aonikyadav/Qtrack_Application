@@ -24,11 +24,12 @@ export function Modal({
 
   return (
     <div
+      className="modal-backdrop-anim"
       style={{
         position: "fixed",
         inset: 0,
         backgroundColor: "rgba(17, 24, 39, 0.65)",
-        backdropFilter: "blur(4px)",
+        backdropFilter: "blur(6px)",
         zIndex: 999,
         display: "flex",
         alignItems: "center",
@@ -38,13 +39,14 @@ export function Modal({
       onClick={onClose}
     >
       <div
+        className="modal-dialog-anim"
         style={{
           width: "100%",
           maxWidth,
           backgroundColor: "#ffffff",
-          borderRadius: "16px",
+          borderRadius: "18px",
           boxShadow:
-            "0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1)",
+            "0 25px 50px -12px rgba(15, 23, 42, 0.25), 0 0 0 1px rgba(15, 23, 42, 0.05)",
           border: "1px solid #dfe5e3",
           overflow: "hidden",
           display: "flex",

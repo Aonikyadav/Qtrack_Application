@@ -1,67 +1,86 @@
 import { useState } from "react"
 import { QueueProvider, useQueue } from "./context/QueueContext"
-import {
-  AppHeader,
-  PatientBottomNav,
-  PrototypeBar,
-  Sidebar,
-} from "./components/layout/LayoutComponents"
 import { LandingPage } from "./components/landing/LandingPage"
+import { PatientAuthView, StaffAuthView } from "./components/auth/AuthViews"
+import {
+  PatientHeader,
+  PatientSidebar,
+  PatientBottomNav,
+  ReceptionHeader,
+  ReceptionSidebar,
+  DoctorHeader,
+  DoctorSidebar,
+  AdminHeader,
+  AdminSidebar,
+  PortalSwitcher,
+} from "./components/layout/LayoutComponents"
 
 // Patient Views
 import {
-  CalledPageView,
-  DoctorProfileView,
+  PatientHome,
   DoctorSearch,
-  HistoryPageView,
+  DoctorProfileView,
   JoinQueueFlow,
   LiveQueueView,
-  LoginPageView,
-  NoticePageView,
-  PatientHome,
-  ProfilePageView,
   QRCheckinView,
+  CalledPageView,
+  NoticePageView,
+  HistoryPageView,
+  ProfilePageView,
 } from "./components/patient/PatientViews"
 
-// Receptionist Views
+// Reception Views
 import {
-  ActivityLogView,
-  ArrivalsPageView,
-  QuickWalkInView,
   ReceptionLiveQueue,
-  StaffLoginView,
+  QuickWalkInView,
+  ArrivalsPageView,
+  ActivityLogView,
 } from "./components/receptionist/ReceptionViews"
 
 // Doctor Views
 import {
-  DoctorCompletedVisitsView,
-  DoctorConsultationView,
-  DoctorLiveQueueView,
   DoctorOverviewView,
+  DoctorLiveQueueView,
+  DoctorConsultationView,
+  DoctorCompletedVisitsView,
 } from "./components/doctor/DoctorViews"
 
 // Admin Views
 import {
-  AdminAnalyticsView,
   AdminClinicSettingsView,
   AdminPeopleView,
+  AdminAnalyticsView,
 } from "./components/admin/AdminViews"
 
-// Display & Design System Views
+// Display & Style Guide Views
 import { DisplayBoardView } from "./components/display/DisplayViews"
 import {
-  ComponentPageView,
   FoundationPageView,
+  ComponentPageView,
 } from "./components/styleguide/StyleGuideViews"
 
-function PageRouter() {
-  const { role, page, setPage } = useQueue()
+// ==========================================
+// 1. DEDICATED PATIENT DASHBOARD
+// ==========================================
+function PatientDashboard() {
+  const {
+    isPatientLoggedIn,
+    patientPage,
+    setPatientPage,
+    setPortal,
+    sidebarOpen,
+    setSidebarOpen,
+    toggleSidebar,
+  } = useQueue()
 
-  if (role === "Style guide") return <FoundationPageView />
-  if (role === "Components") return <ComponentPageView />
+  if (!isPatientLoggedIn) {
+    return <PatientAuthView onBack={() => setPortal("landing")} />
+  }
 
-  if (role === "Patient") {
-    switch (page) {
+  const isFullContentPage = ["QR check-in", "Called"].includes(patientPage)
+
+  const renderPatientContent = () => {
+    switch (patientPage) {
       case "Home":
         return <PatientHome />
       case "Find a doctor":
@@ -83,15 +102,73 @@ function PageRouter() {
       case "Profile":
         return <ProfilePageView />
       default:
-        return <LoginPageView />
+        return <PatientHome />
     }
   }
 
-  if (role === "Receptionist") {
-    switch (page) {
+  return (
+    <div className="app">
+      <div
+        className={`mobile-overlay ${sidebarOpen ? "overlay-show" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <div
+        className={`sidebar-wrap ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <PatientSidebar close={() => setSidebarOpen(false)} />
+      </div>
+
+      <div
+        className={`main-shell ${!sidebarOpen ? "main-shell-expanded" : ""}`}
+      >
+        <PatientHeader mobileMenu={toggleSidebar} />
+        <main
+          className={`main-content ${
+            isFullContentPage ? "main-content-full" : ""
+          }`}
+        >
+          {renderPatientContent()}
+        </main>
+      </div>
+
+      {!isFullContentPage && <PatientBottomNav />}
+    </div>
+  )
+}
+
+// ==========================================
+// 2. DEDICATED RECEPTIONIST DASHBOARD
+// ==========================================
+function ReceptionistDashboard() {
+  const {
+    currentStaff,
+    isStaffLoggedIn,
+    receptionPage,
+    setReceptionPage,
+    setPortal,
+    sidebarOpen,
+    setSidebarOpen,
+    toggleSidebar,
+  } = useQueue()
+
+  // Gatekeeper: only Receptionist role can access
+  if (
+    !isStaffLoggedIn ||
+    !currentStaff ||
+    currentStaff.role !== "Receptionist"
+  ) {
+    return <StaffAuthView onBack={() => setPortal("landing")} />
+  }
+
+  const renderReceptionContent = () => {
+    switch (receptionPage) {
       case "Live queue":
         return (
-          <ReceptionLiveQueue onAddWalkIn={() => setPage("Quick walk-in")} />
+          <ReceptionLiveQueue
+            onAddWalkIn={() => setReceptionPage("Quick walk-in")}
+          />
         )
       case "Quick walk-in":
         return <QuickWalkInView />
@@ -100,95 +177,218 @@ function PageRouter() {
       case "Activity log":
         return <ActivityLogView />
       default:
-        return <StaffLoginView />
+        return (
+          <ReceptionLiveQueue
+            onAddWalkIn={() => setReceptionPage("Quick walk-in")}
+          />
+        )
     }
   }
 
-  if (role === "Doctor") {
-    switch (page) {
+  return (
+    <div className="app">
+      <div
+        className={`mobile-overlay ${sidebarOpen ? "overlay-show" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <div
+        className={`sidebar-wrap ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <ReceptionSidebar close={() => setSidebarOpen(false)} />
+      </div>
+
+      <div
+        className={`main-shell ${!sidebarOpen ? "main-shell-expanded" : ""}`}
+      >
+        <ReceptionHeader mobileMenu={toggleSidebar} />
+        <main className="main-content">{renderReceptionContent()}</main>
+      </div>
+    </div>
+  )
+}
+
+// ==========================================
+// 3. DEDICATED DOCTOR DASHBOARD
+// ==========================================
+function DoctorDashboard() {
+  const {
+    currentStaff,
+    isStaffLoggedIn,
+    doctorPage,
+    setDoctorPage,
+    setPortal,
+    sidebarOpen,
+    setSidebarOpen,
+    toggleSidebar,
+  } = useQueue()
+
+  // Gatekeeper: only Doctor role can access
+  if (!isStaffLoggedIn || !currentStaff || currentStaff.role !== "Doctor") {
+    return <StaffAuthView onBack={() => setPortal("landing")} />
+  }
+
+  const renderDoctorContent = () => {
+    switch (doctorPage) {
       case "Overview":
         return (
           <DoctorOverviewView
-            onOpenConsultation={() => setPage("Consultation")}
-            onOpenQueue={() => setPage("Live queue")}
+            onOpenConsultation={() => setDoctorPage("Consultation")}
+            onOpenQueue={() => setDoctorPage("Live queue")}
           />
         )
       case "Live queue":
         return (
           <DoctorLiveQueueView
-            onStartConsultation={() => setPage("Consultation")}
+            onStartConsultation={() => setDoctorPage("Consultation")}
           />
         )
       case "Consultation":
         return (
           <DoctorConsultationView
-            onVisitCompleted={() => setPage("Completed visits")}
+            onVisitCompleted={() => setDoctorPage("Completed visits")}
           />
         )
+      case "Completed visits":
       default:
         return <DoctorCompletedVisitsView />
     }
   }
 
-  if (role === "Admin") {
-    switch (page) {
+  return (
+    <div className="app">
+      <div
+        className={`mobile-overlay ${sidebarOpen ? "overlay-show" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <div
+        className={`sidebar-wrap ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <DoctorSidebar close={() => setSidebarOpen(false)} />
+      </div>
+
+      <div
+        className={`main-shell ${!sidebarOpen ? "main-shell-expanded" : ""}`}
+      >
+        <DoctorHeader mobileMenu={toggleSidebar} />
+        <main className="main-content">{renderDoctorContent()}</main>
+      </div>
+    </div>
+  )
+}
+
+// ==========================================
+// 4. DEDICATED ADMIN DASHBOARD
+// ==========================================
+function AdminDashboard() {
+  const {
+    currentStaff,
+    isStaffLoggedIn,
+    adminPage,
+    setPortal,
+    sidebarOpen,
+    setSidebarOpen,
+    toggleSidebar,
+  } = useQueue()
+
+  // Gatekeeper: only Admin role can access
+  if (!isStaffLoggedIn || !currentStaff || currentStaff.role !== "Admin") {
+    return <StaffAuthView onBack={() => setPortal("landing")} />
+  }
+
+  const renderAdminContent = () => {
+    switch (adminPage) {
       case "Clinic settings":
         return <AdminClinicSettingsView />
       case "People":
         return <AdminPeopleView />
+      case "Analytics":
       default:
         return <AdminAnalyticsView />
     }
   }
 
-  return <DisplayBoardView />
-}
-
-function MainApp() {
-  const { role, page, showLanding } = useQueue()
-  const [menuOpen, setMenuOpen] = useState(false)
-  const isDisplay = role === "Display"
-
-  if (showLanding) {
-    return <LandingPage />
-  }
-
-  const isFullContentPage = [
-    "QR check-in",
-    "Called",
-    "Staff login",
-    "Login & OTP",
-  ].includes(page)
-
   return (
-    <div className={`app ${isDisplay ? "app-display" : ""}`}>
-      {!isDisplay && <PrototypeBar />}
-
-      {!isDisplay && (
-        <>
-          <div
-            className={`mobile-overlay ${menuOpen ? "overlay-show" : ""}`}
-            onClick={() => setMenuOpen(false)}
-          />
-          <div className={`sidebar-wrap ${menuOpen ? "sidebar-open" : ""}`}>
-            <Sidebar close={() => setMenuOpen(false)} />
-          </div>
-        </>
-      )}
-
-      <div className={`main-shell ${isDisplay ? "main-display" : ""}`}>
-        {!isDisplay && <AppHeader mobileMenu={() => setMenuOpen(true)} />}
-        <main
-          className={`main-content ${
-            isFullContentPage ? "main-content-full" : ""
-          }`}
-        >
-          <PageRouter />
-        </main>
+    <div className="app">
+      <div
+        className={`mobile-overlay ${sidebarOpen ? "overlay-show" : ""}`}
+        onClick={() => setSidebarOpen(false)}
+      />
+      <div
+        className={`sidebar-wrap ${
+          sidebarOpen ? "sidebar-open" : "sidebar-closed"
+        }`}
+      >
+        <AdminSidebar close={() => setSidebarOpen(false)} />
       </div>
 
-      {role === "Patient" && !isFullContentPage && <PatientBottomNav />}
+      <div
+        className={`main-shell ${!sidebarOpen ? "main-shell-expanded" : ""}`}
+      >
+        <AdminHeader mobileMenu={toggleSidebar} />
+        <main className="main-content">{renderAdminContent()}</main>
+      </div>
     </div>
+  )
+}
+
+// ==========================================
+// ROOT APP COORDINATOR
+// ==========================================
+function MainApp() {
+  const { portal, setPortal } = useQueue()
+
+  return (
+    <>
+      {portal === "landing" && <LandingPage />}
+      {portal === "patient" && <PatientDashboard />}
+      {portal === "receptionist" && <ReceptionistDashboard />}
+      {portal === "doctor" && <DoctorDashboard />}
+      {portal === "admin" && <AdminDashboard />}
+      {portal === "display" && (
+        <DisplayBoardView onExit={() => setPortal("landing")} />
+      )}
+      {portal === "styleguide" && (
+        <div className="app">
+          <div
+            style={{
+              padding: "16px 24px",
+              background: "#ffffff",
+              borderBottom: "1px solid #dfe5e3",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <strong>QTrack Design System & Components</strong>
+            <button
+              type="button"
+              onClick={() => setPortal("landing")}
+              style={{
+                padding: "6px 12px",
+                border: "1px solid #dfe5e3",
+                borderRadius: "6px",
+                background: "transparent",
+                cursor: "pointer",
+              }}
+            >
+              Back to Site
+            </button>
+          </div>
+          <main className="main-content" style={{ padding: "24px" }}>
+            <FoundationPageView />
+            <div style={{ margin: "32px 0" }} />
+            <ComponentPageView />
+          </main>
+        </div>
+      )}
+
+      {/* Floating portal switcher for easy testing & review */}
+      <PortalSwitcher />
+    </>
   )
 }
 

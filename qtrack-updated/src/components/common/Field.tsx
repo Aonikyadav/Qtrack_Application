@@ -2,10 +2,15 @@ import type { ReactNode, ComponentType, ChangeEvent } from "react"
 import { ChevronDown } from "lucide-react"
 import { Text } from "./Text"
 
+export interface FieldIconProps {
+  size?: number
+  className?: string
+}
+
 export interface FieldProps {
   label?: string
   placeholder?: string
-  icon?: ComponentType<{ size?: number; className?: string }>
+  icon?: ComponentType<FieldIconProps>
   value?: string
   defaultValue?: string
   type?: string

@@ -8,9 +8,11 @@ export interface FamilyMember {
 }
 
 export interface PatientProfile {
-  id: string
+  id: string // e.g. P-8421
+  referralId: string // e.g. QT-8421
   name: string
   phone: string
+  password?: string
   age?: number
   gender?: string
   preferredLanguage: string
@@ -19,8 +21,20 @@ export interface PatientProfile {
   familyMembers: FamilyMember[]
 }
 
+export interface StaffUser {
+  id: string
+  staffId: string // e.g. DOC-101, REC-201, ADM-301
+  name: string
+  email: string
+  role: "Doctor" | "Receptionist" | "Admin"
+  room?: string
+  specialty?: string
+  password: string
+}
+
 export interface Doctor {
   id: string
+  staffId: string
   name: string
   specialty: string
   qualification: string
@@ -99,5 +113,7 @@ export interface ClinicSettings {
   skipDemotionPlaces: number
   maxStrikes: number
 }
+
+export type ActivePortal = "landing" | "patient" | "receptionist" | "doctor" | "admin" | "display" | "styleguide"
 
 export type Role = "Style guide" | "Components" | "Patient" | "Receptionist" | "Doctor" | "Admin" | "Display"

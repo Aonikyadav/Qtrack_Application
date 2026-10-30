@@ -46,8 +46,14 @@ export function Button({
   )
 }
 
+export interface ButtonIconProps {
+  size?: number
+  strokeWidth?: number
+  className?: string
+}
+
 export interface IconButtonProps {
-  icon: ComponentType<{ size?: number; className?: string }>
+  icon: ComponentType<ButtonIconProps>
   label: string
   onClick?: () => void
   className?: string

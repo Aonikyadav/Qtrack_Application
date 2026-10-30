@@ -5,11 +5,52 @@ import type {
   ConsultationRecord,
   AuditLogEntry,
   ClinicSettings,
+  StaffUser,
 } from "../types"
+
+export const initialStaffUsers: StaffUser[] = [
+  {
+    id: "staff-sharma",
+    staffId: "DOC-101",
+    name: "Dr. Arjun Sharma",
+    email: "arjun@aarogya.in",
+    role: "Doctor",
+    room: "Room 2",
+    specialty: "General Physician",
+    password: "doctor123",
+  },
+  {
+    id: "staff-nair",
+    staffId: "DOC-102",
+    name: "Dr. Meera Nair",
+    email: "meera@aarogya.in",
+    role: "Doctor",
+    room: "Room 4",
+    specialty: "Internal Medicine",
+    password: "doctor123",
+  },
+  {
+    id: "staff-sneha",
+    staffId: "REC-201",
+    name: "Sneha Kapoor",
+    email: "reception@aarogya.in",
+    role: "Receptionist",
+    password: "staff123",
+  },
+  {
+    id: "staff-admin",
+    staffId: "ADM-301",
+    name: "Clinic Administrator",
+    email: "admin@aarogya.in",
+    role: "Admin",
+    password: "admin123",
+  },
+]
 
 export const initialDoctors: Doctor[] = [
   {
     id: "doc-sharma",
+    staffId: "DOC-101",
     name: "Dr. Arjun Sharma",
     specialty: "General Physician",
     qualification: "MBBS, MD",
@@ -29,6 +70,7 @@ export const initialDoctors: Doctor[] = [
   },
   {
     id: "doc-nair",
+    staffId: "DOC-102",
     name: "Dr. Meera Nair",
     specialty: "Internal Medicine",
     qualification: "MBBS, DNB (Internal Medicine)",
@@ -48,30 +90,49 @@ export const initialDoctors: Doctor[] = [
   },
 ]
 
-export const initialPatient: PatientProfile = {
-  id: "pat-priya",
-  name: "Priya Sharma",
-  phone: "+91 98765 43210",
-  age: 32,
-  gender: "Female",
-  preferredLanguage: "English",
-  allergies: ["Penicillin", "Dust"],
-  chronicConditions: ["Asthma"],
-  familyMembers: [
-    {
-      id: "fam-rohan",
-      name: "Rohan Sharma",
-      relationship: "Son",
-      age: 8,
-    },
-  ],
-}
+export const initialPatients: PatientProfile[] = [
+  {
+    id: "P-8421",
+    referralId: "QT-8421",
+    name: "Priya Sharma",
+    phone: "+91 98765 43210",
+    password: "patient123",
+    age: 32,
+    gender: "Female",
+    preferredLanguage: "English",
+    allergies: ["Penicillin", "Dust"],
+    chronicConditions: ["Asthma"],
+    familyMembers: [
+      {
+        id: "fam-rohan",
+        name: "Rohan Sharma",
+        relationship: "Son",
+        age: 8,
+      },
+    ],
+  },
+  {
+    id: "P-1201",
+    referralId: "QT-1201",
+    name: "Vikram Rao",
+    phone: "+91 98123 12010",
+    password: "patient123",
+    age: 45,
+    gender: "Male",
+    preferredLanguage: "English",
+    allergies: [],
+    chronicConditions: ["Hypertension"],
+    familyMembers: [],
+  },
+]
+
+export const initialPatient: PatientProfile = initialPatients[0]
 
 export const initialQueueItems: QueueItem[] = [
   {
     id: "q-018",
     token: "A-018",
-    patientId: "pat-kavita",
+    patientId: "P-4521",
     patientName: "Kavita Joshi",
     patientPhone: "+91 98210 45210",
     forWho: "Myself",
@@ -90,7 +151,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-019",
     token: "A-019",
-    patientId: "pat-vikram",
+    patientId: "P-1201",
     patientName: "Vikram Rao",
     patientPhone: "+91 98123 12010",
     forWho: "Myself",
@@ -109,7 +170,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-020",
     token: "A-020",
-    patientId: "pat-neha",
+    patientId: "P-8810",
     patientName: "Neha Patel",
     patientPhone: "+91 99341 88100",
     forWho: "Myself",
@@ -130,7 +191,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-021",
     token: "A-021",
-    patientId: "pat-iqbal",
+    patientId: "P-4421",
     patientName: "M. Iqbal",
     patientPhone: "+91 97412 44210",
     forWho: "Myself",
@@ -149,7 +210,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-022",
     token: "A-022",
-    patientId: "pat-anita",
+    patientId: "P-3105",
     patientName: "Anita Das",
     patientPhone: "+91 88203 31050",
     forWho: "Myself",
@@ -168,7 +229,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-023",
     token: "A-023",
-    patientId: "pat-rohan-m",
+    patientId: "P-7752",
     patientName: "Rohan Mehta",
     patientPhone: "+91 96112 77520",
     forWho: "Myself",
@@ -187,7 +248,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-024",
     token: "A-024",
-    patientId: "pat-priya",
+    patientId: "P-8421",
     patientName: "Priya Sharma",
     patientPhone: "+91 98765 43210",
     forWho: "Myself",
@@ -207,7 +268,7 @@ export const initialQueueItems: QueueItem[] = [
   {
     id: "q-b011",
     token: "B-011",
-    patientId: "pat-suresh",
+    patientId: "P-9912",
     patientName: "Suresh Kumar",
     patientPhone: "+91 95421 99120",
     forWho: "Myself",
@@ -229,7 +290,7 @@ export const initialConsultations: ConsultationRecord[] = [
   {
     id: "cons-001",
     tokenId: "A-014",
-    patientId: "pat-priya",
+    patientId: "P-8421",
     patientName: "Priya Sharma",
     doctorId: "doc-nair",
     doctorName: "Dr. Meera Nair",
@@ -259,7 +320,7 @@ export const initialConsultations: ConsultationRecord[] = [
   {
     id: "cons-002",
     tokenId: "A-007",
-    patientId: "pat-priya",
+    patientId: "P-8421",
     patientName: "Priya Sharma",
     doctorId: "doc-sharma",
     doctorName: "Dr. Arjun Sharma",
@@ -289,7 +350,7 @@ export const initialConsultations: ConsultationRecord[] = [
   {
     id: "cons-003",
     tokenId: "A-002",
-    patientId: "pat-priya",
+    patientId: "P-8421",
     patientName: "Priya Sharma",
     doctorId: "doc-nair",
     doctorName: "Dr. Meera Nair",
