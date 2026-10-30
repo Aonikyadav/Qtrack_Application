@@ -1,4 +1,4 @@
-import type { ReactNode, CSSProperties } from 'react'
+import type { ReactNode, CSSProperties } from "react"
 
 export interface CardProps {
   children: ReactNode
@@ -7,7 +7,7 @@ export interface CardProps {
   onClick?: () => void
 }
 
-export function Card({ children, className = '', style, onClick }: CardProps) {
+export function Card({ children, className = "", style, onClick }: CardProps) {
   return (
     <div className={`card ${className}`} style={style} onClick={onClick}>
       {children}

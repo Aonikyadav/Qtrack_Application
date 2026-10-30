@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react"
 import {
   Activity,
   AlertCircle,
@@ -9,33 +9,41 @@ import {
   QrCode,
   Search,
   X,
-} from 'lucide-react'
-import { useQueue } from '../../context/QueueContext'
-import type { QueueItem } from '../../types'
-import { Badge } from '../common/Badge'
-import { Button, IconButton } from '../common/Button'
-import { Card } from '../common/Card'
-import { Field, SelectField } from '../common/Field'
-import { Modal } from '../common/Modal'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import { useQueue } from "../../context/QueueContext"
+import type { QueueItem } from "../../types"
+import { Badge } from "../common/Badge"
+import { Button, IconButton } from "../common/Button"
+import { Card } from "../common/Card"
+import { Field, SelectField } from "../common/Field"
+import { Modal } from "../common/Modal"
+import { Text } from "../common/Text"
 
-export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void }) {
+export function ReceptionLiveQueue({
+  onAddWalkIn,
+}: {
+  onAddWalkIn: () => void
+}) {
   const { queue, markArrived, flagPriority, removePatient } = useQueue()
-  const [selectedDoctorTab, setSelectedDoctorTab] = useState<'all' | 'doc-sharma' | 'doc-nair'>('all')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [selectedDoctorTab, setSelectedDoctorTab] =
+    useState<"all" | "doc-sharma" | "doc-nair">("all")
+  const [searchQuery, setSearchQuery] = useState("")
   const [actionItem, setActionItem] = useState<QueueItem | null>(null)
-  const [priorityReason, setPriorityReason] = useState('')
+  const [priorityReason, setPriorityReason] = useState("")
 
   const activeQueue = queue.filter(
-    (q) => !['Done', 'Removed'].includes(q.status)
+    (q) => !["Done", "Removed"].includes(q.status),
   )
 
-  const waitingCount = queue.filter((q) => ['Waiting', 'Window open'].includes(q.status)).length
-  const checkedInCount = queue.filter((q) => q.status === 'Checked in').length
-  const seenTodayCount = queue.filter((q) => q.status === 'Done').length
+  const waitingCount = queue.filter((q) =>
+    ["Waiting", "Window open"].includes(q.status),
+  ).length
+  const checkedInCount = queue.filter((q) => q.status === "Checked in").length
+  const seenTodayCount = queue.filter((q) => q.status === "Done").length
 
   const filteredQueue = activeQueue.filter((item) => {
-    if (selectedDoctorTab !== 'all' && item.doctorId !== selectedDoctorTab) return false
+    if (selectedDoctorTab !== "all" && item.doctorId !== selectedDoctorTab)
+      return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
       return (
@@ -52,10 +60,10 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
       <div className="alert-strip">
         <AlertCircle size={18} />
         <Text size="sm">
-          <strong>Clinic announcement:</strong> Next consultation window opens in 5 min. Dr. Sharma
-          and Dr. Nair are on schedule.
+          <strong>Clinic announcement:</strong> Next consultation window opens
+          in 5 min. Dr. Sharma and Dr. Nair are on schedule.
         </Text>
-        <X size={17} style={{ cursor: 'pointer' }} />
+        <X size={17} style={{ cursor: "pointer" }} />
       </div>
 
       <div className="page-title">
@@ -64,7 +72,8 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
             Live receptionist queue
           </Text>
           <Text tone="muted">
-            Tuesday, 18 June · {activeQueue.length} active patients in clinic queue
+            Tuesday, 18 June · {activeQueue.length} active patients in clinic
+            queue
           </Text>
         </div>
         <Button icon={Plus} onClick={onAddWalkIn}>
@@ -110,24 +119,28 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
       <div className="tabs">
         <button
           type="button"
-          className={selectedDoctorTab === 'doc-sharma' ? 'tab-active' : ''}
-          onClick={() => setSelectedDoctorTab('doc-sharma')}
+          className={selectedDoctorTab === "doc-sharma" ? "tab-active" : ""}
+          onClick={() => setSelectedDoctorTab("doc-sharma")}
         >
-          Dr. Sharma{' '}
-          <span>{activeQueue.filter((q) => q.doctorId === 'doc-sharma').length}</span>
+          Dr. Sharma{" "}
+          <span>
+            {activeQueue.filter((q) => q.doctorId === "doc-sharma").length}
+          </span>
         </button>
         <button
           type="button"
-          className={selectedDoctorTab === 'doc-nair' ? 'tab-active' : ''}
-          onClick={() => setSelectedDoctorTab('doc-nair')}
+          className={selectedDoctorTab === "doc-nair" ? "tab-active" : ""}
+          onClick={() => setSelectedDoctorTab("doc-nair")}
         >
-          Dr. Nair{' '}
-          <span>{activeQueue.filter((q) => q.doctorId === 'doc-nair').length}</span>
+          Dr. Nair{" "}
+          <span>
+            {activeQueue.filter((q) => q.doctorId === "doc-nair").length}
+          </span>
         </button>
         <button
           type="button"
-          className={selectedDoctorTab === 'all' ? 'tab-active' : ''}
-          onClick={() => setSelectedDoctorTab('all')}
+          className={selectedDoctorTab === "all" ? "tab-active" : ""}
+          onClick={() => setSelectedDoctorTab("all")}
         >
           All doctors <span>{activeQueue.length}</span>
         </button>
@@ -158,7 +171,7 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
           </div>
 
           {filteredQueue.length === 0 ? (
-            <div style={{ padding: '32px', textAlign: 'center' }}>
+            <div style={{ padding: "32px", textAlign: "center" }}>
               <Text tone="muted">No matching patients in this view.</Text>
             </div>
           ) : (
@@ -169,9 +182,7 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
                 </span>
                 <span>
                   <strong>{item.patientName}</strong>
-                  {item.isPriority && (
-                    <Badge dot={false}>Priority</Badge>
-                  )}
+                  {item.isPriority && <Badge dot={false}>Priority</Badge>}
                 </span>
                 <span>{item.patientPhone}</span>
                 <span>
@@ -180,11 +191,16 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
                 <span>{item.estimatedWaitMinutes}m</span>
                 <span>{item.strikes}/3</span>
                 <span className="row-actions">
-                  {item.status !== 'Checked in' && item.status !== 'Called' && item.status !== 'In consultation' && (
-                    <Button variant="secondary" onClick={() => markArrived(item.token)}>
-                      Mark arrived
-                    </Button>
-                  )}
+                  {item.status !== "Checked in" &&
+                    item.status !== "Called" &&
+                    item.status !== "In consultation" && (
+                      <Button
+                        variant="secondary"
+                        onClick={() => markArrived(item.token)}
+                      >
+                        Mark arrived
+                      </Button>
+                    )}
                   <IconButton
                     icon={MoreHorizontal}
                     label="Queue actions"
@@ -204,7 +220,9 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
         subtitle={`Doctor: ${actionItem?.doctorName} · Current Status: ${actionItem?.status}`}
       >
         {actionItem && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
             <Field
               label="Priority Reason (Optional)"
               placeholder="e.g. High fever, pregnant, senior citizen"
@@ -213,9 +231,12 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
             />
             <Button
               onClick={() => {
-                flagPriority(actionItem.token, priorityReason || 'Clinical urgency')
+                flagPriority(
+                  actionItem.token,
+                  priorityReason || "Clinical urgency",
+                )
                 setActionItem(null)
-                setPriorityReason('')
+                setPriorityReason("")
               }}
             >
               Flag as Priority
@@ -232,7 +253,7 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
             <Button
               variant="danger"
               onClick={() => {
-                removePatient(actionItem.token, 'Removed by front desk')
+                removePatient(actionItem.token, "Removed by front desk")
                 setActionItem(null)
               }}
             >
@@ -247,10 +268,10 @@ export function ReceptionLiveQueue({ onAddWalkIn }: { onAddWalkIn: () => void })
 
 export function QuickWalkInView() {
   const { doctors, addWalkIn, setPage } = useQueue()
-  const [name, setName] = useState('')
-  const [phone, setPhone] = useState('')
+  const [name, setName] = useState("")
+  const [phone, setPhone] = useState("")
   const [doctorId, setDoctorId] = useState(doctors[0].id)
-  const [reason, setReason] = useState('')
+  const [reason, setReason] = useState("")
   const [isPriority, setIsPriority] = useState(false)
   const [issuedToken, setIssuedToken] = useState<QueueItem | null>(null)
 
@@ -258,9 +279,9 @@ export function QuickWalkInView() {
     if (!name.trim()) return
     const newItem = addWalkIn({
       patientName: name.trim(),
-      patientPhone: phone.trim() || '+91 99999 00000',
+      patientPhone: phone.trim() || "+91 99999 00000",
       doctorId,
-      reason: reason || 'Walk-in consultation',
+      reason: reason || "Walk-in consultation",
       isPriority,
     })
     setIssuedToken(newItem)
@@ -277,7 +298,7 @@ export function QuickWalkInView() {
           </Text>
           <Text tone="muted">Issue an arrival token in about 10 seconds.</Text>
         </div>
-        <Button variant="ghost" onClick={() => setPage('Live queue')}>
+        <Button variant="ghost" onClick={() => setPage("Live queue")}>
           View live queue
         </Button>
       </div>
@@ -328,13 +349,16 @@ export function QuickWalkInView() {
             <div>
               <Text weight="semibold">Priority patient</Text>
               <Text size="sm" tone="muted">
-                Requires clinical reason; highlights with an orange badge on queue table.
+                Requires clinical reason; highlights with an orange badge on
+                queue table.
               </Text>
             </div>
           </label>
 
           <Button full icon={Plus} onClick={handleIssueToken}>
-            {issuedToken ? `Token ${issuedToken.token} Issued!` : 'Add and issue token'}
+            {issuedToken
+              ? `Token ${issuedToken.token} Issued!`
+              : "Add and issue token"}
           </Button>
         </Card>
 
@@ -342,15 +366,18 @@ export function QuickWalkInView() {
           <Text size="xs" weight="bold" tone="muted">
             PRINT TICKET PREVIEW
           </Text>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
             <Text size="lg" weight="bold">
               QTrack
             </Text>
           </div>
-          <div className="ticket-token">{issuedToken ? issuedToken.token : 'A-025'}</div>
+          <div className="ticket-token">
+            {issuedToken ? issuedToken.token : "A-025"}
+          </div>
           <Text weight="bold">{selectedDoc.name}</Text>
           <Text size="sm" tone="muted">
-            Est. wait {issuedToken ? issuedToken.estimatedWaitMinutes : 35} minutes
+            Est. wait {issuedToken ? issuedToken.estimatedWaitMinutes : 35}{" "}
+            minutes
           </Text>
           <div className="fake-qr">
             <QrCode size={80} />
@@ -376,7 +403,7 @@ export function ArrivalsPageView() {
   const { queue, markArrived } = useQueue()
 
   const arrivalCandidates = queue.filter((q) =>
-    ['Window open', 'Checked in', 'Waiting'].includes(q.status)
+    ["Window open", "Checked in", "Waiting"].includes(q.status),
   )
 
   return (
@@ -387,7 +414,8 @@ export function ArrivalsPageView() {
             Arrivals monitor
           </Text>
           <Text tone="muted">
-            Patients whose check-in window is active or who are ready at reception.
+            Patients whose check-in window is active or who are ready at
+            reception.
           </Text>
         </div>
         <Badge>Window open</Badge>
@@ -395,7 +423,7 @@ export function ArrivalsPageView() {
 
       <div className="arrival-grid">
         {arrivalCandidates.slice(0, 6).map((item) => {
-          const isArrived = item.status === 'Checked in'
+          const isArrived = item.status === "Checked in"
           return (
             <Card className="arrival-card" key={item.token}>
               <div>
@@ -404,8 +432,10 @@ export function ArrivalsPageView() {
                   {item.token} · {item.patientName}
                 </Text>
                 <Text tone="muted">
-                  {item.doctorName} ·{' '}
-                  {isArrived ? 'Arrived & present' : `Window closes in ${item.windowClosesInMinutes || 12} min`}
+                  {item.doctorName} ·{" "}
+                  {isArrived
+                    ? "Arrived & present"
+                    : `Window closes in ${item.windowClosesInMinutes || 12} min`}
                 </Text>
               </div>
               <Button
@@ -413,7 +443,7 @@ export function ArrivalsPageView() {
                 icon={Check}
                 onClick={() => markArrived(item.token)}
               >
-                {isArrived ? 'Arrived' : 'Mark arrived'}
+                {isArrived ? "Arrived" : "Mark arrived"}
               </Button>
             </Card>
           )
@@ -434,7 +464,8 @@ export function ActivityLogView() {
             Clinic activity log
           </Text>
           <Text tone="muted">
-            A transparent audit record of all priority assignments, overrides, and token actions.
+            A transparent audit record of all priority assignments, overrides,
+            and token actions.
           </Text>
         </div>
       </div>
@@ -462,11 +493,15 @@ export function ActivityLogView() {
 
 export function StaffLoginView() {
   const { enterStaffView } = useQueue()
-  const [email, setEmail] = useState('sneha@aarogyaclinic.in')
-  const [roleSelect, setRoleSelect] = useState<'Receptionist' | 'Doctor' | 'Admin'>('Receptionist')
+  const [email, setEmail] = useState("sneha@aarogyaclinic.in")
+  const [roleSelect, setRoleSelect] =
+    useState<"Receptionist" | "Doctor" | "Admin">("Receptionist")
 
   const handleSignIn = () => {
-    enterStaffView(roleSelect, roleSelect === 'Doctor' ? 'Overview' : 'Live queue')
+    enterStaffView(
+      roleSelect,
+      roleSelect === "Doctor" ? "Overview" : "Live queue",
+    )
   }
 
   return (

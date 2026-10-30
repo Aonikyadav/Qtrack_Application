@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react"
 import {
   AlertCircle,
   ArrowLeft,
@@ -19,30 +19,31 @@ import {
   Search,
   UserRound,
   X,
-} from 'lucide-react'
-import { useQueue } from '../../context/QueueContext'
-import type { Doctor } from '../../types'
-import { Badge } from '../common/Badge'
-import { Button, IconButton } from '../common/Button'
-import { Card } from '../common/Card'
-import { Field, SelectField, TextArea } from '../common/Field'
-import { Modal } from '../common/Modal'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import { useQueue } from "../../context/QueueContext"
+import type { Doctor } from "../../types"
+import { Badge } from "../common/Badge"
+import { Button, IconButton } from "../common/Button"
+import { Card } from "../common/Card"
+import { Field, SelectField, TextArea } from "../common/Field"
+import { Modal } from "../common/Modal"
+import { Text } from "../common/Text"
 
 export function PatientHome() {
-  const { queue, activePatientToken, patient, consultations, setPage } = useQueue()
+  const { queue, activePatientToken, patient, consultations, setPage } =
+    useQueue()
 
   const activeItem =
     queue.find((q) => q.token === activePatientToken) ||
-    queue.find((q) => q.status !== 'Done' && q.status !== 'Removed') ||
+    queue.find((q) => q.status !== "Done" && q.status !== "Removed") ||
     null
 
   const peopleAhead = activeItem
     ? queue.filter(
         (q) =>
           q.doctorId === activeItem.doctorId &&
-          ['Waiting', 'Window open', 'Checked in'].includes(q.status) &&
-          q.token < activeItem.token
+          ["Waiting", "Window open", "Checked in"].includes(q.status) &&
+          q.token < activeItem.token,
       ).length
     : 0
 
@@ -53,15 +54,15 @@ export function PatientHome() {
       <div className="patient-greeting">
         <div>
           <Text size="xl" weight="bold">
-            Good morning, {patient.name.split(' ')[0]}
+            Good morning, {patient.name.split(" ")[0]}
           </Text>
           <Text tone="muted">How can we help you today?</Text>
         </div>
         <span className="avatar avatar-large">
           {patient.name
-            .split(' ')
+            .split(" ")
             .map((n) => n[0])
-            .join('')
+            .join("")
             .substring(0, 2)}
         </span>
       </div>
@@ -69,7 +70,7 @@ export function PatientHome() {
       <button
         className="search-hero"
         type="button"
-        onClick={() => setPage('Find a doctor')}
+        onClick={() => setPage("Find a doctor")}
       >
         <Search size={21} />
         <span>Search doctor, specialty, disease or clinic</span>
@@ -90,14 +91,14 @@ export function PatientHome() {
             Your active queue
           </Text>
           {activeItem && (
-            <Button variant="ghost" onClick={() => setPage('My queue')}>
+            <Button variant="ghost" onClick={() => setPage("My queue")}>
               View details <ArrowRight size={16} />
             </Button>
           )}
         </div>
 
         {activeItem ? (
-          <Card className="active-queue" onClick={() => setPage('My queue')}>
+          <Card className="active-queue" onClick={() => setPage("My queue")}>
             <div className="token-box">
               <Text size="xs" weight="bold">
                 YOUR TOKEN
@@ -109,10 +110,11 @@ export function PatientHome() {
             <div className="queue-summary">
               <Badge>{activeItem.status}</Badge>
               <Text size="lg" weight="bold">
-                {peopleAhead} {peopleAhead === 1 ? 'person' : 'people'} ahead
+                {peopleAhead} {peopleAhead === 1 ? "person" : "people"} ahead
               </Text>
               <Text tone="muted">
-                Estimated {activeItem.estimatedWaitMinutes}–{activeItem.estimatedWaitMinutes + 10} min ·{' '}
+                Estimated {activeItem.estimatedWaitMinutes}–
+                {activeItem.estimatedWaitMinutes + 10} min ·{" "}
                 {activeItem.doctorName}
               </Text>
             </div>
@@ -121,17 +123,18 @@ export function PatientHome() {
         ) : (
           <Card
             className="empty-state"
-            style={{ padding: '28px', textAlign: 'center', cursor: 'pointer' }}
-            onClick={() => setPage('Find a doctor')}
+            style={{ padding: "28px", textAlign: "center", cursor: "pointer" }}
+            onClick={() => setPage("Find a doctor")}
           >
             <div className="empty-icon">
               <CalendarDays />
             </div>
             <Text weight="bold">No active queue token</Text>
             <Text size="sm" tone="muted">
-              You do not have any appointments in progress. Click to find a doctor and join.
+              You do not have any appointments in progress. Click to find a
+              doctor and join.
             </Text>
-            <Button icon={Plus} style={{ marginTop: '12px' }}>
+            <Button icon={Plus} style={{ marginTop: "12px" }}>
               Find a doctor
             </Button>
           </Card>
@@ -143,7 +146,7 @@ export function PatientHome() {
           <Text size="lg" weight="bold">
             Recent visits
           </Text>
-          <Button variant="ghost" onClick={() => setPage('History')}>
+          <Button variant="ghost" onClick={() => setPage("History")}>
             View all
           </Button>
         </div>
@@ -151,8 +154,8 @@ export function PatientHome() {
           <Card
             className="visit-row"
             key={c.id}
-            onClick={() => setPage('History')}
-            style={{ cursor: 'pointer', marginBottom: '8px' }}
+            onClick={() => setPage("History")}
+            style={{ cursor: "pointer", marginBottom: "8px" }}
           >
             <span className="calendar-icon">
               <CalendarDays />
@@ -171,28 +174,39 @@ export function PatientHome() {
   )
 }
 
-export function DoctorSearch({ onSelectDoctor }: { onSelectDoctor?: (d: Doctor) => void }) {
+export function DoctorSearch({
+  onSelectDoctor,
+}: {
+  onSelectDoctor?: (d: Doctor) => void
+}) {
   const { doctors, setPage } = useQueue()
-  const [query, setQuery] = useState('')
-  const [activeFilter, setActiveFilter] = useState('Nearest')
+  const [query, setQuery] = useState("")
+  const [activeFilter, setActiveFilter] = useState("Nearest")
 
   const filteredDoctors = doctors.filter((d) => {
     const matchesSearch =
       d.name.toLowerCase().includes(query.toLowerCase()) ||
       d.specialty.toLowerCase().includes(query.toLowerCase())
-    if (activeFilter === 'Available today') return matchesSearch && d.availableToday
+    if (activeFilter === "Available today")
+      return matchesSearch && d.availableToday
     return matchesSearch
   })
 
   return (
     <div className="content-stack patient-width">
       <div className="back-title">
-        <IconButton icon={ArrowLeft} label="Back to Home" onClick={() => setPage('Home')} />
+        <IconButton
+          icon={ArrowLeft}
+          label="Back to Home"
+          onClick={() => setPage("Home")}
+        />
         <div>
           <Text size="xl" weight="bold">
             Doctors near you
           </Text>
-          <Text tone="muted">22 available today around Richmond Road (560001)</Text>
+          <Text tone="muted">
+            22 available today around Richmond Road (560001)
+          </Text>
         </div>
       </div>
 
@@ -204,23 +218,25 @@ export function DoctorSearch({ onSelectDoctor }: { onSelectDoctor?: (d: Doctor) 
       />
 
       <div className="chip-row">
-        {['Nearest', 'Shortest wait', 'Available today', 'Language', 'Fee'].map((chip) => (
-          <button
-            key={chip}
-            type="button"
-            className={`chip ${activeFilter === chip ? 'chip-active' : ''}`}
-            onClick={() => setActiveFilter(chip)}
-          >
-            {chip}
-          </button>
-        ))}
+        {["Nearest", "Shortest wait", "Available today", "Language", "Fee"].map(
+          (chip) => (
+            <button
+              key={chip}
+              type="button"
+              className={`chip ${activeFilter === chip ? "chip-active" : ""}`}
+              onClick={() => setActiveFilter(chip)}
+            >
+              {chip}
+            </button>
+          ),
+        )}
       </div>
 
       <div className="emergency-notice">
         <AlertCircle size={21} />
         <Text size="sm">
-          <strong>Emergency?</strong> If this is life-threatening, call 112 or visit the nearest
-          emergency room immediately.
+          <strong>Emergency?</strong> If this is life-threatening, call 112 or
+          visit the nearest emergency room immediately.
         </Text>
       </div>
 
@@ -241,7 +257,7 @@ export function DoctorSearch({ onSelectDoctor }: { onSelectDoctor?: (d: Doctor) 
                 <MapPin size={16} /> {doc.clinicName} · {doc.distanceKm} km
               </span>
               <span>₹{doc.fee}</span>
-              <span>{doc.languages.join(', ')}</span>
+              <span>{doc.languages.join(", ")}</span>
             </div>
             <div className="wait-row">
               <Clock3 size={18} />
@@ -255,11 +271,11 @@ export function DoctorSearch({ onSelectDoctor }: { onSelectDoctor?: (d: Doctor) 
               </div>
             </div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
             <Button
               onClick={() => {
                 onSelectDoctor?.(doc)
-                setPage('Doctor profile')
+                setPage("Doctor profile")
               }}
             >
               Doctor profile
@@ -268,7 +284,7 @@ export function DoctorSearch({ onSelectDoctor }: { onSelectDoctor?: (d: Doctor) 
               variant="secondary"
               onClick={() => {
                 onSelectDoctor?.(doc)
-                setPage('Join queue')
+                setPage("Join queue")
               }}
             >
               Join queue
@@ -287,7 +303,11 @@ export function DoctorProfileView({ doctor }: { doctor?: Doctor }) {
   return (
     <div className="content-stack patient-width">
       <div className="back-title">
-        <IconButton icon={ArrowLeft} label="Back" onClick={() => setPage('Find a doctor')} />
+        <IconButton
+          icon={ArrowLeft}
+          label="Back"
+          onClick={() => setPage("Find a doctor")}
+        />
         <Text size="xl" weight="bold">
           Doctor profile
         </Text>
@@ -303,7 +323,8 @@ export function DoctorProfileView({ doctor }: { doctor?: Doctor }) {
             {currentDoc.specialty}
           </Text>
           <Text tone="muted">
-            {currentDoc.qualification} · {currentDoc.experienceYears} years experience
+            {currentDoc.qualification} · {currentDoc.experienceYears} years
+            experience
           </Text>
           <div className="meta-row">
             {currentDoc.languages.map((l) => (
@@ -342,7 +363,7 @@ export function DoctorProfileView({ doctor }: { doctor?: Doctor }) {
           <Text tone="muted">
             {currentDoc.activeQueueCount} patients currently in queue
           </Text>
-          <Button full onClick={() => setPage('Join queue')}>
+          <Button full onClick={() => setPage("Join queue")}>
             Join queue
           </Button>
           <Text size="xs" tone="muted">
@@ -357,38 +378,49 @@ export function DoctorProfileView({ doctor }: { doctor?: Doctor }) {
 export function JoinQueueFlow({ doctor }: { doctor?: Doctor }) {
   const { doctors, patient, joinQueue, setPage } = useQueue()
   const doc = doctor || doctors[0]
-  const [who, setWho] = useState('Myself')
-  const [reason, setReason] = useState('')
+  const [who, setWho] = useState("Myself")
+  const [reason, setReason] = useState("")
   const [isFamilyModalOpen, setIsFamilyModalOpen] = useState(false)
-  const [newMemberName, setNewMemberName] = useState('')
-  const [newMemberRel, setNewMemberRel] = useState('Child')
-  const [newMemberAge, setNewMemberAge] = useState('8')
+  const [newMemberName, setNewMemberName] = useState("")
+  const [newMemberRel, setNewMemberRel] = useState("Child")
+  const [newMemberAge, setNewMemberAge] = useState("8")
   const { addFamilyMember } = useQueue()
 
-  const choices = ['Myself', ...patient.familyMembers.map((f) => `${f.name} · ${f.relationship}`)]
+  const choices = [
+    "Myself",
+    ...patient.familyMembers.map((f) => `${f.name} · ${f.relationship}`),
+  ]
 
   const handleConfirm = () => {
     joinQueue({
       doctorId: doc.id,
       forWho: who,
-      reason: reason || 'General checkup',
+      reason: reason || "General checkup",
     })
-    setPage('My queue')
+    setPage("My queue")
   }
 
   const handleAddMember = () => {
     if (newMemberName.trim()) {
-      addFamilyMember(newMemberName.trim(), newMemberRel, parseInt(newMemberAge, 10) || 5)
+      addFamilyMember(
+        newMemberName.trim(),
+        newMemberRel,
+        parseInt(newMemberAge, 10) || 5,
+      )
       setWho(`${newMemberName.trim()} · ${newMemberRel}`)
       setIsFamilyModalOpen(false)
-      setNewMemberName('')
+      setNewMemberName("")
     }
   }
 
   return (
     <div className="content-stack narrow-page">
       <div className="back-title">
-        <IconButton icon={ArrowLeft} label="Back" onClick={() => setPage('Doctor profile')} />
+        <IconButton
+          icon={ArrowLeft}
+          label="Back"
+          onClick={() => setPage("Doctor profile")}
+        />
         <div>
           <Text size="xl" weight="bold">
             Join {doc.name}’s queue
@@ -406,7 +438,7 @@ export function JoinQueueFlow({ doctor }: { doctor?: Doctor }) {
             <button
               key={c}
               type="button"
-              className={`choice ${who === c ? 'choice-active' : ''}`}
+              className={`choice ${who === c ? "choice-active" : ""}`}
               onClick={() => setWho(c)}
             >
               <UserRound size={20} />
@@ -418,10 +450,9 @@ export function JoinQueueFlow({ doctor }: { doctor?: Doctor }) {
             type="button"
             className="choice"
             onClick={() => setIsFamilyModalOpen(true)}
-            style={{ borderStyle: 'dashed' }}
+            style={{ borderStyle: "dashed" }}
           >
-            <Plus size={20} />
-            + Add family member
+            <Plus size={20} />+ Add family member
           </button>
         </div>
 
@@ -456,7 +487,7 @@ export function JoinQueueFlow({ doctor }: { doctor?: Doctor }) {
         title="Add family member"
         subtitle="Manage visit records for your dependents"
       >
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           <Field
             label="Full name"
             placeholder="e.g. Rohan Sharma"
@@ -495,31 +526,36 @@ export function LiveQueueView() {
 
   const currentItem =
     queue.find((q) => q.token === activePatientToken) ||
-    queue.find((q) => q.patientPhone.includes('98765')) ||
+    queue.find((q) => q.patientPhone.includes("98765")) ||
     queue[0]
 
   const peopleAhead = currentItem
     ? queue.filter(
         (q) =>
           q.doctorId === currentItem.doctorId &&
-          ['Waiting', 'Window open', 'Checked in'].includes(q.status) &&
-          q.token < currentItem.token
+          ["Waiting", "Window open", "Checked in"].includes(q.status) &&
+          q.token < currentItem.token,
       ).length
     : 0
 
   if (!currentItem) {
     return (
-      <div className="content-stack narrow-page" style={{ textAlign: 'center', padding: '40px' }}>
+      <div
+        className="content-stack narrow-page"
+        style={{ textAlign: "center", padding: "40px" }}
+      >
         <Text size="xl" weight="bold">
           No queue token found
         </Text>
-        <Text tone="muted">Please join a queue to follow your live status.</Text>
-        <Button onClick={() => setPage('Find a doctor')}>Find a doctor</Button>
+        <Text tone="muted">
+          Please join a queue to follow your live status.
+        </Text>
+        <Button onClick={() => setPage("Find a doctor")}>Find a doctor</Button>
       </div>
     )
   }
 
-  const isCalled = currentItem.status === 'Called'
+  const isCalled = currentItem.status === "Called"
 
   return (
     <div className="content-stack queue-page patient-width">
@@ -527,12 +563,12 @@ export function LiveQueueView() {
         <div
           className="toast toast-wide"
           style={{
-            backgroundColor: '#0f766e',
-            color: '#ffffff',
-            border: 'none',
-            cursor: 'pointer',
+            backgroundColor: "#0f766e",
+            color: "#ffffff",
+            border: "none",
+            cursor: "pointer",
           }}
-          onClick={() => setPage('Called')}
+          onClick={() => setPage("Called")}
         >
           <Bell size={24} color="#ffffff" />
           <div style={{ flex: 1 }}>
@@ -543,7 +579,7 @@ export function LiveQueueView() {
               Please proceed immediately to {currentItem.room}
             </Text>
           </div>
-          <Button variant="secondary" onClick={() => setPage('Called')}>
+          <Button variant="secondary" onClick={() => setPage("Called")}>
             View details
           </Button>
         </div>
@@ -552,7 +588,8 @@ export function LiveQueueView() {
       <div className="queue-top">
         <div>
           <Text size="sm" tone="muted">
-            {currentItem.doctorName.toUpperCase()} · {currentItem.room.toUpperCase()}
+            {currentItem.doctorName.toUpperCase()} ·{" "}
+            {currentItem.room.toUpperCase()}
           </Text>
           <Text size="xl" weight="bold">
             Your live queue
@@ -574,12 +611,13 @@ export function LiveQueueView() {
               {peopleAhead}
             </Text>
             <Text size="sm" tone="muted">
-              {peopleAhead === 1 ? 'person ahead' : 'people ahead'}
+              {peopleAhead === 1 ? "person ahead" : "people ahead"}
             </Text>
           </div>
           <div>
             <Text className="metric" weight="bold">
-              {currentItem.estimatedWaitMinutes}–{currentItem.estimatedWaitMinutes + 10}
+              {currentItem.estimatedWaitMinutes}–
+              {currentItem.estimatedWaitMinutes + 10}
             </Text>
             <Text size="sm" tone="muted">
               minutes estimated
@@ -597,13 +635,13 @@ export function LiveQueueView() {
             <span
               style={{
                 width:
-                  currentItem.status === 'Called'
-                    ? '100%'
-                    : currentItem.status === 'Checked in'
-                    ? '75%'
-                    : currentItem.status === 'Window open'
-                    ? '50%'
-                    : '25%',
+                  currentItem.status === "Called"
+                    ? "100%"
+                    : currentItem.status === "Checked in"
+                      ? "75%"
+                      : currentItem.status === "Window open"
+                        ? "50%"
+                        : "25%",
               }}
             />
           </div>
@@ -616,18 +654,18 @@ export function LiveQueueView() {
         </div>
         <div>
           <Text weight="bold">
-            {currentItem.status === 'Checked in'
-              ? 'Checked in & confirmed'
+            {currentItem.status === "Checked in"
+              ? "Checked in & confirmed"
               : `Check in within ${currentItem.windowClosesInMinutes || 14}:30 min`}
           </Text>
           <Text size="sm" tone="muted">
-            {currentItem.status === 'Checked in'
-              ? 'You are checked in! Dr. Sharma will call your token soon.'
-              : 'You are close to the front. Confirm your arrival via QR scanner.'}
+            {currentItem.status === "Checked in"
+              ? "You are checked in! Dr. Sharma will call your token soon."
+              : "You are close to the front. Confirm your arrival via QR scanner."}
           </Text>
         </div>
-        {currentItem.status !== 'Checked in' && (
-          <Button onClick={() => setPage('QR check-in')} icon={QrCode}>
+        {currentItem.status !== "Checked in" && (
+          <Button onClick={() => setPage("QR check-in")} icon={QrCode}>
             Check in
           </Button>
         )}
@@ -640,10 +678,14 @@ export function LiveQueueView() {
           disabled={currentItem.latePassUsed}
           onClick={() => useLatePass(currentItem.token)}
         >
-          {currentItem.latePassUsed ? 'Late pass used (+15m)' : 'I’m running late'}
+          {currentItem.latePassUsed
+            ? "Late pass used (+15m)"
+            : "I’m running late"}
         </Button>
-        <Button full onClick={() => setPage('QR check-in')}>
-          {currentItem.status === 'Checked in' ? 'View QR status' : 'I’m at the clinic'}
+        <Button full onClick={() => setPage("QR check-in")}>
+          {currentItem.status === "Checked in"
+            ? "View QR status"
+            : "I’m at the clinic"}
         </Button>
       </div>
 
@@ -651,15 +693,22 @@ export function LiveQueueView() {
         <div className="strikes-head">
           <Text weight="bold">Attendance record</Text>
           <div className="strike-dots">
-            <span className={currentItem.strikes >= 1 ? 'strike-used' : ''}>1</span>
-            <span className={currentItem.strikes >= 2 ? 'strike-used' : ''}>2</span>
-            <span className={currentItem.strikes >= 3 ? 'strike-used' : ''}>3</span>
+            <span className={currentItem.strikes >= 1 ? "strike-used" : ""}>
+              1
+            </span>
+            <span className={currentItem.strikes >= 2 ? "strike-used" : ""}>
+              2
+            </span>
+            <span className={currentItem.strikes >= 3 ? "strike-used" : ""}>
+              3
+            </span>
           </div>
         </div>
         <Text size="sm" tone="muted">
-          You currently have {currentItem.strikes} strike{currentItem.strikes === 1 ? '' : 's'}.
-          Missing your check-in window or doctor call adds a strike and demotes your position by 3
-          slots. 3 strikes removes you from this queue.
+          You currently have {currentItem.strikes} strike
+          {currentItem.strikes === 1 ? "" : "s"}. Missing your check-in window
+          or doctor call adds a strike and demotes your position by 3 slots. 3
+          strikes removes you from this queue.
         </Text>
       </Card>
 
@@ -672,31 +721,37 @@ export function LiveQueueView() {
 
 export function QRCheckinView() {
   const { queue, activePatientToken, checkInToken, setPage } = useQueue()
-  const [scanState, setScanState] = useState<'idle' | 'success' | 'failure'>('idle')
+  const [scanState, setScanState] = useState<"idle" | "success" | "failure">(
+    "idle",
+  )
 
   const currentItem =
     queue.find((q) => q.token === activePatientToken) ||
-    queue.find((q) => q.patientPhone.includes('98765')) ||
+    queue.find((q) => q.patientPhone.includes("98765")) ||
     queue[0]
 
   const handleSimulateScan = () => {
     if (currentItem) {
       checkInToken(currentItem.token)
     }
-    setScanState('success')
+    setScanState("success")
   }
 
   return (
     <div className="scanner-page">
       <div className="scanner-head">
-        <IconButton icon={X} label="Close" onClick={() => setPage('My queue')} />
+        <IconButton
+          icon={X}
+          label="Close"
+          onClick={() => setPage("My queue")}
+        />
         <Text size="lg" weight="bold" tone="inverse">
           Scan clinic QR code
         </Text>
         <span />
       </div>
 
-      {scanState === 'idle' ? (
+      {scanState === "idle" ? (
         <>
           <div className="scanner-box">
             <span className="corner corner-1" />
@@ -709,10 +764,11 @@ export function QRCheckinView() {
             Point your camera at the QR code displayed near reception
           </Text>
           <Text size="sm" className="scanner-muted">
-            Checking in confirms your physical presence and moves you to priority calling.
+            Checking in confirms your physical presence and moves you to
+            priority calling.
           </Text>
-          <div className="action-row" style={{ marginTop: '24px' }}>
-            <Button variant="secondary" onClick={() => setScanState('failure')}>
+          <div className="action-row" style={{ marginTop: "24px" }}>
+            <Button variant="secondary" onClick={() => setScanState("failure")}>
               Preview failure
             </Button>
             <Button onClick={handleSimulateScan}>
@@ -720,7 +776,7 @@ export function QRCheckinView() {
             </Button>
           </div>
         </>
-      ) : scanState === 'success' ? (
+      ) : scanState === "success" ? (
         <Card className="scan-success">
           <span className="success-icon">
             <Check size={34} />
@@ -729,11 +785,11 @@ export function QRCheckinView() {
             You’re checked in!
           </Text>
           <Text tone="muted">
-            Please wait in the clinic waiting area. We will alert your device when Dr. Sharma calls token{' '}
-            <strong>{currentItem?.token}</strong>.
+            Please wait in the clinic waiting area. We will alert your device
+            when Dr. Sharma calls token <strong>{currentItem?.token}</strong>.
           </Text>
           <Badge>Checked in</Badge>
-          <Button full onClick={() => setPage('My queue')}>
+          <Button full onClick={() => setPage("My queue")}>
             Back to live queue
           </Button>
         </Card>
@@ -746,14 +802,14 @@ export function QRCheckinView() {
             We couldn’t check you in
           </Text>
           <Text tone="muted">
-            This QR code has expired or belongs to a different clinic room. Please ask the front-desk
-            receptionist for assistance.
+            This QR code has expired or belongs to a different clinic room.
+            Please ask the front-desk receptionist for assistance.
           </Text>
           <div className="action-row">
-            <Button variant="secondary" onClick={() => setPage('My queue')}>
+            <Button variant="secondary" onClick={() => setPage("My queue")}>
               Back
             </Button>
-            <Button onClick={() => setScanState('idle')}>Try again</Button>
+            <Button onClick={() => setScanState("idle")}>Try again</Button>
           </div>
         </Card>
       )}
@@ -765,7 +821,7 @@ export function CalledPageView() {
   const { queue, activePatientToken, setPage } = useQueue()
   const currentItem =
     queue.find((q) => q.token === activePatientToken) ||
-    queue.find((q) => q.status === 'Called') ||
+    queue.find((q) => q.status === "Called") ||
     queue[0]
 
   return (
@@ -778,11 +834,12 @@ export function CalledPageView() {
         It’s your turn
       </Text>
       <Text size="xl">Please proceed immediately to</Text>
-      <div className="room-number">{currentItem?.room || 'Room 2'}</div>
+      <div className="room-number">{currentItem?.room || "Room 2"}</div>
       <Text tone="muted">
-        {currentItem?.doctorName || 'Dr. Arjun Sharma'} is waiting to see you now.
+        {currentItem?.doctorName || "Dr. Arjun Sharma"} is waiting to see you
+        now.
       </Text>
-      <Button onClick={() => setPage('History')}>I’m going now</Button>
+      <Button onClick={() => setPage("History")}>I’m going now</Button>
     </div>
   )
 }
@@ -792,7 +849,10 @@ export function NoticePageView() {
 
   return (
     <div className="content-stack narrow-page">
-      <PageTitle title="Queue notices" subtitle="Examples of penalty and strike policies." />
+      <PageTitle
+        title="Queue notices"
+        subtitle="Examples of penalty and strike policies."
+      />
       <Card className="notice-card">
         <span className="notice-icon notice-coral">
           <Clock3 />
@@ -802,10 +862,10 @@ export function NoticePageView() {
           You missed your call
         </Text>
         <Text tone="muted">
-          Because you did not answer the call within 3 minutes, you have been moved back 3 positions
-          and added 1 strike. Your new position is 9.
+          Because you did not answer the call within 3 minutes, you have been
+          moved back 3 positions and added 1 strike. Your new position is 9.
         </Text>
-        <Button full onClick={() => setPage('My queue')}>
+        <Button full onClick={() => setPage("My queue")}>
           View new position
         </Button>
       </Card>
@@ -818,10 +878,14 @@ export function NoticePageView() {
           Removed from queue
         </Text>
         <Text tone="muted">
-          You reached the clinic’s maximum limit of 3 strikes. You may rejoin if the doctor's queue
-          remains open.
+          You reached the clinic’s maximum limit of 3 strikes. You may rejoin if
+          the doctor's queue remains open.
         </Text>
-        <Button variant="secondary" full onClick={() => setPage('Find a doctor')}>
+        <Button
+          variant="secondary"
+          full
+          onClick={() => setPage("Find a doctor")}
+        >
           Find another queue
         </Button>
       </Card>
@@ -831,7 +895,8 @@ export function NoticePageView() {
 
 export function HistoryPageView() {
   const { consultations } = useQueue()
-  const [selectedVisit, setSelectedVisit] = useState<typeof consultations[0] | null>(null)
+  const [selectedVisit, setSelectedVisit] =
+    useState<typeof consultations[0] | null>(null)
 
   return (
     <div className="content-stack patient-width">
@@ -852,11 +917,16 @@ export function HistoryPageView() {
               <Text weight="bold">{visit.doctorName}</Text>
               <Text weight="medium">{visit.diagnosis}</Text>
               <Text size="sm" tone="muted">
-                {visit.prescriptions.map((p) => `${p.medicine} (${p.dose})`).join(', ') ||
-                  'No medications prescribed'}
+                {visit.prescriptions
+                  .map((p) => `${p.medicine} (${p.dose})`)
+                  .join(", ") || "No medications prescribed"}
               </Text>
             </div>
-            <Button variant="secondary" icon={Download} onClick={() => setSelectedVisit(visit)}>
+            <Button
+              variant="secondary"
+              icon={Download}
+              onClick={() => setSelectedVisit(visit)}
+            >
               PDF
             </Button>
           </Card>
@@ -870,8 +940,16 @@ export function HistoryPageView() {
         subtitle={`Visit on ${selectedVisit?.date} · ${selectedVisit?.doctorName}`}
       >
         {selectedVisit && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            <div style={{ padding: '12px', background: '#f7f9f8', borderRadius: '8px' }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+          >
+            <div
+              style={{
+                padding: "12px",
+                background: "#f7f9f8",
+                borderRadius: "8px",
+              }}
+            >
               <Text size="sm" weight="bold" tone="muted">
                 DIAGNOSIS
               </Text>
@@ -886,17 +964,22 @@ export function HistoryPageView() {
             </div>
 
             <div>
-              <Text size="sm" weight="bold" tone="muted" style={{ marginBottom: '8px' }}>
+              <Text
+                size="sm"
+                weight="bold"
+                tone="muted"
+                style={{ marginBottom: "8px" }}
+              >
                 PRESCRIBED MEDICINES
               </Text>
               {selectedVisit.prescriptions.map((p) => (
                 <div
                   key={p.id}
                   style={{
-                    display: 'flex',
-                    justifyContent: 'space-between',
-                    padding: '8px 12px',
-                    borderBottom: '1px solid #dfe5e3',
+                    display: "flex",
+                    justifyContent: "space-between",
+                    padding: "8px 12px",
+                    borderBottom: "1px solid #dfe5e3",
                   }}
                 >
                   <div>
@@ -914,7 +997,9 @@ export function HistoryPageView() {
               icon={Download}
               full
               onClick={() => {
-                alert(`Downloading digital prescription PDF for ${selectedVisit.patientName}...`)
+                alert(
+                  `Downloading digital prescription PDF for ${selectedVisit.patientName}...`,
+                )
                 setSelectedVisit(null)
               }}
             >
@@ -942,7 +1027,10 @@ export function ProfilePageView() {
 
   return (
     <div className="content-stack patient-width">
-      <PageTitle title="Profile" subtitle="Manage your contact details, family, and health records." />
+      <PageTitle
+        title="Profile"
+        subtitle="Manage your contact details, family, and health records."
+      />
       {saved && (
         <div className="toast">
           <CheckCircle2 size={20} />
@@ -982,7 +1070,11 @@ export function ProfilePageView() {
               <Text size="lg" weight="bold">
                 Family members
               </Text>
-              <Button variant="ghost" icon={Plus} onClick={() => setPage('Join queue')}>
+              <Button
+                variant="ghost"
+                icon={Plus}
+                onClick={() => setPage("Join queue")}
+              >
                 Add
               </Button>
             </div>
@@ -990,9 +1082,9 @@ export function ProfilePageView() {
               <div className="person-row" key={fam.id}>
                 <span className="avatar">
                   {fam.name
-                    .split(' ')
+                    .split(" ")
                     .map((n) => n[0])
-                    .join('')
+                    .join("")
                     .substring(0, 2)}
                 </span>
                 <div>
@@ -1042,26 +1134,26 @@ export function ProfilePageView() {
 
 export function LoginPageView() {
   const { setPage } = useQueue()
-  const [phone, setPhone] = useState('+91 98765 43210')
+  const [phone, setPhone] = useState("+91 98765 43210")
   const [hasSentOtp, setHasSentOtp] = useState(false)
-  const [otpDigits, setOtpDigits] = useState(['4', '8', '2', '1', '9', '0'])
+  const [otpDigits, setOtpDigits] = useState(["4", "8", "2", "1", "9", "0"])
 
   return (
     <div className="auth-page">
       <Card className="auth-card">
-        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
           <Text size="xl" weight="bold">
             QTrack
           </Text>
         </div>
         <div>
           <Text size="xl" weight="bold">
-            {hasSentOtp ? 'Enter verification code' : 'Welcome to QTrack'}
+            {hasSentOtp ? "Enter verification code" : "Welcome to QTrack"}
           </Text>
           <Text tone="muted">
             {hasSentOtp
               ? `We sent a 6-digit code to ${phone}`
-              : 'Join your clinic queue from anywhere with seamless updates.'}
+              : "Join your clinic queue from anywhere with seamless updates."}
           </Text>
         </div>
 
@@ -1075,22 +1167,22 @@ export function LoginPageView() {
               ))}
             </div>
             <Text size="sm" tone="muted">
-              Resend code in 00:24 ·{' '}
+              Resend code in 00:24 ·{" "}
               <button
                 type="button"
                 onClick={() => setHasSentOtp(false)}
                 style={{
-                  background: 'none',
-                  border: 'none',
-                  textDecoration: 'underline',
-                  color: '#0f766e',
-                  cursor: 'pointer',
+                  background: "none",
+                  border: "none",
+                  textDecoration: "underline",
+                  color: "#0f766e",
+                  cursor: "pointer",
                 }}
               >
                 Edit number
               </button>
             </Text>
-            <Button full onClick={() => setPage('Home')}>
+            <Button full onClick={() => setPage("Home")}>
               Verify and continue
             </Button>
           </>
@@ -1108,7 +1200,8 @@ export function LoginPageView() {
               Send OTP
             </Button>
             <Text size="xs" tone="muted">
-              We only use your number for live queue updates and doctor notifications.
+              We only use your number for live queue updates and doctor
+              notifications.
             </Text>
           </>
         )}

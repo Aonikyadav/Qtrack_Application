@@ -1,12 +1,12 @@
-import { useState } from 'react'
-import { QueueProvider, useQueue } from './context/QueueContext'
+import { useState } from "react"
+import { QueueProvider, useQueue } from "./context/QueueContext"
 import {
   AppHeader,
   PatientBottomNav,
   PrototypeBar,
   Sidebar,
-} from './components/layout/LayoutComponents'
-import { LandingPage } from './components/landing/LandingPage'
+} from "./components/layout/LayoutComponents"
+import { LandingPage } from "./components/landing/LandingPage"
 
 // Patient Views
 import {
@@ -21,7 +21,7 @@ import {
   PatientHome,
   ProfilePageView,
   QRCheckinView,
-} from './components/patient/PatientViews'
+} from "./components/patient/PatientViews"
 
 // Receptionist Views
 import {
@@ -30,7 +30,7 @@ import {
   QuickWalkInView,
   ReceptionLiveQueue,
   StaffLoginView,
-} from './components/receptionist/ReceptionViews'
+} from "./components/receptionist/ReceptionViews"
 
 // Doctor Views
 import {
@@ -38,89 +38,91 @@ import {
   DoctorConsultationView,
   DoctorLiveQueueView,
   DoctorOverviewView,
-} from './components/doctor/DoctorViews'
+} from "./components/doctor/DoctorViews"
 
 // Admin Views
 import {
   AdminAnalyticsView,
   AdminClinicSettingsView,
   AdminPeopleView,
-} from './components/admin/AdminViews'
+} from "./components/admin/AdminViews"
 
 // Display & Design System Views
-import { DisplayBoardView } from './components/display/DisplayViews'
+import { DisplayBoardView } from "./components/display/DisplayViews"
 import {
   ComponentPageView,
   FoundationPageView,
-} from './components/styleguide/StyleGuideViews'
+} from "./components/styleguide/StyleGuideViews"
 
 function PageRouter() {
   const { role, page, setPage } = useQueue()
 
-  if (role === 'Style guide') return <FoundationPageView />
-  if (role === 'Components') return <ComponentPageView />
+  if (role === "Style guide") return <FoundationPageView />
+  if (role === "Components") return <ComponentPageView />
 
-  if (role === 'Patient') {
+  if (role === "Patient") {
     switch (page) {
-      case 'Home':
+      case "Home":
         return <PatientHome />
-      case 'Find a doctor':
+      case "Find a doctor":
         return <DoctorSearch />
-      case 'Doctor profile':
+      case "Doctor profile":
         return <DoctorProfileView />
-      case 'Join queue':
+      case "Join queue":
         return <JoinQueueFlow />
-      case 'My queue':
+      case "My queue":
         return <LiveQueueView />
-      case 'QR check-in':
+      case "QR check-in":
         return <QRCheckinView />
-      case 'Called':
+      case "Called":
         return <CalledPageView />
-      case 'Notices':
+      case "Notices":
         return <NoticePageView />
-      case 'History':
+      case "History":
         return <HistoryPageView />
-      case 'Profile':
+      case "Profile":
         return <ProfilePageView />
       default:
         return <LoginPageView />
     }
   }
 
-  if (role === 'Receptionist') {
+  if (role === "Receptionist") {
     switch (page) {
-      case 'Live queue':
-        return <ReceptionLiveQueue onAddWalkIn={() => setPage('Quick walk-in')} />
-      case 'Quick walk-in':
+      case "Live queue":
+        return (
+          <ReceptionLiveQueue onAddWalkIn={() => setPage("Quick walk-in")} />
+        )
+      case "Quick walk-in":
         return <QuickWalkInView />
-      case 'Arrivals':
+      case "Arrivals":
         return <ArrivalsPageView />
-      case 'Activity log':
+      case "Activity log":
         return <ActivityLogView />
       default:
         return <StaffLoginView />
     }
   }
 
-  if (role === 'Doctor') {
+  if (role === "Doctor") {
     switch (page) {
-      case 'Overview':
+      case "Overview":
         return (
           <DoctorOverviewView
-            onOpenConsultation={() => setPage('Consultation')}
-            onOpenQueue={() => setPage('Live queue')}
+            onOpenConsultation={() => setPage("Consultation")}
+            onOpenQueue={() => setPage("Live queue")}
           />
         )
-      case 'Live queue':
+      case "Live queue":
         return (
           <DoctorLiveQueueView
-            onStartConsultation={() => setPage('Consultation')}
+            onStartConsultation={() => setPage("Consultation")}
           />
         )
-      case 'Consultation':
+      case "Consultation":
         return (
           <DoctorConsultationView
-            onVisitCompleted={() => setPage('Completed visits')}
+            onVisitCompleted={() => setPage("Completed visits")}
           />
         )
       default:
@@ -128,11 +130,11 @@ function PageRouter() {
     }
   }
 
-  if (role === 'Admin') {
+  if (role === "Admin") {
     switch (page) {
-      case 'Clinic settings':
+      case "Clinic settings":
         return <AdminClinicSettingsView />
-      case 'People':
+      case "People":
         return <AdminPeopleView />
       default:
         return <AdminAnalyticsView />
@@ -145,47 +147,47 @@ function PageRouter() {
 function MainApp() {
   const { role, page, showLanding } = useQueue()
   const [menuOpen, setMenuOpen] = useState(false)
-  const isDisplay = role === 'Display'
+  const isDisplay = role === "Display"
 
   if (showLanding) {
     return <LandingPage />
   }
 
   const isFullContentPage = [
-    'QR check-in',
-    'Called',
-    'Staff login',
-    'Login & OTP',
+    "QR check-in",
+    "Called",
+    "Staff login",
+    "Login & OTP",
   ].includes(page)
 
   return (
-    <div className={`app ${isDisplay ? 'app-display' : ''}`}>
+    <div className={`app ${isDisplay ? "app-display" : ""}`}>
       {!isDisplay && <PrototypeBar />}
 
       {!isDisplay && (
         <>
           <div
-            className={`mobile-overlay ${menuOpen ? 'overlay-show' : ''}`}
+            className={`mobile-overlay ${menuOpen ? "overlay-show" : ""}`}
             onClick={() => setMenuOpen(false)}
           />
-          <div className={`sidebar-wrap ${menuOpen ? 'sidebar-open' : ''}`}>
+          <div className={`sidebar-wrap ${menuOpen ? "sidebar-open" : ""}`}>
             <Sidebar close={() => setMenuOpen(false)} />
           </div>
         </>
       )}
 
-      <div className={`main-shell ${isDisplay ? 'main-display' : ''}`}>
+      <div className={`main-shell ${isDisplay ? "main-display" : ""}`}>
         {!isDisplay && <AppHeader mobileMenu={() => setMenuOpen(true)} />}
         <main
           className={`main-content ${
-            isFullContentPage ? 'main-content-full' : ''
+            isFullContentPage ? "main-content-full" : ""
           }`}
         >
           <PageRouter />
         </main>
       </div>
 
-      {role === 'Patient' && !isFullContentPage && <PatientBottomNav />}
+      {role === "Patient" && !isFullContentPage && <PatientBottomNav />}
     </div>
   )
 }

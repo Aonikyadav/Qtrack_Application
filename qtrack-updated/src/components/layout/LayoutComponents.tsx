@@ -28,36 +28,42 @@ import {
   Users,
   X,
   type LucideIcon,
-} from 'lucide-react'
-import type { Role } from '../../types'
-import { useQueue } from '../../context/QueueContext'
-import { IconButton } from '../common/Button'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import type { Role } from "../../types"
+import { useQueue } from "../../context/QueueContext"
+import { IconButton } from "../common/Button"
+import { Text } from "../common/Text"
 
 export const rolePages: Record<Role, string[]> = {
-  'Style guide': ['Foundations'],
-  Components: ['Library'],
+  "Style guide": ["Foundations"],
+  Components: ["Library"],
   Patient: [
-    'Home',
-    'Find a doctor',
-    'Doctor profile',
-    'Join queue',
-    'My queue',
-    'QR check-in',
-    'Called',
-    'Notices',
-    'History',
-    'Profile',
-    'Login & OTP',
+    "Home",
+    "Find a doctor",
+    "Doctor profile",
+    "Join queue",
+    "My queue",
+    "QR check-in",
+    "Called",
+    "Notices",
+    "History",
+    "Profile",
+    "Login & OTP",
   ],
-  Receptionist: ['Live queue', 'Quick walk-in', 'Arrivals', 'Activity log', 'Staff login'],
-  Doctor: ['Overview', 'Live queue', 'Consultation', 'Completed visits'],
-  Admin: ['Clinic settings', 'People', 'Analytics'],
-  Display: ['Token board'],
+  Receptionist: [
+    "Live queue",
+    "Quick walk-in",
+    "Arrivals",
+    "Activity log",
+    "Staff login",
+  ],
+  Doctor: ["Overview", "Live queue", "Consultation", "Completed visits"],
+  Admin: ["Clinic settings", "People", "Analytics"],
+  Display: ["Token board"],
 }
 
 export const roleIcons: Record<Role, LucideIcon> = {
-  'Style guide': Sparkles,
+  "Style guide": Sparkles,
   Components: LayoutDashboard,
   Patient: UserRound,
   Receptionist: ClipboardList,
@@ -68,39 +74,39 @@ export const roleIcons: Record<Role, LucideIcon> = {
 
 export const pageIcons: Record<string, LucideIcon> = {
   Home,
-  'Find a doctor': Search,
-  'Doctor profile': User,
-  'Join queue': UserRoundPlus,
-  'My queue': ListChecks,
-  'QR check-in': QrCode,
+  "Find a doctor": Search,
+  "Doctor profile": User,
+  "Join queue": UserRoundPlus,
+  "My queue": ListChecks,
+  "QR check-in": QrCode,
   Called: Bell,
   Notices: AlertCircle,
   History,
   Profile: UserRound,
-  'Login & OTP': Phone,
-  'Live queue': ListChecks,
-  'Quick walk-in': UserRoundPlus,
+  "Login & OTP": Phone,
+  "Live queue": ListChecks,
+  "Quick walk-in": UserRoundPlus,
   Arrivals: LocateFixed,
-  'Activity log': Activity,
-  'Staff login': ShieldCheck,
+  "Activity log": Activity,
+  "Staff login": ShieldCheck,
   Overview: Home,
   Consultation: Stethoscope,
-  'Completed visits': CheckCircle2,
-  'Clinic settings': Settings,
+  "Completed visits": CheckCircle2,
+  "Clinic settings": Settings,
   People: Users,
   Analytics: Activity,
   Foundations: Sparkles,
   Library: LayoutDashboard,
-  'Token board': Activity,
+  "Token board": Activity,
 }
 
 export function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <div className="logo">
-      <span className={`logo-mark ${inverse ? 'logo-mark-inverse' : ''}`}>
+      <span className={`logo-mark ${inverse ? "logo-mark-inverse" : ""}`}>
         <HeartPulse size={21} />
       </span>
-      <Text size="lg" weight="bold" tone={inverse ? 'inverse' : 'default'}>
+      <Text size="lg" weight="bold" tone={inverse ? "inverse" : "default"}>
         QTrack
       </Text>
     </div>
@@ -109,16 +115,16 @@ export function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export function AppHeader({ mobileMenu }: { mobileMenu: () => void }) {
   const { patient, setShowLanding } = useQueue()
-  const todayStr = new Date().toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
+  const todayStr = new Date().toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
   })
 
   const initials = patient.name
-    .split(' ')
+    .split(" ")
     .map((n) => n[0])
-    .join('')
+    .join("")
     .substring(0, 2)
 
   return (
@@ -134,16 +140,17 @@ export function AppHeader({ mobileMenu }: { mobileMenu: () => void }) {
       </div>
       <div className="header-actions">
         <button className="language" type="button">
-          <Languages size={17} /> {patient.preferredLanguage} <ChevronDown size={15} />
+          <Languages size={17} /> {patient.preferredLanguage}{" "}
+          <ChevronDown size={15} />
         </button>
         <IconButton icon={Bell} label="Notifications" />
         <span
           className="avatar"
-          style={{ cursor: 'pointer' }}
+          style={{ cursor: "pointer" }}
           title={`Signed in as ${patient.name}`}
           onClick={() => setShowLanding(true)}
         >
-          {initials || 'PS'}
+          {initials || "PS"}
         </span>
       </div>
     </div>
@@ -169,7 +176,7 @@ export function Sidebar({ close }: { close?: () => void }) {
             <button
               key={item}
               type="button"
-              className={`nav-item ${page === item ? 'nav-active' : ''}`}
+              className={`nav-item ${page === item ? "nav-active" : ""}`}
               onClick={() => {
                 setPage(item)
                 close?.()
@@ -208,10 +215,10 @@ export function Sidebar({ close }: { close?: () => void }) {
 export function PatientBottomNav() {
   const { page, setPage } = useQueue()
   const items: [string, LucideIcon][] = [
-    ['Home', Home],
-    ['My queue', ListChecks],
-    ['History', History],
-    ['Profile', UserRound],
+    ["Home", Home],
+    ["My queue", ListChecks],
+    ["History", History],
+    ["Profile", UserRound],
   ]
 
   return (
@@ -220,7 +227,7 @@ export function PatientBottomNav() {
         <button
           key={name}
           type="button"
-          className={page === name ? 'bottom-active' : ''}
+          className={page === name ? "bottom-active" : ""}
           onClick={() => setPage(name)}
         >
           <Icon size={21} />
@@ -269,7 +276,7 @@ export function PrototypeBar() {
             key={r}
             type="button"
             onClick={() => handleRoleChange(r)}
-            className={role === r ? 'role-active' : ''}
+            className={role === r ? "role-active" : ""}
           >
             {r}
           </button>

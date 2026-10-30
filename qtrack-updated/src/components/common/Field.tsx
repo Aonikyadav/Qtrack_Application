@@ -1,6 +1,6 @@
-import type { ReactNode, ComponentType, ChangeEvent } from 'react'
-import { ChevronDown } from 'lucide-react'
-import { Text } from './Text'
+import type { ReactNode, ComponentType, ChangeEvent } from "react"
+import { ChevronDown } from "lucide-react"
+import { Text } from "./Text"
 
 export interface FieldProps {
   label?: string
@@ -21,11 +21,11 @@ export function Field({
   icon: Icon,
   value,
   defaultValue,
-  type = 'text',
+  type = "text",
   onChange,
   disabled = false,
   required = false,
-  className = '',
+  className = "",
 }: FieldProps) {
   return (
     <label className={`field-wrap ${className}`}>
@@ -67,7 +67,7 @@ export function SelectField({
   defaultValue,
   onChange,
   disabled = false,
-  className = '',
+  className = "",
 }: SelectFieldProps) {
   return (
     <label className={`field-wrap ${className}`}>
@@ -75,7 +75,12 @@ export function SelectField({
         {label}
       </Text>
       <div className="field">
-        <select value={value} defaultValue={defaultValue} onChange={onChange} disabled={disabled}>
+        <select
+          value={value}
+          defaultValue={defaultValue}
+          onChange={onChange}
+          disabled={disabled}
+        >
           {children}
         </select>
         <ChevronDown size={18} />
@@ -100,7 +105,7 @@ export function TextArea({
   value,
   defaultValue,
   onChange,
-  className = '',
+  className = "",
 }: TextAreaProps) {
   return (
     <label className={`field-wrap ${className}`}>

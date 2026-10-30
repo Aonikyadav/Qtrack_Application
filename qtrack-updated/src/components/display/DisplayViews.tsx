@@ -1,8 +1,8 @@
-import { useState } from 'react'
-import { CheckCircle2, QrCode, Volume2 } from 'lucide-react'
-import { useQueue } from '../../context/QueueContext'
-import { Logo } from '../layout/LayoutComponents'
-import { Text } from '../common/Text'
+import { useState } from "react"
+import { CheckCircle2, QrCode, Volume2 } from "lucide-react"
+import { useQueue } from "../../context/QueueContext"
+import { Logo } from "../layout/LayoutComponents"
+import { Text } from "../common/Text"
 
 export function DisplayBoardView() {
   const { queue, speakTokenAnnouncement } = useQueue()
@@ -11,25 +11,38 @@ export function DisplayBoardView() {
 
   // Find serving or called patient for Dr. Sharma
   const sharmaServing =
-    queue.find((q) => q.doctorId === 'doc-sharma' && (q.status === 'Called' || q.status === 'In consultation')) ||
-    queue.find((q) => q.doctorId === 'doc-sharma' && q.status === 'Checked in') ||
+    queue.find(
+      (q) =>
+        q.doctorId === "doc-sharma" &&
+        (q.status === "Called" || q.status === "In consultation"),
+    ) ||
+    queue.find(
+      (q) => q.doctorId === "doc-sharma" && q.status === "Checked in",
+    ) ||
     null
 
   // Find serving or called patient for Dr. Nair
   const nairServing =
-    queue.find((q) => q.doctorId === 'doc-nair' && (q.status === 'Called' || q.status === 'In consultation')) ||
-    queue.find((q) => q.doctorId === 'doc-nair') ||
+    queue.find(
+      (q) =>
+        q.doctorId === "doc-nair" &&
+        (q.status === "Called" || q.status === "In consultation"),
+    ) ||
+    queue.find((q) => q.doctorId === "doc-nair") ||
     null
 
   const nextUpcoming = queue
-    .filter((q) => ['Waiting', 'Window open', 'Checked in'].includes(q.status))
+    .filter((q) => ["Waiting", "Window open", "Checked in"].includes(q.status))
     .slice(0, 4)
 
-  const currentTimeStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-  const todayDateStr = new Date().toLocaleDateString('en-GB', {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
+  const currentTimeStr = new Date().toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  })
+  const todayDateStr = new Date().toLocaleDateString("en-GB", {
+    weekday: "long",
+    day: "numeric",
+    month: "long",
   })
 
   return (
@@ -53,10 +66,10 @@ export function DisplayBoardView() {
         </Text>
         <div className="display-controls">
           <button type="button" onClick={() => setFlash(!flash)}>
-            {flash ? 'Pause highlight' : 'Highlight call'}
+            {flash ? "Pause highlight" : "Highlight call"}
           </button>
           <button type="button" onClick={() => setEmpty(!empty)}>
-            {empty ? 'Show live queue' : 'Simulate empty'}
+            {empty ? "Show live queue" : "Simulate empty"}
           </button>
           {sharmaServing && (
             <button
@@ -64,7 +77,10 @@ export function DisplayBoardView() {
               onClick={() => speakTokenAnnouncement(sharmaServing)}
               title="Announce token aloud"
             >
-              <Volume2 size={15} style={{ verticalAlign: 'middle', marginRight: '4px' }} />
+              <Volume2
+                size={15}
+                style={{ verticalAlign: "middle", marginRight: "4px" }}
+              />
               Chime {sharmaServing.token}
             </button>
           )}
@@ -83,14 +99,22 @@ export function DisplayBoardView() {
       ) : (
         <>
           <div className="doctor-board-grid">
-            <div className={`serving-card ${flash && sharmaServing?.status === 'Called' ? 'serving-flash' : ''}`}>
+            <div
+              className={`serving-card ${
+                flash && sharmaServing?.status === "Called"
+                  ? "serving-flash"
+                  : ""
+              }`}
+            >
               <div>
                 <Text size="lg" weight="bold">
                   Dr. Arjun Sharma
                 </Text>
                 <Text>General Medicine</Text>
               </div>
-              <div className="display-token">{sharmaServing ? sharmaServing.token : 'A-019'}</div>
+              <div className="display-token">
+                {sharmaServing ? sharmaServing.token : "A-019"}
+              </div>
               <div className="room">
                 <Text size="sm">PLEASE GO TO</Text>
                 <Text size="xl" weight="bold">
@@ -99,14 +123,20 @@ export function DisplayBoardView() {
               </div>
             </div>
 
-            <div className={`serving-card ${flash && nairServing?.status === 'Called' ? 'serving-flash' : ''}`}>
+            <div
+              className={`serving-card ${
+                flash && nairServing?.status === "Called" ? "serving-flash" : ""
+              }`}
+            >
               <div>
                 <Text size="lg" weight="bold">
                   Dr. Meera Nair
                 </Text>
                 <Text>Internal Medicine</Text>
               </div>
-              <div className="display-token">{nairServing ? nairServing.token : 'B-011'}</div>
+              <div className="display-token">
+                {nairServing ? nairServing.token : "B-011"}
+              </div>
               <div className="room">
                 <Text size="sm">PLEASE GO TO</Text>
                 <Text size="xl" weight="bold">

@@ -6,24 +6,24 @@ import {
   Phone,
   Search,
   WifiOff,
-} from 'lucide-react'
-import { Badge } from '../common/Badge'
-import { Button, IconButton } from '../common/Button'
-import { Card } from '../common/Card'
-import { Field } from '../common/Field'
-import { Logo } from '../layout/LayoutComponents'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import { Badge } from "../common/Badge"
+import { Button, IconButton } from "../common/Button"
+import { Card } from "../common/Card"
+import { Field } from "../common/Field"
+import { Logo } from "../layout/LayoutComponents"
+import { Text } from "../common/Text"
 
 export function FoundationPageView() {
   const colors = [
-    ['Primary teal', 'color-teal', '#0F766E'],
-    ['Waiting', 'color-blue', 'Blue (#2563EB)'],
-    ['Window open', 'color-amber', 'Amber (#9A6700)'],
-    ['Checked in', 'color-green', 'Green (#197546)'],
-    ['Consultation', 'color-purple', 'Purple (#7653A6)'],
-    ['Skipped', 'color-coral', 'Coral (#BA5742)'],
-    ['Emergency', 'color-red', 'Red (#B42318)'],
-    ['Neutral', 'color-gray', 'Gray (#66706E)'],
+    ["Primary teal", "color-teal", "#0F766E"],
+    ["Waiting", "color-blue", "Blue (#2563EB)"],
+    ["Window open", "color-amber", "Amber (#9A6700)"],
+    ["Checked in", "color-green", "Green (#197546)"],
+    ["Consultation", "color-purple", "Purple (#7653A6)"],
+    ["Skipped", "color-coral", "Coral (#BA5742)"],
+    ["Emergency", "color-red", "Red (#B42318)"],
+    ["Neutral", "color-gray", "Gray (#66706E)"],
   ]
 
   return (
@@ -34,7 +34,8 @@ export function FoundationPageView() {
             QTrack design foundations
           </Text>
           <Text tone="muted">
-            A calm, accessible healthcare design system engineered for high-pressure clinic moments.
+            A calm, accessible healthcare design system engineered for
+            high-pressure clinic moments.
           </Text>
         </div>
       </div>
@@ -48,8 +49,8 @@ export function FoundationPageView() {
             Clarity before complexity.
           </Text>
           <Text tone="muted">
-            One primary action per view, readable at a glance, high contrast WCAG AA compliant, and
-            intuitive across English and हिन्दी.
+            One primary action per view, readable at a glance, high contrast
+            WCAG AA compliant, and intuitive across English and हिन्दी.
           </Text>
         </div>
         <div className="foundation-logo">
@@ -106,7 +107,9 @@ export function FoundationPageView() {
             <span />
             <span />
           </div>
-          <Text tone="muted">8px rhythm · 8px controls · 12px cards · soft 1px borders</Text>
+          <Text tone="muted">
+            8px rhythm · 8px controls · 12px cards · soft 1px borders
+          </Text>
           <div className="principle-list">
             <Text>
               <Check size={17} /> 44px minimum touch targets
@@ -126,15 +129,15 @@ export function FoundationPageView() {
 
 export function ComponentPageView() {
   const statusList = [
-    'Waiting',
-    'Window open',
-    'Checked in',
-    'Called',
-    'In consultation',
-    'Done',
-    'Skipped',
-    'Removed',
-    'Priority',
+    "Waiting",
+    "Window open",
+    "Checked in",
+    "Called",
+    "In consultation",
+    "Done",
+    "Skipped",
+    "Removed",
+    "Priority",
   ]
 
   return (
@@ -145,7 +148,8 @@ export function ComponentPageView() {
             Component library
           </Text>
           <Text tone="muted">
-            Reusable React-ready patterns, accessible inputs, and state primitives.
+            Reusable React-ready patterns, accessible inputs, and state
+            primitives.
           </Text>
         </div>
       </div>
@@ -168,18 +172,25 @@ export function ComponentPageView() {
           <Text size="lg" weight="bold">
             Inputs & verification
           </Text>
-          <Field label="Phone number" icon={Phone} placeholder="+91 98765 43210" />
+          <Field
+            label="Phone number"
+            icon={Phone}
+            placeholder="+91 98765 43210"
+          />
           <div>
             <Text size="sm" weight="medium">
               6-digit OTP verification
             </Text>
             <div className="otp">
-              {['4', '8', '2', '', '', ''].map((val, i) => (
-                <span key={i}>{val || '·'}</span>
+              {["4", "8", "2", "", "", ""].map((val, i) => (
+                <span key={i}>{val || "·"}</span>
               ))}
             </div>
           </div>
-          <Field icon={Search} placeholder="Search doctor, specialty or clinic" />
+          <Field
+            icon={Search}
+            placeholder="Search doctor, specialty or clinic"
+          />
         </Card>
 
         <Card>

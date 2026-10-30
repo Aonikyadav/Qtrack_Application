@@ -1,13 +1,17 @@
-import type { ReactNode, ComponentType, CSSProperties } from 'react'
+import type { ReactNode, ComponentType, CSSProperties } from "react"
 
 export interface ButtonProps {
   children: ReactNode
-  variant?: 'primary' | 'secondary' | 'danger' | 'ghost'
-  icon?: ComponentType<{ size?: number; strokeWidth?: number; className?: string }>
+  variant?: "primary" | "secondary" | "danger" | "ghost"
+  icon?: ComponentType<{
+    size?: number
+    strokeWidth?: number
+    className?: string
+  }>
   onClick?: () => void
   full?: boolean
   disabled?: boolean
-  type?: 'button' | 'submit' | 'reset'
+  type?: "button" | "submit" | "reset"
   className?: string
   style?: CSSProperties
   title?: string
@@ -15,20 +19,22 @@ export interface ButtonProps {
 
 export function Button({
   children,
-  variant = 'primary',
+  variant = "primary",
   icon: Icon,
   onClick,
   full = false,
   disabled = false,
-  type = 'button',
-  className = '',
+  type = "button",
+  className = "",
   style,
   title,
 }: ButtonProps) {
   return (
     <button
       type={type}
-      className={`button button-${variant} ${full ? 'button-full' : ''} ${className}`}
+      className={`button button-${variant} ${
+        full ? "button-full" : ""
+      } ${className}`}
       onClick={onClick}
       disabled={disabled}
       style={style}
@@ -53,7 +59,7 @@ export function IconButton({
   icon: Icon,
   label,
   onClick,
-  className = '',
+  className = "",
   style,
   title,
 }: IconButtonProps) {

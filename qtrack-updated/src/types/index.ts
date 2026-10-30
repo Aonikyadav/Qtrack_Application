@@ -1,14 +1,4 @@
-export type QueueStatus =
-  | 'Waiting'
-  | 'Window open'
-  | 'Checked in'
-  | 'Called'
-  | 'In consultation'
-  | 'Done'
-  | 'Skipped'
-  | 'Removed'
-  | 'Priority'
-  | 'Emergency'
+export type QueueStatus = "Waiting" | "Window open" | "Checked in" | "Called" | "In consultation" | "Done" | "Skipped" | "Removed" | "Priority" | "Emergency"
 
 export interface FamilyMember {
   id: string
@@ -101,7 +91,7 @@ export interface AuditLogEntry {
   actor: string
   action: string
   reason: string
-  type: 'priority' | 'reorder' | 'remove' | 'checkin' | 'call'
+  type: "priority" | "reorder" | "remove" | "checkin" | "call"
 }
 
 export interface ClinicSettings {
@@ -110,11 +100,4 @@ export interface ClinicSettings {
   maxStrikes: number
 }
 
-export type Role =
-  | 'Style guide'
-  | 'Components'
-  | 'Patient'
-  | 'Receptionist'
-  | 'Doctor'
-  | 'Admin'
-  | 'Display'
+export type Role = "Style guide" | "Components" | "Patient" | "Receptionist" | "Doctor" | "Admin" | "Display"

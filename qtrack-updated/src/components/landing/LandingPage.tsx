@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react"
 import {
   Activity,
   ArrowRight,
@@ -15,17 +15,17 @@ import {
   Users,
   X,
   MapPin,
-} from 'lucide-react'
-import { useQueue } from '../../context/QueueContext'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import { useQueue } from "../../context/QueueContext"
+import { Text } from "../common/Text"
 
 export function Logo({ inverse = false }: { inverse?: boolean }) {
   return (
     <div className="logo">
-      <span className={`logo-mark ${inverse ? 'logo-mark-inverse' : ''}`}>
+      <span className={`logo-mark ${inverse ? "logo-mark-inverse" : ""}`}>
         <HeartPulse size={21} />
       </span>
-      <Text size="lg" weight="bold" tone={inverse ? 'inverse' : 'default'}>
+      <Text size="lg" weight="bold" tone={inverse ? "inverse" : "default"}>
         QTrack
       </Text>
     </div>
@@ -34,17 +34,13 @@ export function Logo({ inverse = false }: { inverse?: boolean }) {
 
 export function LandingPage() {
   const [mobileNav, setMobileNav] = useState(false)
-  const {
-    queue,
-    activePatientToken,
-    enterPatientView,
-    enterStaffView,
-  } = useQueue()
+  const { queue, activePatientToken, enterPatientView, enterStaffView } =
+    useQueue()
 
   // Find active patient's queue item or default
   const activeItem =
     queue.find((q) => q.token === activePatientToken) ||
-    queue.find((q) => q.token === 'A-024') ||
+    queue.find((q) => q.token === "A-024") ||
     queue[0]
 
   // Count people ahead
@@ -52,38 +48,44 @@ export function LandingPage() {
     ? queue.filter(
         (q) =>
           q.doctorId === activeItem.doctorId &&
-          ['Waiting', 'Window open', 'Checked in'].includes(q.status) &&
-          q.token < activeItem.token
+          ["Waiting", "Window open", "Checked in"].includes(q.status) &&
+          q.token < activeItem.token,
       ).length
     : 4
 
-  const waitingCount = queue.filter((q) => ['Waiting', 'Window open'].includes(q.status)).length
-  const checkedInCount = queue.filter((q) => q.status === 'Checked in').length
+  const waitingCount = queue.filter((q) =>
+    ["Waiting", "Window open"].includes(q.status),
+  ).length
+  const checkedInCount = queue.filter((q) => q.status === "Checked in").length
 
-  const handleBook = () => enterPatientView('Find a doctor')
-  const handleTrack = () => enterPatientView('My queue')
-  const handleStaff = () => enterStaffView('Receptionist', 'Staff login')
+  const handleBook = () => enterPatientView("Find a doctor")
+  const handleTrack = () => enterPatientView("My queue")
+  const handleStaff = () => enterStaffView("Receptionist", "Staff login")
 
   const features = [
     {
       icon: CalendarDays,
-      title: 'Simple appointment booking',
-      description: 'Find the right doctor and plan your visit without the back-and-forth.',
+      title: "Simple appointment booking",
+      description:
+        "Find the right doctor and plan your visit without the back-and-forth.",
     },
     {
       icon: Activity,
-      title: 'A queue you can follow',
-      description: 'See your token, people ahead, and an estimated wait at a glance.',
+      title: "A queue you can follow",
+      description:
+        "See your token, people ahead, and an estimated wait at a glance.",
     },
     {
       icon: QrCode,
-      title: 'Quick QR check-in',
-      description: 'Arrive, scan, and check in with fewer steps at the front desk.',
+      title: "Quick QR check-in",
+      description:
+        "Arrive, scan, and check in with fewer steps at the front desk.",
     },
     {
       icon: HeartPulse,
-      title: 'Care teams in sync',
-      description: 'Give receptionists and clinicians a shared view of the day.',
+      title: "Care teams in sync",
+      description:
+        "Give receptionists and clinicians a shared view of the day.",
     },
   ]
 
@@ -103,7 +105,7 @@ export function LandingPage() {
           {mobileNav ? <X size={22} /> : <Menu size={22} />}
         </button>
         <nav
-          className={`q-nav-links ${mobileNav ? 'q-nav-open' : ''}`}
+          className={`q-nav-links ${mobileNav ? "q-nav-open" : ""}`}
           aria-label="Main navigation"
         >
           <a href="#features" onClick={() => setMobileNav(false)}>
@@ -140,7 +142,8 @@ export function LandingPage() {
         <section className="q-hero">
           <div className="q-hero-copy">
             <div className="q-eyebrow">
-              <span className="q-eyebrow-dot" /> A calmer way to visit your clinic
+              <span className="q-eyebrow-dot" /> A calmer way to visit your
+              clinic
             </div>
             <h1>
               Less waiting.
@@ -148,14 +151,20 @@ export function LandingPage() {
               <span>More caring.</span>
             </h1>
             <p className="q-hero-lede">
-              Healthcare visits should be about you, not the wait. Book ahead, follow your queue, and
-              arrive with a little more peace of mind.
+              Healthcare visits should be about you, not the wait. Book ahead,
+              follow your queue, and arrive with a little more peace of mind.
             </p>
             <div className="q-hero-actions">
-              <button className="q-button q-button-primary" onClick={handleBook}>
+              <button
+                className="q-button q-button-primary"
+                onClick={handleBook}
+              >
                 Book an appointment <ArrowRight size={18} />
               </button>
-              <button className="q-button q-button-secondary" onClick={handleTrack}>
+              <button
+                className="q-button q-button-secondary"
+                onClick={handleTrack}
+              >
                 <QrCode size={18} /> Track my queue
               </button>
             </div>
@@ -195,8 +204,14 @@ export function LandingPage() {
                   <Stethoscope size={23} />
                 </div>
                 <div className="q-doctor-details">
-                  <strong>{activeItem?.doctorName || 'Dr. Arjun Sharma'}</strong>
-                  <span>{activeItem?.doctorId === 'doc-nair' ? 'Internal Medicine' : 'General Medicine'}</span>
+                  <strong>
+                    {activeItem?.doctorName || "Dr. Arjun Sharma"}
+                  </strong>
+                  <span>
+                    {activeItem?.doctorId === "doc-nair"
+                      ? "Internal Medicine"
+                      : "General Medicine"}
+                  </span>
                   <small>
                     <MapPin size={13} /> Aarogya Family Clinic
                   </small>
@@ -213,10 +228,17 @@ export function LandingPage() {
                   </span>
                 </div>
                 <div className="q-token-main">
-                  <strong>{activeItem?.token || 'A-024'}</strong>
+                  <strong>{activeItem?.token || "A-024"}</strong>
                   <div>
                     <span>Estimated wait</span>
-                    <b>{activeItem?.estimatedWaitMinutes || 25}–{Math.max(35, (activeItem?.estimatedWaitMinutes || 25) + 10)} min</b>
+                    <b>
+                      {activeItem?.estimatedWaitMinutes || 25}–
+                      {Math.max(
+                        35,
+                        (activeItem?.estimatedWaitMinutes || 25) + 10,
+                      )}{" "}
+                      min
+                    </b>
                   </div>
                 </div>
                 <div className="q-progress">
@@ -229,7 +251,11 @@ export function LandingPage() {
                   <span>Updated just now</span>
                 </div>
               </div>
-              <div className="q-preview-bottom" onClick={handleTrack} style={{ cursor: 'pointer' }}>
+              <div
+                className="q-preview-bottom"
+                onClick={handleTrack}
+                style={{ cursor: "pointer" }}
+              >
                 <span className="q-preview-check">
                   <CheckCircle2 size={17} />
                 </span>
@@ -273,8 +299,8 @@ export function LandingPage() {
               Every step, a little <span>simpler.</span>
             </h2>
             <p>
-              Small improvements to the visit experience can make a meaningful difference to
-              patients and care teams.
+              Small improvements to the visit experience can make a meaningful
+              difference to patients and care teams.
             </p>
           </div>
           <div className="q-feature-grid">
@@ -299,9 +325,13 @@ export function LandingPage() {
                 From booking to <span>being seen.</span>
               </h2>
               <p>
-                Know what happens next, from the moment you plan a visit to the moment you're called.
+                Know what happens next, from the moment you plan a visit to the
+                moment you're called.
               </p>
-              <button className="q-button q-button-primary" onClick={handleBook}>
+              <button
+                className="q-button q-button-primary"
+                onClick={handleBook}
+              >
                 Plan your visit <ArrowRight size={17} />
               </button>
             </div>
@@ -312,7 +342,10 @@ export function LandingPage() {
                 </div>
                 <span className="q-step-num">STEP 01</span>
                 <h3>Book your visit</h3>
-                <p>Choose a doctor and join the queue through a straightforward flow.</p>
+                <p>
+                  Choose a doctor and join the queue through a straightforward
+                  flow.
+                </p>
               </article>
               <div className="q-step-connector" />
               <article className="q-step">
@@ -321,7 +354,10 @@ export function LandingPage() {
                 </div>
                 <span className="q-step-num">STEP 02</span>
                 <h3>Check in with ease</h3>
-                <p>Use the QR check-in flow or follow the clinic's arrival instructions.</p>
+                <p>
+                  Use the QR check-in flow or follow the clinic's arrival
+                  instructions.
+                </p>
               </article>
               <div className="q-step-connector" />
               <article className="q-step">
@@ -330,7 +366,10 @@ export function LandingPage() {
                 </div>
                 <span className="q-step-num">STEP 03</span>
                 <h3>Follow your queue</h3>
-                <p>Keep your token and estimated wait handy while you wait to be called.</p>
+                <p>
+                  Keep your token and estimated wait handy while you wait to be
+                  called.
+                </p>
               </article>
             </div>
           </div>
@@ -339,20 +378,25 @@ export function LandingPage() {
         <section className="q-clinic-section" id="for-clinics">
           <div className="q-clinic-panel">
             <div className="q-clinic-copy">
-              <span className="q-section-kicker">FOR THE PEOPLE BEHIND THE CARE</span>
+              <span className="q-section-kicker">
+                FOR THE PEOPLE BEHIND THE CARE
+              </span>
               <h2>
                 A smoother day for your <span>whole clinic.</span>
               </h2>
               <p>
-                Bring daily queue activity into one clear workspace, so front-desk teams and
-                clinicians can focus on the next patient—not the paperwork.
+                Bring daily queue activity into one clear workspace, so
+                front-desk teams and clinicians can focus on the next
+                patient—not the paperwork.
               </p>
               <ul>
                 <li>
-                  <CheckCircle2 size={18} /> Manage scheduled visits and walk-ins
+                  <CheckCircle2 size={18} /> Manage scheduled visits and
+                  walk-ins
                 </li>
                 <li>
-                  <CheckCircle2 size={18} /> Keep queue status clear across the team
+                  <CheckCircle2 size={18} /> Keep queue status clear across the
+                  team
                 </li>
                 <li>
                   <CheckCircle2 size={18} /> See daily activity in one place
@@ -389,7 +433,9 @@ export function LandingPage() {
                   <span>STATUS</span>
                 </div>
                 {queue
-                  .filter((q) => ['Waiting', 'Window open', 'Checked in'].includes(q.status))
+                  .filter((q) =>
+                    ["Waiting", "Window open", "Checked in"].includes(q.status),
+                  )
                   .slice(0, 3)
                   .map((item) => (
                     <div className="q-clinic-row" key={item.token}>
@@ -400,7 +446,7 @@ export function LandingPage() {
                       </span>
                       <span
                         className={`q-clinic-status ${
-                          item.status === 'Checked in' ? 'q-status-checked' : ''
+                          item.status === "Checked in" ? "q-status-checked" : ""
                         }`}
                       >
                         <span />
@@ -430,13 +476,17 @@ export function LandingPage() {
             Make room for <span>better care.</span>
           </h2>
           <p>
-            Spend less time wondering what's next—and more time focused on feeling better.
+            Spend less time wondering what's next—and more time focused on
+            feeling better.
           </p>
           <div className="q-hero-actions">
             <button className="q-button q-button-white" onClick={handleBook}>
               Book an appointment <ArrowRight size={18} />
             </button>
-            <button className="q-button q-button-outline-light" onClick={handleTrack}>
+            <button
+              className="q-button q-button-outline-light"
+              onClick={handleTrack}
+            >
               Track my queue
             </button>
           </div>
@@ -460,7 +510,10 @@ export function LandingPage() {
           </div>
         </div>
         <div className="q-footer-bottom">
-          <span>© {new Date().getFullYear()} QTrack. Designed around better clinic visits.</span>
+          <span>
+            © {new Date().getFullYear()} QTrack. Designed around better clinic
+            visits.
+          </span>
           <span>
             <ShieldCheck size={15} /> Patient-first by design
           </span>

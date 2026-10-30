@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  type ReactNode,
+} from "react"
 import type {
   QueueItem,
   Doctor,
@@ -8,7 +14,7 @@ import type {
   ClinicSettings,
   Role,
   PrescriptionItem,
-} from '../types'
+} from "../types"
 import {
   initialDoctors,
   initialPatient,
@@ -16,7 +22,7 @@ import {
   initialConsultations,
   initialAuditLogs,
   initialClinicSettings,
-} from '../data/initialData'
+} from "../data/initialData"
 
 interface QueueContextType {
   queue: QueueItem[]
@@ -70,11 +76,13 @@ interface QueueContextType {
   resetToDefaults: () => void
 }
 
-const STORAGE_KEY = 'qtrack_state_v1'
+const STORAGE_KEY = "qtrack_state_v1"
 
 const QueueContext = createContext<QueueContextType | undefined>(undefined)
 
-export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+export const QueueProvider: React.FC<{ children: ReactNode }> = ({
+  children,
+}) => {
   // Load state from localStorage if available, or fall back to seeds
   const [queue, setQueue] = useState<QueueItem[]>(() => {
     try {
@@ -96,14 +104,16 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   })
 
-  const [consultations, setConsultations] = useState<ConsultationRecord[]>(() => {
-    try {
-      const saved = localStorage.getItem(`${STORAGE_KEY}_consultations`)
-      return saved ? JSON.parse(saved) : initialConsultations
-    } catch {
-      return initialConsultations
-    }
-  })
+  const [consultations, setConsultations] = useState<ConsultationRecord[]>(
+    () => {
+      try {
+        const saved = localStorage.getItem(`${STORAGE_KEY}_consultations`)
+        return saved ? JSON.parse(saved) : initialConsultations
+      } catch {
+        return initialConsultations
+      }
+    },
+  )
 
   const [auditLogs, setAuditLogs] = useState<AuditLogEntry[]>(() => {
     try {
@@ -123,14 +133,18 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
   })
 
-  const [activePatientToken, setActivePatientToken] = useState<string | null>('A-024')
-  const [latestCalledToken, setLatestCalledToken] = useState<QueueItem | null>(() => {
-    return initialQueueItems.find((q) => q.status === 'Called') || null
-  })
+  const [activePatientToken, setActivePatientToken] = useState<string | null>(
+    "A-024",
+  )
+  const [latestCalledToken, setLatestCalledToken] = useState<QueueItem | null>(
+    () => {
+      return initialQueueItems.find((q) => q.status === "Called") || null
+    },
+  )
 
   // Navigation states
-  const [role, setRole] = useState<Role>('Patient')
-  const [page, setPage] = useState<string>('Home')
+  const [role, setRole] = useState<Role>("Patient")
+  const [page, setPage] = useState<string>("Home")
   const [showLanding, setShowLanding] = useState<boolean>(true)
 
   // Persist state changes
@@ -148,7 +162,10 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 
   useEffect(() => {
     try {
-      localStorage.setItem(`${STORAGE_KEY}_consultations`, JSON.stringify(consultations))
+      localStorage.setItem(
+        `${STORAGE_KEY}_consultations`,
+        JSON.stringify(consultations),
+      )
     } catch {}
   }, [consultations])
 
@@ -165,9 +182,17 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }, [settings])
 
   // Helpers
-  const addAudit = (actor: string, action: string, reason: string, type: AuditLogEntry['type']) => {
+  const addAudit = (
+    actor: string,
+    action: string,
+    reason: string,
+    type: AuditLogEntry["type"],
+  ) => {
     const now = new Date()
-    const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const timeStr = now.toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     const entry: AuditLogEntry = {
       id: `log-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
       time: timeStr,
@@ -180,9 +205,9 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   }
 
   const speakTokenAnnouncement = (item: QueueItem) => {
-    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+    if (typeof window !== "undefined" && "speechSynthesis" in window) {
       try {
-        const text = `Token ${item.token}. Please proceed to ${item.room}. Dr. ${item.doctorName.replace('Dr. ', '')}.`
+        const text = `Token ${item.token}. Please proceed to ${item.room}. Dr. ${item.doctorName.replace("Dr. ", "")}.`
         const utterance = new SpeechSynthesisUtterance(text)
         utterance.rate = 0.95
         utterance.pitch = 1.0
@@ -194,7 +219,7 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
   const joinQueue = ({
     doctorId,
     forWho,
-    reason = 'General consultation',
+    reason = "General consultation",
     isPriority = false,
   }: {
     doctorId: string
@@ -203,33 +228,39 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     isPriority?: boolean
   }): QueueItem => {
     const doc = doctors.find((d) => d.id === doctorId) || doctors[0]
-    const prefix = doc.id === 'doc-sharma' ? 'A' : 'B'
+    const prefix = doc.id === "doc-sharma" ? "A" : "B"
 
     // Compute next token number
     const existingTokens = queue
       .filter((q) => q.token.startsWith(prefix))
-      .map((q) => parseInt(q.token.split('-')[1], 10))
+      .map((q) => parseInt(q.token.split("-")[1], 10))
       .filter((n) => !isNaN(n))
 
-    const nextNum = existingTokens.length > 0 ? Math.max(...existingTokens) + 1 : 25
-    const tokenStr = `${prefix}-${String(nextNum).padStart(3, '0')}`
+    const nextNum =
+      existingTokens.length > 0 ? Math.max(...existingTokens) + 1 : 25
+    const tokenStr = `${prefix}-${String(nextNum).padStart(3, "0")}`
 
-    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const nowStr = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     const activeAhead = queue.filter(
-      (q) => q.doctorId === doc.id && ['Waiting', 'Window open', 'Checked in'].includes(q.status)
+      (q) =>
+        q.doctorId === doc.id &&
+        ["Waiting", "Window open", "Checked in"].includes(q.status),
     ).length
 
     const newItem: QueueItem = {
       id: `q-${Date.now()}`,
       token: tokenStr,
       patientId: patient.id,
-      patientName: forWho === 'Myself' ? patient.name : forWho,
+      patientName: forWho === "Myself" ? patient.name : forWho,
       patientPhone: patient.phone,
       forWho,
       doctorId: doc.id,
       doctorName: doc.name,
       room: doc.room,
-      status: 'Waiting',
+      status: "Waiting",
       isPriority,
       joinedAt: nowStr,
       estimatedWaitMinutes: Math.max(10, activeAhead * 10),
@@ -245,7 +276,7 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       patient.name,
       `Joined queue for ${doc.name} (Token ${tokenStr})`,
       reason,
-      'checkin'
+      "checkin",
     )
     return newItem
   }
@@ -255,19 +286,33 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     if (!target) return false
 
     setQueue((prev) =>
-      prev.map((q) => (q.token === token ? { ...q, status: 'Checked in' as const } : q))
+      prev.map((q) =>
+        q.token === token ? { ...q, status: "Checked in" as const } : q,
+      ),
     )
-    addAudit(target.patientName, `Checked in via clinic QR (Token ${token})`, 'Arrived at clinic', 'checkin')
+    addAudit(
+      target.patientName,
+      `Checked in via clinic QR (Token ${token})`,
+      "Arrived at clinic",
+      "checkin",
+    )
     return true
   }
 
   const markArrived = (token: string) => {
     setQueue((prev) =>
-      prev.map((q) => (q.token === token ? { ...q, status: 'Checked in' as const } : q))
+      prev.map((q) =>
+        q.token === token ? { ...q, status: "Checked in" as const } : q,
+      ),
     )
     const target = queue.find((q) => q.token === token)
     if (target) {
-      addAudit('Sneha (Reception)', `Marked ${target.patientName} (${token}) as arrived`, 'Confirmed in reception', 'checkin')
+      addAudit(
+        "Sneha (Reception)",
+        `Marked ${target.patientName} (${token}) as arrived`,
+        "Confirmed in reception",
+        "checkin",
+      )
     }
   }
 
@@ -281,44 +326,68 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
               estimatedWaitMinutes: q.estimatedWaitMinutes + 15,
               windowClosesInMinutes: (q.windowClosesInMinutes || 10) + 15,
             }
-          : q
-      )
+          : q,
+      ),
     )
-    addAudit(patient.name, `Requested late pass (+15 min) for ${token}`, 'Transit delay', 'reorder')
+    addAudit(
+      patient.name,
+      `Requested late pass (+15 min) for ${token}`,
+      "Transit delay",
+      "reorder",
+    )
   }
 
   const callNextPatient = (doctorId: string): QueueItem | null => {
     // Priority: Checked in patients first, then window open, then waiting
     const candidates = queue.filter(
-      (q) => q.doctorId === doctorId && ['Checked in', 'Window open', 'Waiting'].includes(q.status)
+      (q) =>
+        q.doctorId === doctorId &&
+        ["Checked in", "Window open", "Waiting"].includes(q.status),
     )
 
     if (candidates.length === 0) return null
 
     // Pick top checked-in first, or the first waiting
-    const checkedIn = candidates.find((q) => q.status === 'Checked in')
+    const checkedIn = candidates.find((q) => q.status === "Checked in")
     const target = checkedIn || candidates[0]
 
     const updatedItem = {
       ...target,
-      status: 'Called' as const,
-      calledAt: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      status: "Called" as const,
+      calledAt: new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit",
+      }),
     }
 
-    setQueue((prev) => prev.map((q) => (q.token === target.token ? updatedItem : q)))
+    setQueue((prev) =>
+      prev.map((q) => (q.token === target.token ? updatedItem : q)),
+    )
     setLatestCalledToken(updatedItem)
-    addAudit(target.doctorName, `Called token ${target.token} to ${target.room}`, 'Ready for consultation', 'call')
+    addAudit(
+      target.doctorName,
+      `Called token ${target.token} to ${target.room}`,
+      "Ready for consultation",
+      "call",
+    )
     speakTokenAnnouncement(updatedItem)
     return updatedItem
   }
 
   const startConsultation = (token: string) => {
     setQueue((prev) =>
-      prev.map((q) => (q.token === token ? { ...q, status: 'In consultation' as const } : q))
+      prev.map((q) =>
+        q.token === token ? { ...q, status: "In consultation" as const } : q,
+      ),
     )
     const target = queue.find((q) => q.token === token)
     if (target) {
-      addAudit(target.doctorName, `Started consultation with ${target.patientName} (${token})`, 'In progress', 'call')
+      addAudit(
+        target.doctorName,
+        `Started consultation with ${target.patientName} (${token})`,
+        "In progress",
+        "call",
+      )
     }
   }
 
@@ -344,8 +413,12 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       patientName: item.patientName,
       doctorId: item.doctorId,
       doctorName: item.doctorName,
-      date: now.toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
-      time: now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      date: now.toLocaleDateString("en-GB", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+      }),
+      time: now.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
       diagnosis,
       clinicalNotes,
       prescriptions,
@@ -353,8 +426,19 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
 
     setConsultations((prev) => [newRecord, ...prev])
-    setQueue((prev) => prev.map((q) => (q.token === tokenId ? { ...q, status: 'Done' as const, completedAt: newRecord.time } : q)))
-    addAudit(item.doctorName, `Completed consultation for ${item.patientName} (${tokenId})`, diagnosis, 'call')
+    setQueue((prev) =>
+      prev.map((q) =>
+        q.token === tokenId
+          ? { ...q, status: "Done" as const, completedAt: newRecord.time }
+          : q,
+      ),
+    )
+    addAudit(
+      item.doctorName,
+      `Completed consultation for ${item.patientName} (${tokenId})`,
+      diagnosis,
+      "call",
+    )
   }
 
   const skipPatient = (token: string) => {
@@ -366,45 +450,50 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
         return {
           ...q,
           strikes: newStrikes,
-          status: isRemoved ? ('Removed' as const) : ('Skipped' as const),
-          estimatedWaitMinutes: q.estimatedWaitMinutes + settings.skipDemotionPlaces * 10,
+          status: isRemoved ? "Removed" as const : "Skipped" as const,
+          estimatedWaitMinutes:
+            q.estimatedWaitMinutes + settings.skipDemotionPlaces * 10,
         }
-      })
+      }),
     )
     const target = queue.find((q) => q.token === token)
     if (target) {
       const nextStrikes = target.strikes + 1
       addAudit(
-        'System / Doctor',
+        "System / Doctor",
         `Patient ${target.patientName} (${token}) missed call`,
         `Added strike ${nextStrikes}/${settings.maxStrikes}. Moved back ${settings.skipDemotionPlaces} slots.`,
-        'reorder'
+        "reorder",
       )
     }
   }
 
   const removePatient = (token: string, reason: string) => {
     setQueue((prev) =>
-      prev.map((q) => (q.token === token ? { ...q, status: 'Removed' as const } : q))
+      prev.map((q) =>
+        q.token === token ? { ...q, status: "Removed" as const } : q,
+      ),
     )
     const target = queue.find((q) => q.token === token)
-    addAudit('Staff', `Removed token ${token} from queue`, reason, 'remove')
+    addAudit("Staff", `Removed token ${token} from queue`, reason, "remove")
   }
 
   const flagPriority = (token: string, reason: string) => {
     setQueue((prev) =>
       prev.map((q) =>
-        q.token === token ? { ...q, isPriority: true, priorityReason: reason } : q
-      )
+        q.token === token
+          ? { ...q, isPriority: true, priorityReason: reason }
+          : q,
+      ),
     )
-    addAudit('Staff', `Flagged token ${token} as Priority`, reason, 'priority')
+    addAudit("Staff", `Flagged token ${token} as Priority`, reason, "priority")
   }
 
   const addWalkIn = ({
     patientName,
     patientPhone,
     doctorId,
-    reason = 'Walk-in visit',
+    reason = "Walk-in visit",
     isPriority = false,
   }: {
     patientName: string
@@ -414,19 +503,25 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     isPriority?: boolean
   }): QueueItem => {
     const doc = doctors.find((d) => d.id === doctorId) || doctors[0]
-    const prefix = doc.id === 'doc-sharma' ? 'A' : 'B'
+    const prefix = doc.id === "doc-sharma" ? "A" : "B"
 
     const existingTokens = queue
       .filter((q) => q.token.startsWith(prefix))
-      .map((q) => parseInt(q.token.split('-')[1], 10))
+      .map((q) => parseInt(q.token.split("-")[1], 10))
       .filter((n) => !isNaN(n))
 
-    const nextNum = existingTokens.length > 0 ? Math.max(...existingTokens) + 1 : 25
-    const tokenStr = `${prefix}-${String(nextNum).padStart(3, '0')}`
+    const nextNum =
+      existingTokens.length > 0 ? Math.max(...existingTokens) + 1 : 25
+    const tokenStr = `${prefix}-${String(nextNum).padStart(3, "0")}`
 
-    const nowStr = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+    const nowStr = new Date().toLocaleTimeString([], {
+      hour: "2-digit",
+      minute: "2-digit",
+    })
     const activeAhead = queue.filter(
-      (q) => q.doctorId === doc.id && ['Waiting', 'Window open', 'Checked in'].includes(q.status)
+      (q) =>
+        q.doctorId === doc.id &&
+        ["Waiting", "Window open", "Checked in"].includes(q.status),
     ).length
 
     const newItem: QueueItem = {
@@ -435,11 +530,11 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
       patientId: `pat-walkin-${Date.now()}`,
       patientName,
       patientPhone,
-      forWho: 'Myself',
+      forWho: "Myself",
       doctorId: doc.id,
       doctorName: doc.name,
       room: doc.room,
-      status: 'Checked in', // Walk-ins at reception are already checked in
+      status: "Checked in", // Walk-ins at reception are already checked in
       isPriority,
       priorityReason: isPriority ? reason : undefined,
       joinedAt: nowStr,
@@ -451,13 +546,23 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }
 
     setQueue((prev) => [...prev, newItem])
-    addAudit('Sneha (Reception)', `Issued walk-in token ${tokenStr} for ${patientName}`, reason, 'checkin')
+    addAudit(
+      "Sneha (Reception)",
+      `Issued walk-in token ${tokenStr} for ${patientName}`,
+      reason,
+      "checkin",
+    )
     return newItem
   }
 
   const updateSettings = (newSettings: Partial<ClinicSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }))
-    addAudit('Admin', 'Updated clinic queue rules', 'Policy adjustments', 'priority')
+    addAudit(
+      "Admin",
+      "Updated clinic queue rules",
+      "Policy adjustments",
+      "priority",
+    )
   }
 
   const updatePatientProfile = (updated: Partial<PatientProfile>) => {
@@ -477,13 +582,16 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     }))
   }
 
-  const enterPatientView = (targetPage: string = 'Home') => {
-    setRole('Patient')
+  const enterPatientView = (targetPage: string = "Home") => {
+    setRole("Patient")
     setPage(targetPage)
     setShowLanding(false)
   }
 
-  const enterStaffView = (targetRole: Role = 'Receptionist', targetPage: string = 'Live queue') => {
+  const enterStaffView = (
+    targetRole: Role = "Receptionist",
+    targetPage: string = "Live queue",
+  ) => {
     setRole(targetRole)
     setPage(targetPage)
     setShowLanding(false)
@@ -495,7 +603,7 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
     setConsultations(initialConsultations)
     setAuditLogs(initialAuditLogs)
     setSettings(initialClinicSettings)
-    setActivePatientToken('A-024')
+    setActivePatientToken("A-024")
     localStorage.clear()
   }
 
@@ -545,7 +653,7 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({ children }) =
 export const useQueue = (): QueueContextType => {
   const context = useContext(QueueContext)
   if (!context) {
-    throw new Error('useQueue must be used within a QueueProvider')
+    throw new Error("useQueue must be used within a QueueProvider")
   }
   return context
 }

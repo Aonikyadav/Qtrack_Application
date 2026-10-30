@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState } from "react"
 import {
   AlertCircle,
   Bell,
@@ -9,35 +9,44 @@ import {
   Plus,
   Stethoscope,
   X,
-} from 'lucide-react'
-import { useQueue } from '../../context/QueueContext'
-import type { PrescriptionItem, QueueItem } from '../../types'
-import { Badge } from '../common/Badge'
-import { Button, IconButton } from '../common/Button'
-import { Card } from '../common/Card'
-import { Field, TextArea } from '../common/Field'
-import { Text } from '../common/Text'
+} from "lucide-react"
+import { useQueue } from "../../context/QueueContext"
+import type { PrescriptionItem, QueueItem } from "../../types"
+import { Badge } from "../common/Badge"
+import { Button, IconButton } from "../common/Button"
+import { Card } from "../common/Card"
+import { Field, TextArea } from "../common/Field"
+import { Text } from "../common/Text"
 
-export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
+export function DoctorOverviewView({
+  onOpenConsultation,
+  onOpenQueue,
+}: {
   onOpenConsultation: () => void
   onOpenQueue: () => void
 }) {
   const { queue, consultations } = useQueue()
 
-  const currentDoctorId = 'doc-sharma'
+  const currentDoctorId = "doc-sharma"
   const doctorQueue = queue.filter((q) => q.doctorId === currentDoctorId)
-  const waitingPatients = doctorQueue.filter((q) => ['Waiting', 'Window open', 'Checked in'].includes(q.status))
-  const checkedInCount = doctorQueue.filter((q) => q.status === 'Checked in').length
-  const completedToday = consultations.filter((c) => c.doctorId === currentDoctorId).length
+  const waitingPatients = doctorQueue.filter((q) =>
+    ["Waiting", "Window open", "Checked in"].includes(q.status),
+  )
+  const checkedInCount = doctorQueue.filter(
+    (q) => q.status === "Checked in",
+  ).length
+  const completedToday = consultations.filter(
+    (c) => c.doctorId === currentDoctorId,
+  ).length
 
   const inConsultationPatient =
-    doctorQueue.find((q) => q.status === 'In consultation') ||
-    doctorQueue.find((q) => q.status === 'Called') ||
+    doctorQueue.find((q) => q.status === "In consultation") ||
+    doctorQueue.find((q) => q.status === "Called") ||
     null
 
   const upNextPatient =
-    doctorQueue.find((q) => q.status === 'Checked in') ||
-    doctorQueue.find((q) => q.status === 'Waiting') ||
+    doctorQueue.find((q) => q.status === "Checked in") ||
+    doctorQueue.find((q) => q.status === "Waiting") ||
     null
 
   return (
@@ -47,7 +56,9 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
           <Text size="xl" weight="bold">
             Good morning, Dr. Sharma
           </Text>
-          <Text tone="muted">Room 2 · General Physician · Here’s your clinic at a glance.</Text>
+          <Text tone="muted">
+            Room 2 · General Physician · Here’s your clinic at a glance.
+          </Text>
         </div>
       </div>
 
@@ -90,13 +101,16 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
               ACTIVE PATIENT IN ROOM 2
             </Text>
             <Text size="xl" weight="bold">
-              {inConsultationPatient.token} · {inConsultationPatient.patientName}
+              {inConsultationPatient.token} ·{" "}
+              {inConsultationPatient.patientName}
             </Text>
             <Text tone="muted">
-              {inConsultationPatient.reasonForVisit || 'Follow-up consultation'}
+              {inConsultationPatient.reasonForVisit || "Follow-up consultation"}
             </Text>
           </div>
-          <Button onClick={onOpenConsultation}>Open consultation workspace</Button>
+          <Button onClick={onOpenConsultation}>
+            Open consultation workspace
+          </Button>
         </Card>
       ) : (
         <Card className="current-patient">
@@ -109,7 +123,9 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
             <Text size="xl" weight="bold">
               No patient currently inside
             </Text>
-            <Text tone="muted">Call the next patient in queue to begin consultation.</Text>
+            <Text tone="muted">
+              Call the next patient in queue to begin consultation.
+            </Text>
           </div>
           <Button onClick={onOpenQueue}>Call next patient</Button>
         </Card>
@@ -121,7 +137,7 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
             <Text size="lg" weight="bold">
               Up next in line
             </Text>
-            <Badge>{upNextPatient?.status || 'Waiting'}</Badge>
+            <Badge>{upNextPatient?.status || "Waiting"}</Badge>
           </div>
           {upNextPatient ? (
             <div className="patient-next">
@@ -129,7 +145,8 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
               <div>
                 <Text weight="bold">{upNextPatient.patientName}</Text>
                 <Text size="sm" tone="muted">
-                  {upNextPatient.reasonForVisit} · Waiting {upNextPatient.estimatedWaitMinutes}m
+                  {upNextPatient.reasonForVisit} · Waiting{" "}
+                  {upNextPatient.estimatedWaitMinutes}m
                 </Text>
               </div>
             </div>
@@ -163,15 +180,18 @@ export function DoctorOverviewView({ onOpenConsultation, onOpenQueue }: {
   )
 }
 
-export function DoctorLiveQueueView({ onStartConsultation }: {
+export function DoctorLiveQueueView({
+  onStartConsultation,
+}: {
   onStartConsultation: (item: QueueItem) => void
 }) {
   const { queue, callNextPatient, skipPatient } = useQueue()
   const [calledItem, setCalledItem] = useState<QueueItem | null>(null)
 
-  const currentDoctorId = 'doc-sharma'
+  const currentDoctorId = "doc-sharma"
   const doctorQueue = queue.filter(
-    (q) => q.doctorId === currentDoctorId && !['Done', 'Removed'].includes(q.status)
+    (q) =>
+      q.doctorId === currentDoctorId && !["Done", "Removed"].includes(q.status),
   )
 
   const handleCallNext = () => {
@@ -202,10 +222,12 @@ export function DoctorLiveQueueView({ onStartConsultation }: {
           <CheckCircle2 size={24} color="#0f766e" />
           <div style={{ flex: 1 }}>
             <Text weight="semibold">
-              {calledItem.patientName} · Token {calledItem.token} called to Room 2
+              {calledItem.patientName} · Token {calledItem.token} called to Room
+              2
             </Text>
             <Text size="sm" tone="muted">
-              Display board and patient mobile screen were automatically notified with audio chime.
+              Display board and patient mobile screen were automatically
+              notified with audio chime.
             </Text>
           </div>
           <Button
@@ -231,7 +253,7 @@ export function DoctorLiveQueueView({ onStartConsultation }: {
           </div>
 
           {doctorQueue.length === 0 ? (
-            <div style={{ padding: '32px', textAlign: 'center' }}>
+            <div style={{ padding: "32px", textAlign: "center" }}>
               <Text tone="muted">No active patients in queue right now.</Text>
             </div>
           ) : (
@@ -273,51 +295,61 @@ export function DoctorLiveQueueView({ onStartConsultation }: {
   )
 }
 
-export function DoctorConsultationView({ onVisitCompleted }: { onVisitCompleted: () => void }) {
+export function DoctorConsultationView({
+  onVisitCompleted,
+}: {
+  onVisitCompleted: () => void
+}) {
   const { queue, completeConsultation, flagPriority } = useQueue()
 
   // Find active patient in consultation or fallback to first active
   const activeConsultationItem =
-    queue.find((q) => q.status === 'In consultation') ||
-    queue.find((q) => q.status === 'Called') ||
-    queue.find((q) => q.doctorId === 'doc-sharma' && q.status !== 'Done') ||
+    queue.find((q) => q.status === "In consultation") ||
+    queue.find((q) => q.status === "Called") ||
+    queue.find((q) => q.doctorId === "doc-sharma" && q.status !== "Done") ||
     queue[0]
 
-  const [diagnosis, setDiagnosis] = useState('Acute Upper Respiratory Tract Infection')
+  const [diagnosis, setDiagnosis] = useState(
+    "Acute Upper Respiratory Tract Infection",
+  )
   const [clinicalNotes, setClinicalNotes] = useState(
-    'Fever (101°F), congested pharynx, no wheeze. Clear chest on auscultation. Advised warm fluids and hydration.'
+    "Fever (101°F), congested pharynx, no wheeze. Clear chest on auscultation. Advised warm fluids and hydration.",
   )
   const [prescriptions, setPrescriptions] = useState<PrescriptionItem[]>([
     {
-      id: 'rx-new-1',
-      medicine: 'Paracetamol 650mg',
-      dose: '1 tab',
-      frequency: 'TDS (Thrice daily)',
-      duration: '3 days',
+      id: "rx-new-1",
+      medicine: "Paracetamol 650mg",
+      dose: "1 tab",
+      frequency: "TDS (Thrice daily)",
+      duration: "3 days",
     },
     {
-      id: 'rx-new-2',
-      medicine: 'Amoxicillin-Clav 625mg',
-      dose: '1 tab',
-      frequency: 'BD (Twice daily)',
-      duration: '5 days',
+      id: "rx-new-2",
+      medicine: "Amoxicillin-Clav 625mg",
+      dose: "1 tab",
+      frequency: "BD (Twice daily)",
+      duration: "5 days",
     },
   ])
 
   const handleAddMedicine = () => {
     const newRx: PrescriptionItem = {
       id: `rx-${Date.now()}`,
-      medicine: '',
-      dose: '1 tab',
-      frequency: 'BD',
-      duration: '3 days',
+      medicine: "",
+      dose: "1 tab",
+      frequency: "BD",
+      duration: "3 days",
     }
     setPrescriptions([...prescriptions, newRx])
   }
 
-  const handleUpdateMedicine = (id: string, key: keyof PrescriptionItem, value: string) => {
+  const handleUpdateMedicine = (
+    id: string,
+    key: keyof PrescriptionItem,
+    value: string,
+  ) => {
     setPrescriptions((prev) =>
-      prev.map((rx) => (rx.id === id ? { ...rx, [key]: value } : rx))
+      prev.map((rx) => (rx.id === id ? { ...rx, [key]: value } : rx)),
     )
   }
 
@@ -343,10 +375,12 @@ export function DoctorConsultationView({ onVisitCompleted }: { onVisitCompleted:
         <div>
           <Badge>In consultation</Badge>
           <Text size="xl" weight="bold">
-            {activeConsultationItem?.token} · {activeConsultationItem?.patientName}
+            {activeConsultationItem?.token} ·{" "}
+            {activeConsultationItem?.patientName}
           </Text>
           <Text tone="muted">
-            {activeConsultationItem?.forWho} · {activeConsultationItem?.patientPhone}
+            {activeConsultationItem?.forWho} ·{" "}
+            {activeConsultationItem?.patientPhone}
           </Text>
         </div>
         <Text size="lg" weight="semibold">
@@ -375,7 +409,10 @@ export function DoctorConsultationView({ onVisitCompleted }: { onVisitCompleted:
             <Text size="lg" weight="bold">
               Today’s concern
             </Text>
-            <Text>{activeConsultationItem?.reasonForVisit || 'Fever, cough, and body ache'}</Text>
+            <Text>
+              {activeConsultationItem?.reasonForVisit ||
+                "Fever, cough, and body ache"}
+            </Text>
           </Card>
           <Card>
             <Text size="lg" weight="bold">
@@ -420,22 +457,30 @@ export function DoctorConsultationView({ onVisitCompleted }: { onVisitCompleted:
                 <Field
                   placeholder="Medicine name (e.g. Paracetamol)"
                   value={rx.medicine}
-                  onChange={(e) => handleUpdateMedicine(rx.id, 'medicine', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateMedicine(rx.id, "medicine", e.target.value)
+                  }
                 />
                 <Field
                   placeholder="Dose"
                   value={rx.dose}
-                  onChange={(e) => handleUpdateMedicine(rx.id, 'dose', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateMedicine(rx.id, "dose", e.target.value)
+                  }
                 />
                 <Field
                   placeholder="Frequency"
                   value={rx.frequency}
-                  onChange={(e) => handleUpdateMedicine(rx.id, 'frequency', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateMedicine(rx.id, "frequency", e.target.value)
+                  }
                 />
                 <Field
                   placeholder="Duration"
                   value={rx.duration}
-                  onChange={(e) => handleUpdateMedicine(rx.id, 'duration', e.target.value)}
+                  onChange={(e) =>
+                    handleUpdateMedicine(rx.id, "duration", e.target.value)
+                  }
                 />
                 <IconButton
                   icon={X}
@@ -451,7 +496,10 @@ export function DoctorConsultationView({ onVisitCompleted }: { onVisitCompleted:
               variant="secondary"
               onClick={() => {
                 if (activeConsultationItem) {
-                  flagPriority(activeConsultationItem.token, 'Flagged urgent by Doctor')
+                  flagPriority(
+                    activeConsultationItem.token,
+                    "Flagged urgent by Doctor",
+                  )
                 }
               }}
             >
@@ -502,7 +550,8 @@ export function DoctorCompletedVisitsView() {
               <span>{c.time}</span>
               <span>{c.diagnosis}</span>
               <span>
-                {c.prescriptions.map((p) => p.medicine).join(', ') || 'Advised rest'}
+                {c.prescriptions.map((p) => p.medicine).join(", ") ||
+                  "Advised rest"}
               </span>
             </div>
           ))}
