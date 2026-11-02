@@ -9,14 +9,17 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock3,
+  Copy,
   Download,
   FileText,
   LocateFixed,
+  LogOut,
   MapPin,
   Phone,
   Plus,
   QrCode,
   Search,
+  ShieldCheck,
   UserRound,
   X,
 } from "lucide-react"
@@ -240,58 +243,69 @@ export function DoctorSearch({
         </Text>
       </div>
 
-      {filteredDoctors.map((doc) => (
-        <Card className="doctor-card" key={doc.id}>
-          <img src={doc.photo} alt={`${doc.name}, ${doc.specialty}`} />
-          <div className="doctor-main">
-            <div>
-              <Text size="lg" weight="bold">
-                {doc.name}
-              </Text>
-              <Text tone="muted">
-                {doc.specialty} · {doc.experienceYears} yrs experience
-              </Text>
-            </div>
-            <div className="meta-row">
-              <span>
-                <MapPin size={16} /> {doc.clinicName} · {doc.distanceKm} km
-              </span>
-              <span>₹{doc.fee}</span>
-              <span>{doc.languages.join(", ")}</span>
-            </div>
-            <div className="wait-row">
-              <Clock3 size={18} />
-              <div>
-                <Text size="sm" weight="semibold">
-                  Live wait: {doc.avgWaitMins}
-                </Text>
-                <Text size="xs" tone="muted">
-                  {doc.activeQueueCount} patients currently in queue
-                </Text>
+      <div className="doctor-card-list">
+        {filteredDoctors.map((doc) => (
+          <Card className="doctor-card-modern" key={doc.id}>
+            <div className="doctor-card-body">
+              <img
+                src={doc.photo}
+                alt={`${doc.name}, ${doc.specialty}`}
+                className="doctor-avatar"
+              />
+              <div className="doctor-details">
+                <div className="doctor-header-row">
+                  <div>
+                    <Text size="md" weight="bold" className="doctor-title">
+                      {doc.name}
+                    </Text>
+                    <Text size="xs" tone="muted">
+                      {doc.specialty} · {doc.experienceYears} yrs experience
+                    </Text>
+                  </div>
+                  <span className="doctor-fee-chip">₹{doc.fee}</span>
+                </div>
+
+                <div className="doctor-meta-line">
+                  <MapPin size={13} />
+                  <span>{doc.clinicName} · {doc.distanceKm} km</span>
+                  <span className="meta-sep">·</span>
+                  <span>{doc.languages.slice(0, 2).join(", ")}</span>
+                </div>
+
+                <div className="doctor-wait-pill">
+                  <Clock3 size={13} />
+                  <span className="wait-accent">Live wait: <strong>{doc.avgWaitMins}</strong></span>
+                  <span className="queue-pill-count">({doc.activeQueueCount} in queue)</span>
+                </div>
               </div>
             </div>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-            <Button
-              onClick={() => {
-                onSelectDoctor?.(doc)
-                setPage("Doctor profile")
-              }}
-            >
-              Doctor profile
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => {
-                onSelectDoctor?.(doc)
-                setPage("Join queue")
-              }}
-            >
-              Join queue
-            </Button>
-          </div>
-        </Card>
-      ))}
+
+            <div className="doctor-card-actions">
+              <Button
+                variant="secondary"
+                size="sm"
+                full
+                onClick={() => {
+                  onSelectDoctor?.(doc)
+                  setPage("Doctor profile")
+                }}
+              >
+                Doctor profile
+              </Button>
+              <Button
+                size="sm"
+                full
+                onClick={() => {
+                  onSelectDoctor?.(doc)
+                  setPage("Join queue")
+                }}
+              >
+                Join queue
+              </Button>
+            </div>
+          </Card>
+        ))}
+      </div>
     </div>
   )
 }
@@ -587,51 +601,43 @@ export function LiveQueueView() {
 
       <div className="queue-top">
         <div>
-          <Text size="sm" tone="muted">
-            {currentItem.doctorName.toUpperCase()} ·{" "}
-            {currentItem.room.toUpperCase()}
+          <Text size="xs" tone="muted" weight="bold">
+            {currentItem.doctorName.toUpperCase()} · {currentItem.room.toUpperCase()}
           </Text>
-          <Text size="xl" weight="bold">
+          <Text size="lg" weight="bold">
             Your live queue
           </Text>
         </div>
         <Badge>{currentItem.status}</Badge>
       </div>
 
-      <Card className="token-card">
-        <Text size="sm" weight="bold" tone="muted">
-          YOUR TOKEN
-        </Text>
-        <Text className="token-number" weight="bold">
-          {currentItem.token}
-        </Text>
-        <div className="position-grid">
-          <div>
-            <Text className="metric" weight="bold">
-              {peopleAhead}
-            </Text>
-            <Text size="sm" tone="muted">
+      <Card className="ticket-pass-card">
+        <div className="ticket-pass-top">
+          <span className="ticket-label">YOUR TOKEN</span>
+          <div className="ticket-token-display">{currentItem.token}</div>
+        </div>
+
+        <div className="ticket-stats-grid">
+          <div className="ticket-stat-box">
+            <span className="ticket-stat-value">{peopleAhead}</span>
+            <span className="ticket-stat-label">
               {peopleAhead === 1 ? "person ahead" : "people ahead"}
-            </Text>
+            </span>
           </div>
-          <div>
-            <Text className="metric" weight="bold">
-              {currentItem.estimatedWaitMinutes}–
-              {currentItem.estimatedWaitMinutes + 10}
-            </Text>
-            <Text size="sm" tone="muted">
-              minutes estimated
-            </Text>
+          <div className="ticket-stat-box">
+            <span className="ticket-stat-value">
+              {currentItem.estimatedWaitMinutes}–{currentItem.estimatedWaitMinutes + 10}
+            </span>
+            <span className="ticket-stat-label">minutes estimated</span>
           </div>
         </div>
-        <div className="progress-wrap">
-          <div className="progress-meta">
-            <Text size="sm">Joined at {currentItem.joinedAt}</Text>
-            <Text size="sm" weight="semibold">
-              Your turn
-            </Text>
+
+        <div className="ticket-progress-wrap">
+          <div className="ticket-progress-meta">
+            <span>Joined at {currentItem.joinedAt}</span>
+            <span className="turn-label">Your turn</span>
           </div>
-          <div className="progress">
+          <div className="ticket-progress-bar">
             <span
               style={{
                 width:
@@ -648,32 +654,40 @@ export function LiveQueueView() {
         </div>
       </Card>
 
-      <div className="window-card">
-        <div className="window-icon">
-          <Clock3 />
-        </div>
-        <div>
-          <Text weight="bold">
-            {currentItem.status === "Checked in"
-              ? "Checked in & confirmed"
-              : `Check in within ${currentItem.windowClosesInMinutes || 14}:30 min`}
-          </Text>
-          <Text size="sm" tone="muted">
-            {currentItem.status === "Checked in"
-              ? "You are checked in! Dr. Sharma will call your token soon."
-              : "You are close to the front. Confirm your arrival via QR scanner."}
-          </Text>
+      <div className="window-alert-card">
+        <div className="window-alert-left">
+          <div className="window-alert-icon">
+            <Clock3 size={18} />
+          </div>
+          <div className="window-alert-text">
+            <Text size="sm" weight="bold">
+              {currentItem.status === "Checked in"
+                ? "Checked in & confirmed"
+                : `Check in within ${currentItem.windowClosesInMinutes || 14}:30 min`}
+            </Text>
+            <Text size="xs" tone="muted">
+              {currentItem.status === "Checked in"
+                ? "You are checked in! Dr. Sharma will call your token soon."
+                : "Confirm arrival via QR scanner upon reaching clinic."}
+            </Text>
+          </div>
         </div>
         {currentItem.status !== "Checked in" && (
-          <Button onClick={() => setPage("QR check-in")} icon={QrCode}>
+          <Button
+            size="sm"
+            onClick={() => setPage("QR check-in")}
+            icon={QrCode}
+            className="window-checkin-btn"
+          >
             Check in
           </Button>
         )}
       </div>
 
-      <div className="action-row">
+      <div className="queue-quick-actions">
         <Button
           variant="secondary"
+          size="sm"
           full
           disabled={currentItem.latePassUsed}
           onClick={() => useLatePass(currentItem.token)}
@@ -682,38 +696,42 @@ export function LiveQueueView() {
             ? "Late pass used (+15m)"
             : "I’m running late"}
         </Button>
-        <Button full onClick={() => setPage("QR check-in")}>
+        <Button
+          size="sm"
+          full
+          onClick={() => setPage("QR check-in")}
+        >
           {currentItem.status === "Checked in"
             ? "View QR status"
             : "I’m at the clinic"}
         </Button>
       </div>
 
-      <Card>
-        <div className="strikes-head">
-          <Text weight="bold">Attendance record</Text>
-          <div className="strike-dots">
-            <span className={currentItem.strikes >= 1 ? "strike-used" : ""}>
+      <Card className="attendance-compact-card">
+        <div className="attendance-head">
+          <div className="attendance-title-group">
+            <Text size="sm" weight="bold">Attendance record</Text>
+            <span className="attendance-pill">{currentItem.strikes}/3 strikes</span>
+          </div>
+          <div className="strike-pills">
+            <span className={`strike-chip ${currentItem.strikes >= 1 ? "strike-active" : ""}`}>
               1
             </span>
-            <span className={currentItem.strikes >= 2 ? "strike-used" : ""}>
+            <span className={`strike-chip ${currentItem.strikes >= 2 ? "strike-active" : ""}`}>
               2
             </span>
-            <span className={currentItem.strikes >= 3 ? "strike-used" : ""}>
+            <span className={`strike-chip ${currentItem.strikes >= 3 ? "strike-active" : ""}`}>
               3
             </span>
           </div>
         </div>
-        <Text size="sm" tone="muted">
-          You currently have {currentItem.strikes} strike
-          {currentItem.strikes === 1 ? "" : "s"}. Missing your check-in window
-          or doctor call adds a strike and demotes your position by 3 slots. 3
-          strikes removes you from this queue.
+        <Text size="xs" tone="muted">
+          Missing check-in adds a strike and demotes you 3 slots. 3 strikes cancels token.
         </Text>
       </Card>
 
-      <Text size="sm" tone="muted" className="center">
-        Last updated just now · Live updates automatically
+      <Text size="xs" tone="muted" className="center auto-refresh-caption">
+        ● Live sync active · Updates automatically in real time
       </Text>
     </div>
   )
@@ -904,31 +922,47 @@ export function HistoryPageView() {
         title="Medical history"
         subtitle="Your consultations, clinical diagnoses, and prescriptions."
       />
-      <div className="visit-list">
+      <div className="visit-list-compact">
         {consultations.map((visit) => (
-          <Card className="history-card" key={visit.id}>
-            <span className="calendar-icon">
-              <FileText />
-            </span>
-            <div style={{ flex: 1 }}>
-              <Text size="sm" tone="muted">
-                {visit.date} · {visit.time}
-              </Text>
-              <Text weight="bold">{visit.doctorName}</Text>
-              <Text weight="medium">{visit.diagnosis}</Text>
-              <Text size="sm" tone="muted">
-                {visit.prescriptions
-                  .map((p) => `${p.medicine} (${p.dose})`)
-                  .join(", ") || "No medications prescribed"}
+          <Card className="history-card-compact" key={visit.id}>
+            <div className="history-card-top">
+              <div className="history-date-chip">
+                <FileText size={13} />
+                <span>{visit.date} · {visit.time}</span>
+              </div>
+              <Button
+                variant="secondary"
+                size="sm"
+                icon={Download}
+                onClick={() => setSelectedVisit(visit)}
+                className="history-pdf-pill"
+              >
+                PDF
+              </Button>
+            </div>
+
+            <div className="history-doctor-name">
+              <Text size="sm" weight="bold">{visit.doctorName}</Text>
+            </div>
+
+            <div className="history-diagnosis-tag">
+              <Text size="sm" weight="semibold" className="diagnosis-text">
+                {visit.diagnosis}
               </Text>
             </div>
-            <Button
-              variant="secondary"
-              icon={Download}
-              onClick={() => setSelectedVisit(visit)}
-            >
-              PDF
-            </Button>
+
+            <div className="history-rx-line">
+              <Text size="xs" tone="muted">
+                {visit.prescriptions.length > 0 ? (
+                  <>
+                    <span className="rx-label">Rx:</span>{" "}
+                    {visit.prescriptions.map((p) => `${p.medicine} (${p.dose})`).join(", ")}
+                  </>
+                ) : (
+                  "No medications prescribed"
+                )}
+              </Text>
+            </div>
           </Card>
         ))}
       </div>
@@ -1026,6 +1060,8 @@ export function ProfilePageView() {
   const [newPassword, setNewPassword] = useState("")
   const [saved, setSaved] = useState(false)
   const [passwordSaved, setPasswordSaved] = useState(false)
+  const [copiedId, setCopiedId] = useState(false)
+  const [copiedReferral, setCopiedReferral] = useState(false)
 
   const handleSave = () => {
     updatePatientProfile({ name, phone, preferredLanguage: lang })
@@ -1044,27 +1080,34 @@ export function ProfilePageView() {
 
   return (
     <div className="content-stack patient-width">
-      <div
-        style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          flexWrap: "wrap",
-          gap: "12px",
-        }}
-      >
-        <div>
-          <Text size="xl" weight="bold">
-            Patient Profile & Security
-          </Text>
-          <Text tone="muted">
-            Manage your credentials, referral code, and family health records.
-          </Text>
+      {/* Sleek Profile Header Card with Docked Sign Out */}
+      <Card className="profile-hero-card">
+        <div className="profile-hero-main">
+          <div className="profile-hero-avatar">
+            {patient.name.split(" ").map((n) => n[0]).slice(0, 2).join("")}
+          </div>
+          <div className="profile-hero-info">
+            <div className="profile-hero-name-row">
+              <Text size="md" weight="bold">{patient.name}</Text>
+              <span className="verified-pill">
+                <ShieldCheck size={13} /> Verified
+              </span>
+            </div>
+            <Text size="xs" tone="muted">
+              {patient.phone} · Aarogya Family Clinic
+            </Text>
+          </div>
         </div>
-        <Button variant="danger" onClick={patientLogout}>
+        <Button
+          variant="danger"
+          size="sm"
+          icon={LogOut}
+          onClick={patientLogout}
+          className="profile-logout-btn"
+        >
           Sign out
         </Button>
-      </div>
+      </Card>
 
       {saved && (
         <div className="toast">
@@ -1082,53 +1125,48 @@ export function ProfilePageView() {
         </div>
       )}
 
-      {/* Patient Identifiers Banner */}
-      <Card style={{ background: "#f0fdfa", border: "1px solid #ccfbf1" }}>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            flexWrap: "wrap",
-            gap: "16px",
-          }}
-        >
-          <div>
-            <Text size="xs" weight="bold" tone="teal">
-              OFFICIAL PATIENT IDENTIFIER
-            </Text>
-            <Text size="xl" weight="bold" tone="teal">
-              {patient.id}
-            </Text>
-            <Text size="sm" tone="muted">
-              Use this easy-to-remember ID when visiting reception or speaking
-              to clinic staff.
-            </Text>
+      {/* Modern Compact Identifier & Referral Chips Strip */}
+      <div className="profile-id-strip">
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">PATIENT IDENTIFIER</span>
+            <span className="id-chip-value">{patient.id}</span>
           </div>
-          <div style={{ textAlign: "right" }}>
-            <Text size="xs" weight="bold" tone="muted">
-              REFERRAL ID
-            </Text>
-            <div
-              style={{
-                display: "inline-block",
-                padding: "4px 12px",
-                background: "#0f766e",
-                color: "#ffffff",
-                borderRadius: "6px",
-                fontWeight: "bold",
-              }}
-            >
-              {patient.referralId}
-            </div>
-            <div
-              style={{ fontSize: "12px", color: "#64706e", marginTop: "4px" }}
-            >
-              Share with family to link accounts
-            </div>
-          </div>
+          <button
+            type="button"
+            className="id-copy-btn"
+            title="Copy Patient ID"
+            onClick={() => {
+              navigator.clipboard?.writeText(patient.id)
+              setCopiedId(true)
+              setTimeout(() => setCopiedId(false), 2000)
+            }}
+          >
+            {copiedId ? <Check size={14} color="#0f766e" /> : <Copy size={14} />}
+            <span>{copiedId ? "Copied" : "Copy"}</span>
+          </button>
         </div>
-      </Card>
+
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">REFERRAL CODE</span>
+            <span className="id-chip-value referral-badge">{patient.referralId}</span>
+          </div>
+          <button
+            type="button"
+            className="id-copy-btn"
+            title="Copy Referral Code"
+            onClick={() => {
+              navigator.clipboard?.writeText(patient.referralId)
+              setCopiedReferral(true)
+              setTimeout(() => setCopiedReferral(false), 2000)
+            }}
+          >
+            {copiedReferral ? <Check size={14} color="#0f766e" /> : <Copy size={14} />}
+            <span>{copiedReferral ? "Copied" : "Copy"}</span>
+          </button>
+        </div>
+      </div>
 
       <div className="two-col">
         <div className="content-stack">

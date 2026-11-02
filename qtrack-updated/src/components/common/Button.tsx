@@ -3,6 +3,7 @@ import type { ReactNode, ComponentType, CSSProperties } from "react"
 export interface ButtonProps {
   children: ReactNode
   variant?: "primary" | "secondary" | "danger" | "ghost"
+  size?: "sm" | "md" | "lg"
   icon?: ComponentType<{
     size?: number
     strokeWidth?: number
@@ -20,6 +21,7 @@ export interface ButtonProps {
 export function Button({
   children,
   variant = "primary",
+  size = "md",
   icon: Icon,
   onClick,
   full = false,
@@ -29,10 +31,11 @@ export function Button({
   style,
   title,
 }: ButtonProps) {
+  const iconSize = size === "sm" ? 14 : size === "lg" ? 20 : 18
   return (
     <button
       type={type}
-      className={`button button-${variant} ${
+      className={`button button-${variant} button-${size} ${
         full ? "button-full" : ""
       } ${className}`}
       onClick={onClick}
@@ -40,7 +43,7 @@ export function Button({
       style={style}
       title={title}
     >
-      {Icon && <Icon size={18} strokeWidth={2} />}
+      {Icon && <Icon size={iconSize} strokeWidth={2} />}
       {children}
     </button>
   )

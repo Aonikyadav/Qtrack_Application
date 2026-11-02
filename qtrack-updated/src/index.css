@@ -290,6 +290,9 @@
 
 .button:disabled { background: #e8eceb; color: #8b9694; border-color: #e8eceb; cursor: not-allowed; }
 .button-full { width: 100%; }
+.button-sm { min-height: 36px; padding: 0 12px; font-size: 13px; border-radius: 7px; gap: 6px; }
+.button-md { min-height: 44px; padding: 0 18px; font-size: 14px; border-radius: var(--r-control); }
+.button-lg { min-height: 48px; padding: 0 22px; font-size: 15px; border-radius: 10px; }
 
 .field-wrap { display: flex; flex-direction: column; gap: 7px; }
 .field { min-height: 46px; border: 1px solid #cdd6d4; background: white; border-radius: 8px; display: flex; align-items: center; gap: 10px; padding: 0 13px; color: var(--muted); }
@@ -466,6 +469,570 @@
 .history-card { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px; }
 .person-row { display: flex; align-items: center; gap: 12px; }
 .label-block { display: grid; gap: 7px; }
+
+/* ==========================================================
+   REDESIGNED PATIENT COMPONENTS (COMPACT, SLEEK, REFINED)
+   ========================================================== */
+
+/* 1. Modern Doctor Cards */
+.doctor-card-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.doctor-card-modern {
+  border: 1px solid #e2e8f0;
+  border-radius: 14px;
+  padding: 14px 16px;
+  background: #ffffff;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04);
+  transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1),
+              box-shadow 0.2s ease,
+              border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.doctor-card-modern:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -3px rgba(15, 118, 110, 0.1);
+  border-color: #99f6e4;
+}
+
+.doctor-card-body {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.doctor-avatar {
+  width: 76px;
+  height: 82px;
+  border-radius: 12px;
+  object-fit: cover;
+  object-position: center 20%;
+  background: #e6edeb;
+  flex-shrink: 0;
+  border: 1px solid #e2e8f0;
+}
+
+.doctor-details {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.doctor-header-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.doctor-title {
+  color: #0f172a;
+  line-height: 1.25;
+}
+
+.doctor-fee-chip {
+  background: #f0fdfa;
+  color: #0f766e;
+  border: 1px solid #ccfbf1;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+
+.doctor-meta-line {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+  flex-wrap: wrap;
+}
+
+.doctor-meta-line svg {
+  color: #0f766e;
+  flex-shrink: 0;
+}
+
+.meta-sep {
+  color: #cbd5e1;
+}
+
+.doctor-wait-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+  padding: 3px 10px;
+  border-radius: 99px;
+  font-size: 12px;
+  margin-top: 2px;
+  width: fit-content;
+}
+
+.doctor-wait-pill svg {
+  color: #16a34a;
+}
+
+.wait-accent strong {
+  color: #15803d;
+}
+
+.queue-pill-count {
+  color: #64748b;
+  font-size: 11px;
+}
+
+.doctor-card-actions {
+  display: flex;
+  gap: 8px;
+  width: 100%;
+  padding-top: 10px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.doctor-card-actions .button {
+  flex: 1;
+  min-height: 38px;
+  font-size: 13px;
+}
+
+/* 2. Modern Live Queue Ticket Pass */
+.ticket-pass-card {
+  border: 1px solid #ccfbf1;
+  border-radius: 16px;
+  padding: 18px 20px;
+  background: linear-gradient(180deg, #f0fdfa 0%, #ffffff 100%);
+  box-shadow: 0 4px 16px -2px rgba(15, 118, 110, 0.06);
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ticket-pass-top {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.ticket-label {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  color: #0d9488;
+  text-transform: uppercase;
+}
+
+.ticket-token-display {
+  font-size: clamp(40px, 8vw, 54px);
+  font-weight: 800;
+  color: #115e59;
+  line-height: 1.1;
+  letter-spacing: -0.03em;
+}
+
+.ticket-stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 10px 14px;
+  gap: 12px;
+}
+
+.ticket-stat-box {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.ticket-stat-box + .ticket-stat-box {
+  border-left: 1px solid #e2e8f0;
+}
+
+.ticket-stat-value {
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.ticket-stat-label {
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.ticket-progress-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  text-align: left;
+}
+
+.ticket-progress-meta {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.turn-label {
+  color: #0f766e;
+  font-weight: 700;
+}
+
+.ticket-progress-bar {
+  height: 6px;
+  background: #e2e8f0;
+  border-radius: 99px;
+  overflow: hidden;
+}
+
+.ticket-progress-bar span {
+  display: block;
+  height: 100%;
+  background: linear-gradient(90deg, #0d9488, #0f766e);
+  border-radius: inherit;
+  transition: width 0.3s ease;
+}
+
+.window-alert-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 14px;
+  border: 1px solid #fde68a;
+  border-radius: 12px;
+  background: #fffdf5;
+}
+
+.window-alert-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+  flex: 1;
+}
+
+.window-alert-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background: #fef3c7;
+  color: #d97706;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.window-alert-text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.window-checkin-btn {
+  flex-shrink: 0;
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+
+.queue-quick-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.queue-quick-actions .button {
+  flex: 1;
+  min-height: 40px;
+}
+
+.attendance-compact-card {
+  padding: 12px 14px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.attendance-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.attendance-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.attendance-pill {
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #475569;
+  padding: 1px 7px;
+  border-radius: 99px;
+}
+
+.strike-pills {
+  display: flex;
+  gap: 6px;
+}
+
+.strike-chip {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 11px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+}
+
+.strike-active {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.auto-refresh-caption {
+  font-size: 11px;
+  color: #94a3b8;
+}
+
+/* 3. Compact History Cards */
+.visit-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.history-card-compact {
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  background: #ffffff;
+  transition: transform 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.history-card-compact:hover {
+  transform: translateY(-1.5px);
+  border-color: #99f6e4;
+  box-shadow: 0 6px 16px -2px rgba(15, 118, 110, 0.08);
+}
+
+.history-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 2px;
+}
+
+.history-date-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.history-date-chip svg {
+  color: #0f766e;
+}
+
+.history-pdf-pill {
+  min-height: 28px !important;
+  height: 28px !important;
+  padding: 0 10px !important;
+  font-size: 11px !important;
+  border-radius: 6px !important;
+  font-weight: 600 !important;
+}
+
+.history-doctor-name {
+  line-height: 1.2;
+}
+
+.history-diagnosis-tag {
+  margin-top: 1px;
+}
+
+.diagnosis-text {
+  color: #0f172a;
+}
+
+.history-rx-line {
+  margin-top: 2px;
+}
+
+.rx-label {
+  font-weight: 700;
+  color: #0f766e;
+  background: #f0fdfa;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: 10px;
+  letter-spacing: 0.05em;
+}
+
+/* 4. Sleek Profile Hero & Compact ID Chips */
+.profile-hero-card {
+  padding: 14px 16px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+}
+
+.profile-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.profile-hero-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f766e 0%, #115e59 100%);
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);
+}
+
+.profile-hero-info {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.profile-hero-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 11px;
+  font-weight: 600;
+  color: #0f766e;
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  padding: 1px 6px;
+  border-radius: 99px;
+}
+
+.profile-logout-btn {
+  min-height: 34px !important;
+  padding: 0 12px !important;
+  font-size: 12px !important;
+  flex-shrink: 0;
+}
+
+.profile-id-strip {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.profile-id-chip {
+  background: #f0fdfa;
+  border: 1px solid #ccfbf1;
+  border-radius: 12px;
+  padding: 12px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.id-chip-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.id-chip-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #0d9488;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.id-chip-value {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f766e;
+  line-height: 1.2;
+}
+
+.referral-badge {
+  color: #0f766e;
+}
+
+.id-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid #ccfbf1;
+  color: #0f766e;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.14s ease;
+  flex-shrink: 0;
+}
+
+.id-copy-btn:hover {
+  background: #ccfbf1;
+  color: #115e59;
+}
 .auth-page { min-height: calc(100vh - 120px); display: grid; place-items: center; padding: 32px; background: radial-gradient(circle at 70% 10%,#d8f4ef,transparent 35%),var(--background); }
 .auth-card { width: min(440px,100%); display: flex; flex-direction: column; gap: 22px; padding: 32px; }
 .alert-strip { background: var(--amber-bg); color: #6c4d0b; border-color: #eed494; }
@@ -1086,11 +1653,12 @@
   .page-title .button { width: 100%; min-height: 46px; }
   .text-xl { font-size: 20px; }
   .text-display { font-size: 28px; }
-  .card { padding: 16px; border-radius: 14px; }
-  .two-col, .three-col, .swatch-grid, .people-grid { grid-template-columns: 1fr; gap: 12px; }
+  .content-stack { gap: 14px; }
+  .card { padding: 14px 16px; border-radius: 12px; border: 1px solid #e2e8f0; }
+  .two-col, .three-col, .swatch-grid, .people-grid { grid-template-columns: 1fr; gap: 10px; }
   .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px !important; }
-  .stats-grid .card { padding: 14px 12px; }
-  .hero-foundation { padding: 20px; min-height: auto; flex-direction: column; align-items: stretch; }
+  .stats-grid .card { padding: 12px 10px; }
+  .hero-foundation { padding: 18px; min-height: auto; flex-direction: column; align-items: stretch; }
   .foundation-logo { width: 100%; }
   .component-row .button { flex: 1; }
   .offline { align-items: flex-start; flex-wrap: wrap; }
@@ -1103,31 +1671,65 @@
   .token-box .text-display { font-size: 27px; }
   .active-queue .card-arrow { display: none; }
   .section-title .button { font-size: 13px; }
-  .doctor-card { display: grid; grid-template-columns: 76px 1fr; padding: 16px; gap: 13px; }
-  .doctor-card img { width: 76px; height: 88px; }
+  
+  /* Mobile Doctor Cards */
+  .doctor-card-modern { padding: 12px 14px; gap: 8px; }
+  .doctor-card-body { gap: 12px; }
+  .doctor-avatar { width: 68px; height: 74px; }
+  .doctor-card-actions { gap: 8px; padding-top: 8px; margin-top: 2px; }
+  .doctor-card-actions .button { min-height: 38px; }
+  
+  /* Legacy doctor card fallback */
+  .doctor-card { display: flex; flex-direction: column; padding: 14px; gap: 10px; }
+  .doctor-card img { width: 68px; height: 74px; }
   .doctor-main { min-width: 0; }
-  .doctor-main .meta-row span:nth-child(n+2) { display: none; }
-  .doctor-card > .button { margin: 0; grid-column: 1 / -1; width: 100%; min-height: 46px; }
-  .emergency-notice { align-items: flex-start; }
-  .profile-hero { align-items: flex-start; padding: 16px; }
+  .doctor-card > .button { margin: 0; width: 100%; min-height: 42px; }
+  
+  .emergency-notice { align-items: flex-start; padding: 10px 12px; }
+  .profile-hero { align-items: flex-start; padding: 14px; }
   .profile-hero img { width: 82px; height: 92px; }
   .profile-hero .meta-row span:last-child { width: 100%; }
   .choice-grid { grid-template-columns: 1fr; gap: 8px; }
   .choice { min-height: 52px; justify-content: flex-start; }
   .choice svg:last-child { margin-left: auto; }
-  .token-card { padding: 22px 16px; }
-  .token-number { font-size: 58px; }
-  .position-grid { gap: 8px; }
+  
+  /* Mobile Live Queue Ticket Pass */
+  .ticket-pass-card { padding: 16px 14px; gap: 12px; }
+  .ticket-token-display { font-size: 42px; }
+  .ticket-stats-grid { padding: 8px 12px; gap: 8px; }
+  .ticket-stat-value { font-size: 20px; }
+  .window-alert-card { padding: 10px 12px; gap: 8px; }
+  .window-alert-icon { width: 30px; height: 30px; }
+  .queue-quick-actions { gap: 8px; }
+  .queue-quick-actions .button { min-height: 40px; }
+  .attendance-compact-card { padding: 10px 12px; }
+
+  /* Mobile Profile Identity & ID Chips */
+  .profile-hero-card { padding: 12px 14px; }
+  .profile-hero-avatar { width: 40px; height: 40px; font-size: 14px; }
+  .profile-id-strip { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .profile-id-chip { padding: 10px 12px; }
+  .id-chip-value { font-size: 16px; }
+
+  /* Mobile History Consultation Cards */
+  .visit-list-compact { gap: 8px; }
+  .history-card-compact { padding: 10px 12px; gap: 4px; }
+
+  /* Legacy Live Queue & History fallbacks */
+  .token-card { padding: 18px 14px; }
+  .token-number { font-size: 48px; }
+  .position-grid { gap: 8px; padding: 12px 0; }
   .metric { font-size: 20px; }
-  .window-card { grid-template-columns: auto 1fr; }
-  .window-card .button { grid-column: 1 / -1; width: 100%; min-height: 46px; }
+  .window-card { grid-template-columns: auto 1fr; padding: 12px; }
+  .window-card .button { grid-column: 1 / -1; width: 100%; min-height: 42px; }
   .action-row { flex-direction: column-reverse; gap: 8px; }
-  .action-row .button { width: 100%; min-height: 46px; }
+  .action-row .button { width: 100%; min-height: 42px; }
   .queue-top { align-items: flex-start; }
   .scanner-page, .called-page { min-height: calc(100vh - 48px); }
   .scanner-head { top: 66px; }
-  .history-card { grid-template-columns: auto 1fr; }
+  .history-card { grid-template-columns: auto 1fr; padding: 12px; }
   .history-card .button { grid-column: 2; justify-self: start; }
+  
   .auth-page { min-height: calc(100vh - 112px); padding: 16px 14px; }
   .auth-card { padding: 22px 16px; }
   .otp span { width: 40px; height: 46px; }
