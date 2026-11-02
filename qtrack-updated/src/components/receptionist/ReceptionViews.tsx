@@ -3,7 +3,9 @@ import {
   Activity,
   AlertCircle,
   Check,
+  CheckCircle2,
   ChevronDown,
+  LogOut,
   MoreHorizontal,
   Plus,
   QrCode,
@@ -30,6 +32,7 @@ export function ReceptionLiveQueue({
   const [searchQuery, setSearchQuery] = useState("")
   const [actionItem, setActionItem] = useState<QueueItem | null>(null)
   const [priorityReason, setPriorityReason] = useState("")
+  const [showAnnouncement, setShowAnnouncement] = useState(true)
 
   const activeQueue = queue.filter(
     (q) => !["Done", "Removed"].includes(q.status),
@@ -57,63 +60,55 @@ export function ReceptionLiveQueue({
 
   return (
     <div className="content-stack">
-      <div className="alert-strip">
-        <AlertCircle size={18} />
-        <Text size="sm">
-          <strong>Clinic announcement:</strong> Next consultation window opens
-          in 5 min. Dr. Sharma and Dr. Nair are on schedule.
-        </Text>
-        <X size={17} style={{ cursor: "pointer" }} />
-      </div>
+      {showAnnouncement && (
+        <div className="alert-strip" style={{ padding: "8px 12px", borderRadius: "10px" }}>
+          <AlertCircle size={16} />
+          <Text size="xs" style={{ flex: 1 }}>
+            <strong>Clinic notice:</strong> Next consultation window opens in 5 min. Dr. Sharma & Dr. Nair on schedule.
+          </Text>
+          <button
+            type="button"
+            onClick={() => setShowAnnouncement(false)}
+            style={{ background: "transparent", border: "none", cursor: "pointer", display: "grid", placeItems: "center" }}
+            title="Dismiss announcement"
+          >
+            <X size={15} />
+          </button>
+        </div>
+      )}
 
       <div className="page-title">
         <div>
-          <Text size="xl" weight="bold">
+          <Text size="lg" weight="bold">
             Live receptionist queue
           </Text>
-          <Text tone="muted">
+          <Text size="xs" tone="muted">
             Tuesday, 18 June · {activeQueue.length} active patients in clinic
-            queue
           </Text>
         </div>
-        <Button icon={Plus} onClick={onAddWalkIn}>
+        <Button size="sm" icon={Plus} onClick={onAddWalkIn}>
           Add walk-in
         </Button>
       </div>
 
-      <div className="stats-grid">
-        <Card>
-          <Text size="sm" tone="muted">
-            WAITING
-          </Text>
-          <Text size="xl" weight="bold">
-            {waitingCount}
-          </Text>
-        </Card>
-        <Card>
-          <Text size="sm" tone="muted">
-            CHECKED IN
-          </Text>
-          <Text size="xl" weight="bold">
-            {checkedInCount}
-          </Text>
-        </Card>
-        <Card>
-          <Text size="sm" tone="muted">
-            SEEN TODAY
-          </Text>
-          <Text size="xl" weight="bold">
-            {seenTodayCount}
-          </Text>
-        </Card>
-        <Card>
-          <Text size="sm" tone="muted">
-            AVG. WAIT
-          </Text>
-          <Text size="xl" weight="bold">
-            26 min
-          </Text>
-        </Card>
+      {/* Streamlined Reception 4-metric strip */}
+      <div className="reception-stats-strip">
+        <div className="rec-stat-chip">
+          <span className="rec-stat-label">WAITING</span>
+          <span className="rec-stat-val text-teal">{waitingCount}</span>
+        </div>
+        <div className="rec-stat-chip">
+          <span className="rec-stat-label">CHECKED IN</span>
+          <span className="rec-stat-val text-green">{checkedInCount}</span>
+        </div>
+        <div className="rec-stat-chip">
+          <span className="rec-stat-label">SEEN TODAY</span>
+          <span className="rec-stat-val">{seenTodayCount}</span>
+        </div>
+        <div className="rec-stat-chip">
+          <span className="rec-stat-label">AVG. WAIT</span>
+          <span className="rec-stat-val">26m</span>
+        </div>
       </div>
 
       <div className="tabs">
@@ -556,3 +551,170 @@ export function StaffLoginView() {
     </div>
   )
 }
+
+export function ReceptionProfilePageView() {
+  const { currentStaff, staffLogout } = useQueue()
+  const [deskStatus, setDeskStatus] = useState<"online" | "break">("online")
+  const [saved, setSaved] = useState(false)
+
+  return (
+    <div className="content-stack">
+      {/* Profile Header Card */}
+      <Card className="profile-hero-card">
+        <div className="profile-hero-main">
+          <div
+            className="profile-hero-avatar"
+            style={{
+              background: "linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%)",
+            }}
+          >
+            SK
+          </div>
+          <div className="profile-hero-info">
+            <div className="profile-hero-name-row">
+              <Text size="md" weight="bold">
+                {currentStaff?.name || "Sneha Kapoor"}
+              </Text>
+              <span
+                className="verified-pill"
+                style={{
+                  background: "#eff6ff",
+                  color: "#1d4ed8",
+                  borderColor: "#bfdbfe",
+                }}
+              >
+                <CheckCircle2 size={12} /> Front Desk Head
+              </span>
+            </div>
+            <Text size="xs" tone="muted">
+              Staff ID: {currentStaff?.staffId || "REC-201"} · Aarogya Family
+              Clinic
+            </Text>
+          </div>
+        </div>
+        <Button
+          variant="danger"
+          size="sm"
+          icon={LogOut}
+          onClick={staffLogout}
+          className="profile-logout-btn"
+        >
+          Sign out
+        </Button>
+      </Card>
+
+      {/* Desk Status Toggle */}
+      <Card style={{ padding: "12px 14px" }}>
+        <Text
+          size="xs"
+          weight="bold"
+          tone="muted"
+          style={{ letterSpacing: "0.06em", marginBottom: "8px" }}
+        >
+          FRONT DESK STATION STATUS
+        </Text>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "1fr 1fr",
+            gap: "8px",
+          }}
+        >
+          <button
+            type="button"
+            className={`choice ${deskStatus === "online" ? "choice-active" : ""}`}
+            style={{
+              minHeight: "44px",
+              padding: "6px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={() => setDeskStatus("online")}
+          >
+            🟢 Desk Active (Station 1)
+          </button>
+          <button
+            type="button"
+            className={`choice ${deskStatus === "break" ? "choice-active" : ""}`}
+            style={{
+              minHeight: "44px",
+              padding: "6px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={() => setDeskStatus("break")}
+          >
+            ☕ Shift Break
+          </button>
+        </div>
+      </Card>
+
+      {/* Station Information & Equipment */}
+      <div className="profile-id-strip">
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">ASSIGNED SHIFT</span>
+            <span
+              className="id-chip-value"
+              style={{ fontSize: "15px", color: "#1d4ed8" }}
+            >
+              Morning Shift
+            </span>
+            <span style={{ fontSize: "11px", color: "#64748b" }}>
+              08:30 AM – 04:30 PM (Mon-Sat)
+            </span>
+          </div>
+        </div>
+
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">TOKEN PRINTER</span>
+            <span
+              className="id-chip-value"
+              style={{ fontSize: "15px", color: "#166534" }}
+            >
+              EPSON TM-T82X
+            </span>
+            <span style={{ fontSize: "11px", color: "#64748b" }}>
+              Thermal USB Connected
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* Reception Details */}
+      <Card>
+        <Text size="md" weight="bold" style={{ marginBottom: "12px" }}>
+          Staff Account & Workstation Details
+        </Text>
+        <div style={{ display: "grid", gap: "12px" }}>
+          <Field
+            label="Official Reception Email"
+            value={currentStaff?.email || "reception@aarogya.in"}
+            disabled
+          />
+          <Field
+            label="Station Location"
+            value="Ground Floor Lobby · Counter 1"
+            disabled
+          />
+          <Field
+            label="Assigned Doctors Today"
+            value="Dr. Arjun Sharma (Room 2), Dr. Meera Nair (Room 1)"
+            disabled
+          />
+          <Button
+            size="sm"
+            onClick={() => {
+              setSaved(true)
+              setTimeout(() => setSaved(false), 2500)
+            }}
+          >
+            {saved ? "Station settings saved!" : "Save station settings"}
+          </Button>
+        </div>
+      </Card>
+    </div>
+  )
+}
+

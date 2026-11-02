@@ -535,7 +535,7 @@ export function ReceptionHeader({ mobileMenu }: { mobileMenu: () => void }) {
           roleBadge={`Receptionist · ${currentStaff?.staffId || "REC-201"}`}
           subtext={currentStaff?.email || "reception@aarogya.in"}
           accentColor="#1d4ed8"
-          onProfileClick={() => setReceptionPage("Activity log")}
+          onProfileClick={() => setReceptionPage("Profile")}
           onSignOutClick={staffLogout}
         />
       </div>
@@ -552,6 +552,7 @@ export function ReceptionSidebar({ close }: { close?: () => void }) {
     ["Quick walk-in", UserRoundPlus],
     ["Arrivals", LocateFixed],
     ["Activity log", Activity],
+    ["Profile", UserRound],
   ]
 
   const handleClose = () => {
@@ -680,7 +681,7 @@ export function DoctorHeader({ mobileMenu }: { mobileMenu: () => void }) {
           roleBadge={`${currentStaff?.specialty || "Cardiology"} · ${currentStaff?.staffId || "DOC-101"}`}
           subtext={`${currentStaff?.room || "Room 2"} · ${currentStaff?.email || "doctor@aarogya.in"}`}
           accentColor="#7653a6"
-          onProfileClick={() => setDoctorPage("Overview")}
+          onProfileClick={() => setDoctorPage("Profile")}
           onSignOutClick={staffLogout}
         />
       </div>
@@ -696,6 +697,7 @@ export function DoctorSidebar({ close }: { close?: () => void }) {
     ["Live queue", ListChecks],
     ["Consultation", Stethoscope],
     ["Completed visits", CheckCircle2],
+    ["Profile", UserRound],
   ]
 
   const handleClose = () => {

@@ -5,6 +5,7 @@ import {
   CheckCircle2,
   Clock3,
   HeartPulse,
+  LogOut,
   MoreHorizontal,
   Plus,
   Stethoscope,
@@ -62,72 +63,64 @@ export function DoctorOverviewView({
         </div>
       </div>
 
-      <div className="stats-grid">
-        <Card>
-          <Text size="sm" tone="muted">
-            WAITING
-          </Text>
-          <Text size="xl" weight="bold">
-            {waitingPatients.length}
-          </Text>
-          <Text size="sm" tone="teal">
-            {checkedInCount} checked in & ready
-          </Text>
-        </Card>
-        <Card>
-          <Text size="sm" tone="muted">
-            SEEN TODAY
-          </Text>
-          <Text size="xl" weight="bold">
-            {completedToday + 14}
-          </Text>
-        </Card>
-        <Card>
-          <Text size="sm" tone="muted">
-            AVG. CONSULTATION
-          </Text>
-          <Text size="xl" weight="bold">
-            11 min
-          </Text>
-        </Card>
+      <div className="doctor-stats-strip">
+        <div className="doc-stat-pill">
+          <span className="doc-stat-label">WAITING</span>
+          <span className="doc-stat-val text-teal">{waitingPatients.length}</span>
+          <span className="doc-stat-sub">{checkedInCount} checked in</span>
+        </div>
+        <div className="doc-stat-pill">
+          <span className="doc-stat-label">SEEN TODAY</span>
+          <span className="doc-stat-val">{completedToday + 14}</span>
+          <span className="doc-stat-sub">consultations</span>
+        </div>
+        <div className="doc-stat-pill">
+          <span className="doc-stat-label">AVG. TIME</span>
+          <span className="doc-stat-val">11 min</span>
+          <span className="doc-stat-sub">per visit</span>
+        </div>
       </div>
 
       {inConsultationPatient ? (
-        <Card className="current-patient">
-          <div className="current-accent" />
-          <div style={{ flex: 1 }}>
+        <Card className="current-patient-compact">
+          <div className="current-patient-header">
             <Badge>{inConsultationPatient.status}</Badge>
-            <Text size="xs" tone="muted">
-              ACTIVE PATIENT IN ROOM 2
-            </Text>
-            <Text size="xl" weight="bold">
-              {inConsultationPatient.token} ·{" "}
-              {inConsultationPatient.patientName}
-            </Text>
-            <Text tone="muted">
-              {inConsultationPatient.reasonForVisit || "Follow-up consultation"}
-            </Text>
+            <span className="active-room-subtag">ROOM 2 · ACTIVE PATIENT</span>
           </div>
-          <Button onClick={onOpenConsultation}>
+          <div className="current-patient-identity">
+            <span className="token-chip-pill">{inConsultationPatient.token}</span>
+            <div className="current-patient-text">
+              <Text size="md" weight="bold">
+                {inConsultationPatient.patientName}
+              </Text>
+              <Text size="xs" tone="muted">
+                {inConsultationPatient.reasonForVisit || "Follow-up consultation"}
+              </Text>
+            </div>
+          </div>
+          <Button size="sm" icon={Stethoscope} full onClick={onOpenConsultation}>
             Open consultation workspace
           </Button>
         </Card>
       ) : (
-        <Card className="current-patient">
-          <div className="current-accent" />
-          <div style={{ flex: 1 }}>
+        <Card className="current-patient-compact">
+          <div className="current-patient-header">
             <Badge>Ready</Badge>
-            <Text size="xs" tone="muted">
-              CONSULTATION ROOM READY
-            </Text>
-            <Text size="xl" weight="bold">
-              No patient currently inside
-            </Text>
-            <Text tone="muted">
-              Call the next patient in queue to begin consultation.
-            </Text>
+            <span className="active-room-subtag">CONSULTATION ROOM 2</span>
           </div>
-          <Button onClick={onOpenQueue}>Call next patient</Button>
+          <div className="current-patient-identity">
+            <div className="current-patient-text">
+              <Text size="md" weight="bold">
+                No patient currently inside
+              </Text>
+              <Text size="xs" tone="muted">
+                Call the next patient in queue to begin consultation.
+              </Text>
+            </div>
+          </div>
+          <Button size="sm" icon={Bell} full onClick={onOpenQueue}>
+            Call next patient
+          </Button>
         </Card>
       )}
 
@@ -280,12 +273,14 @@ export function DoctorLiveQueueView({
                 <span className="row-actions cell-actions">
                   <Button
                     variant="secondary"
+                    size="sm"
                     onClick={() => onStartConsultation(item)}
                   >
                     Examine
                   </Button>
                   <Button
                     variant="ghost"
+                    size="sm"
                     onClick={() => skipPatient(item.token)}
                     title="Move back 3 positions and add 1 strike"
                   >
@@ -459,40 +454,60 @@ export function DoctorConsultationView({
               </Button>
             </div>
             {prescriptions.map((rx) => (
-              <div className="medicine-row" key={rx.id}>
-                <Field
-                  placeholder="Medicine name (e.g. Paracetamol)"
-                  value={rx.medicine}
-                  onChange={(e) =>
-                    handleUpdateMedicine(rx.id, "medicine", e.target.value)
-                  }
-                />
-                <Field
-                  placeholder="Dose"
-                  value={rx.dose}
-                  onChange={(e) =>
-                    handleUpdateMedicine(rx.id, "dose", e.target.value)
-                  }
-                />
-                <Field
-                  placeholder="Frequency"
-                  value={rx.frequency}
-                  onChange={(e) =>
-                    handleUpdateMedicine(rx.id, "frequency", e.target.value)
-                  }
-                />
-                <Field
-                  placeholder="Duration"
-                  value={rx.duration}
-                  onChange={(e) =>
-                    handleUpdateMedicine(rx.id, "duration", e.target.value)
-                  }
-                />
-                <IconButton
-                  icon={X}
-                  label="Remove medicine"
-                  onClick={() => handleRemoveMedicine(rx.id)}
-                />
+              <div className="medicine-card-modern" key={rx.id}>
+                <div className="medicine-top-row">
+                  <input
+                    className="medicine-input-main"
+                    placeholder="Medicine name (e.g. Paracetamol 650mg)"
+                    value={rx.medicine}
+                    onChange={(e) =>
+                      handleUpdateMedicine(rx.id, "medicine", e.target.value)
+                    }
+                  />
+                  <button
+                    type="button"
+                    className="medicine-remove-btn"
+                    onClick={() => handleRemoveMedicine(rx.id)}
+                    title="Remove medicine"
+                  >
+                    <X size={15} />
+                  </button>
+                </div>
+                <div className="medicine-triplet-row">
+                  <div className="medicine-subfield">
+                    <span className="subfield-tag">DOSE</span>
+                    <input
+                      className="medicine-input-sub"
+                      placeholder="1 tab"
+                      value={rx.dose}
+                      onChange={(e) =>
+                        handleUpdateMedicine(rx.id, "dose", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="medicine-subfield">
+                    <span className="subfield-tag">FREQ</span>
+                    <input
+                      className="medicine-input-sub"
+                      placeholder="TDS (3x)"
+                      value={rx.frequency}
+                      onChange={(e) =>
+                        handleUpdateMedicine(rx.id, "frequency", e.target.value)
+                      }
+                    />
+                  </div>
+                  <div className="medicine-subfield">
+                    <span className="subfield-tag">DURATION</span>
+                    <input
+                      className="medicine-input-sub"
+                      placeholder="3 days"
+                      value={rx.duration}
+                      onChange={(e) =>
+                        handleUpdateMedicine(rx.id, "duration", e.target.value)
+                      }
+                    />
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -561,6 +576,182 @@ export function DoctorCompletedVisitsView() {
               </span>
             </div>
           ))}
+        </div>
+      </Card>
+    </div>
+  )
+}
+
+export function DoctorProfilePageView() {
+  const { currentStaff, staffLogout, doctors } = useQueue()
+  const doc =
+    doctors.find((d) => d.name === currentStaff?.name) ||
+    doctors[0]
+  const [opdStatus, setOpdStatus] = useState<"active" | "break" | "concluded">(
+    "active",
+  )
+  const [fee, setFee] = useState(doc.fee || 600)
+  const [saved, setSaved] = useState(false)
+
+  return (
+    <div className="content-stack">
+      {/* Profile Header Card */}
+      <Card className="profile-hero-card">
+        <div className="profile-hero-main">
+          <img
+            src={doc.photo}
+            alt={doc.name}
+            className="doctor-avatar"
+            style={{ width: "52px", height: "56px" }}
+          />
+          <div className="profile-hero-info">
+            <div className="profile-hero-name-row">
+              <Text size="md" weight="bold">
+                {doc.name}
+              </Text>
+              <span className="verified-pill">
+                <CheckCircle2 size={12} /> Verified Doctor
+              </span>
+            </div>
+            <Text size="xs" tone="muted">
+              {doc.specialty} · {doc.experienceYears} yrs experience ·{" "}
+              {currentStaff?.staffId || "DOC-101"}
+            </Text>
+          </div>
+        </div>
+        <Button
+          variant="danger"
+          size="sm"
+          icon={LogOut}
+          onClick={staffLogout}
+          className="profile-logout-btn"
+        >
+          Sign out
+        </Button>
+      </Card>
+
+      {/* OPD Session Status Pill Selector */}
+      <Card style={{ padding: "12px 14px" }}>
+        <Text
+          size="xs"
+          weight="bold"
+          tone="muted"
+          style={{ letterSpacing: "0.06em", marginBottom: "8px" }}
+        >
+          CLINICAL OPD SESSION STATUS
+        </Text>
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "8px",
+          }}
+        >
+          <button
+            type="button"
+            className={`choice ${opdStatus === "active" ? "choice-active" : ""}`}
+            style={{
+              minHeight: "44px",
+              padding: "6px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={() => setOpdStatus("active")}
+          >
+            🟢 Active OPD
+          </button>
+          <button
+            type="button"
+            className={`choice ${opdStatus === "break" ? "choice-active" : ""}`}
+            style={{
+              minHeight: "44px",
+              padding: "6px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={() => setOpdStatus("break")}
+          >
+            ☕ 15m Break
+          </button>
+          <button
+            type="button"
+            className={`choice ${opdStatus === "concluded" ? "choice-active" : ""}`}
+            style={{
+              minHeight: "44px",
+              padding: "6px",
+              fontSize: "12px",
+              fontWeight: 600,
+            }}
+            onClick={() => setOpdStatus("concluded")}
+          >
+            🏁 Concluded
+          </button>
+        </div>
+      </Card>
+
+      {/* Doctor Credentials & Clinic Practice Strip */}
+      <div className="profile-id-strip">
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">MEDICAL COUNCIL REG. NO.</span>
+            <span className="id-chip-value" style={{ fontSize: "15px" }}>
+              KMC-48291
+            </span>
+            <span style={{ fontSize: "11px", color: "#64748b" }}>
+              Karnataka Medical Council
+            </span>
+          </div>
+        </div>
+
+        <div className="profile-id-chip">
+          <div className="id-chip-meta">
+            <span className="id-chip-label">ASSIGNED ROOM & CLINIC</span>
+            <span className="id-chip-value" style={{ fontSize: "15px" }}>
+              Room 2 · Richmond Rd
+            </span>
+            <span style={{ fontSize: "11px", color: "#64748b" }}>
+              Aarogya Family Clinic
+            </span>
+          </div>
+        </div>
+      </div>
+
+      {/* OPD Schedule & Queue Preferences */}
+      <Card>
+        <Text size="md" weight="bold" style={{ marginBottom: "12px" }}>
+          Consultation & Queue Settings
+        </Text>
+        <div style={{ display: "grid", gap: "12px" }}>
+          <Field
+            label="OPD Consultation Fee (₹)"
+            type="number"
+            value={fee.toString()}
+            onChange={(e) => setFee(parseInt(e.target.value, 10) || 0)}
+          />
+          <Field
+            label="Doctor Qualifications & Degrees"
+            value={doc.qualification}
+            disabled
+          />
+          <Field
+            label="Languages Spoken"
+            value={doc.languages.join(", ")}
+            disabled
+          />
+          <Field
+            label="Standard Consultation Timings"
+            value={doc.timings}
+            disabled
+          />
+          <Button
+            size="sm"
+            onClick={() => {
+              setSaved(true)
+              setTimeout(() => setSaved(false), 2500)
+            }}
+          >
+            {saved ? "Settings saved!" : "Save preferences"}
+          </Button>
         </div>
       </Card>
     </div>

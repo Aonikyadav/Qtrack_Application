@@ -1316,27 +1316,27 @@
       "token phone status"
       "meta meta meta"
       "actions actions actions";
-    gap: 8px 12px;
-    padding: 16px;
+    gap: 6px 10px;
+    padding: 12px 14px;
     background: #ffffff;
     border: 1px solid var(--border);
-    border-radius: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.03);
   }
   .table-row.queue-card .cell-token {
     grid-area: token;
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 900;
     color: var(--teal-900);
     background: var(--teal-50);
-    padding: 6px 10px;
-    border-radius: 8px;
+    padding: 4px 8px;
+    border-radius: 6px;
     align-self: center;
     border: 1px solid #ccfbf1;
   }
   .table-row.queue-card .cell-patient {
     grid-area: patient;
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
     color: #0f172a;
     display: flex;
@@ -1346,7 +1346,7 @@
   }
   .table-row.queue-card .cell-phone {
     grid-area: phone;
-    font-size: 12px;
+    font-size: 11px;
     color: var(--muted);
   }
   .table-row.queue-card .cell-status {
@@ -1358,30 +1358,31 @@
   .table-row.queue-card .cell-strikes {
     display: inline-flex;
     align-items: center;
-    font-size: 12px;
+    font-size: 11px;
     color: #475569;
     background: #f1f5f9;
-    padding: 4px 8px;
-    border-radius: 6px;
+    padding: 2px 6px;
+    border-radius: 4px;
     font-weight: 600;
   }
   .table-row.queue-card .cell-wait {
-    margin-right: 8px;
+    margin-right: 6px;
   }
   .table-row.queue-card .cell-actions {
     grid-area: actions;
     width: 100%;
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 6px;
-    padding-top: 10px;
+    gap: 6px;
+    margin-top: 4px;
+    padding-top: 8px;
     border-top: 1px solid #f1f5f9;
   }
   .table-row.queue-card .cell-actions .button {
     flex: 1;
-    min-height: 44px;
-    font-size: 13px;
+    min-height: 36px;
+    font-size: 12px;
+    padding: 0 10px;
     justify-content: center;
   }
 
@@ -2033,4 +2034,363 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .q-landing *, .q-landing *::before, .q-landing *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+}
+
+/* ========================================================
+   DOCTOR DASHBOARD COMPACT & BALANCED OVERVIEW STYLES
+   ======================================================== */
+.doctor-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+.doc-stat-pill {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 10px 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 2px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.doc-stat-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.doc-stat-val {
+  font-size: 20px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+.doc-stat-sub {
+  font-size: 10px;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.current-patient-compact {
+  padding: 12px 14px;
+  border-radius: 14px;
+  border: 1px solid #e9d5ff;
+  background: linear-gradient(135deg, #faf5ff 0%, #f5e8ff 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.active-room-subtag {
+  font-size: 11px;
+  font-weight: 700;
+  color: #7e22ce;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+.token-chip-pill {
+  font-size: 15px;
+  font-weight: 800;
+  color: #6b21a8;
+  background: #ffffff;
+  padding: 3px 8px;
+  border-radius: 6px;
+  border: 1px solid #d8b4fe;
+}
+
+/* ========================================================
+   DOCTOR CONSULTATION PRESCRIPTION COMPACT 3-COL ROW STYLES
+   ======================================================== */
+.medicine-card-modern {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  padding: 10px 12px;
+  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  transition: border-color 0.15s ease;
+}
+.medicine-card-modern:focus-within {
+  border-color: #0d9488;
+  background: #ffffff;
+}
+.medicine-top-row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.medicine-input-main {
+  flex: 1;
+  min-height: 38px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 0 12px;
+  font-size: 14px;
+  font-weight: 600;
+  background: #ffffff;
+  color: #0f172a;
+  outline: none;
+}
+.medicine-input-main:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.15);
+}
+.medicine-remove-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background: #fef2f2;
+  color: #dc2626;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.medicine-remove-btn:hover {
+  background: #fee2e2;
+}
+.medicine-triplet-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+.medicine-subfield {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.subfield-tag {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.medicine-input-sub {
+  min-height: 32px;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 0 8px;
+  font-size: 12px;
+  background: #ffffff;
+  color: #1e293b;
+  outline: none;
+}
+.medicine-input-sub:focus {
+  border-color: #0d9488;
+  box-shadow: 0 0 0 2px rgba(13, 148, 136, 0.12);
+}
+
+/* ========================================================
+   RECEPTION LIVE QUEUE 4-COLUMN STAT STRIP
+   ======================================================== */
+.reception-stats-strip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 4px;
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 8px 6px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.rec-stat-chip {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 1px;
+  padding: 2px;
+}
+.rec-stat-chip + .rec-stat-chip {
+  border-left: 1px solid #f1f5f9;
+}
+.rec-stat-label {
+  font-size: 9px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.rec-stat-val {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+/* ========================================================
+   PROFILE PAGES (DOCTOR & RECEPTIONIST)
+   ======================================================== */
+.profile-hero-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+}
+.profile-hero-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.profile-hero-avatar {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 18px;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+.profile-hero-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.profile-hero-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.verified-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 9999px;
+  font-size: 11px;
+  font-weight: 700;
+  border: 1px solid;
+}
+.profile-status-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px 16px;
+  flex-wrap: wrap;
+}
+.profile-status-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.profile-status-btns {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.profile-status-pill-btn {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #cbd5e1;
+  background: #ffffff;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.profile-status-pill-btn:hover {
+  background: #f8fafc;
+}
+.profile-status-pill-btn.active {
+  background: #0f766e;
+  color: #ffffff;
+  border-color: #0f766e;
+  box-shadow: 0 2px 6px rgba(15, 118, 110, 0.25);
+}
+.profile-id-strip {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
+}
+.profile-id-chip {
+  background: #ffffff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.03);
+}
+.id-chip-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.id-chip-label {
+  font-size: 10px;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+.id-chip-value {
+  font-size: 16px;
+  font-weight: 800;
+  color: #0f172a;
+}
+.fee-input-wrap {
+  display: flex;
+  align-items: center;
+  background: #ffffff;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  overflow: hidden;
+  max-width: 200px;
+}
+.fee-currency {
+  padding: 0 12px;
+  font-weight: 700;
+  color: #64748b;
+  background: #f8fafc;
+  border-right: 1px solid #cbd5e1;
+  height: 38px;
+  display: grid;
+  place-items: center;
+}
+.fee-input {
+  border: 0;
+  padding: 0 12px;
+  height: 38px;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  width: 100%;
+  outline: none;
+}
+@media (max-width: 768px) {
+  .profile-hero-card {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 14px;
+  }
+  .profile-hero-card .profile-logout-btn {
+    width: 100%;
+  }
+  .profile-status-bar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .profile-status-btns {
+    width: 100%;
+  }
+  .profile-status-pill-btn {
+    flex: 1;
+    text-align: center;
+  }
 }

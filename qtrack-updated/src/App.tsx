@@ -38,6 +38,7 @@ import {
   QuickWalkInView,
   ArrivalsPageView,
   ActivityLogView,
+  ReceptionProfilePageView,
 } from "./components/receptionist/ReceptionViews"
 
 // Doctor Views
@@ -46,6 +47,7 @@ import {
   DoctorLiveQueueView,
   DoctorConsultationView,
   DoctorCompletedVisitsView,
+  DoctorProfilePageView,
 } from "./components/doctor/DoctorViews"
 
 // Admin Views
@@ -179,6 +181,8 @@ function ReceptionistDashboard() {
         return <ArrivalsPageView />
       case "Activity log":
         return <ActivityLogView />
+      case "Profile":
+        return <ReceptionProfilePageView />
       default:
         return (
           <ReceptionLiveQueue
@@ -255,6 +259,9 @@ function DoctorDashboard() {
           />
         )
       case "Completed visits":
+        return <DoctorCompletedVisitsView />
+      case "Profile":
+        return <DoctorProfilePageView />
       default:
         return <DoctorCompletedVisitsView />
     }
