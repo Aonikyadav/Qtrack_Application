@@ -98,6 +98,7 @@ export function UserMenuDropdown({
   return (
     <div
       ref={menuRef}
+      className="user-menu-wrap"
       style={{ position: "relative", display: "inline-block" }}
     >
       {/* Clickable Avatar Circle */}
@@ -106,9 +107,12 @@ export function UserMenuDropdown({
         onClick={() => setOpen(!open)}
         aria-label={`User menu for ${name}`}
         aria-expanded={open}
+        className="user-avatar-btn"
         style={{
           width: "38px",
           height: "38px",
+          minWidth: "38px",
+          minHeight: "38px",
           borderRadius: "50%",
           background: accentColor,
           color: "#ffffff",
@@ -132,11 +136,13 @@ export function UserMenuDropdown({
       {/* Dropdown Menu Popover */}
       {open && (
         <div
+          className="user-menu-popover"
           style={{
             position: "absolute",
             top: "calc(100% + 8px)",
             right: 0,
-            width: "240px",
+            width: "250px",
+            maxWidth: "calc(100vw - 24px)",
             background: "#ffffff",
             borderRadius: "12px",
             border: "1px solid #e2e8f0",
@@ -314,7 +320,7 @@ export function PatientHeader({ mobileMenu }: { mobileMenu: () => void }) {
 
   return (
     <div className="app-header">
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+      <div className="header-title-group">
         <div className="header-mobile">
           <IconButton
             icon={Menu}
@@ -322,9 +328,11 @@ export function PatientHeader({ mobileMenu }: { mobileMenu: () => void }) {
             onClick={mobileMenu || toggleSidebar}
           />
         </div>
-        <div>
-          <Text weight="semibold">Aarogya Family Clinic</Text>
-          <Text size="sm" tone="muted">
+        <div className="header-title-text">
+          <Text weight="semibold" className="header-main-title">
+            Aarogya Family Clinic
+          </Text>
+          <Text size="sm" tone="muted" className="header-subtitle">
             {todayStr} · Patient Portal
           </Text>
         </div>
@@ -332,18 +340,7 @@ export function PatientHeader({ mobileMenu }: { mobileMenu: () => void }) {
       <div className="header-actions">
         {/* Patient ID Pill */}
         <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "6px",
-            background: "#e6fffa",
-            color: "#0f766e",
-            padding: "4px 10px",
-            borderRadius: "9999px",
-            fontSize: "12px",
-            fontWeight: 700,
-            border: "1px solid #99f6e4",
-          }}
+          className="header-badge-pill"
           title={`Patient Identifier: ${patient.id} · Referral: ${patient.referralId}`}
         >
           <span>ID: {patient.id}</span>
@@ -509,7 +506,7 @@ export function ReceptionHeader({ mobileMenu }: { mobileMenu: () => void }) {
 
   return (
     <div className="app-header">
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+      <div className="header-title-group">
         <div className="header-mobile">
           <IconButton
             icon={Menu}
@@ -517,26 +514,17 @@ export function ReceptionHeader({ mobileMenu }: { mobileMenu: () => void }) {
             onClick={mobileMenu || toggleSidebar}
           />
         </div>
-        <div>
-          <Text weight="semibold">Reception Desk — Aarogya Family Clinic</Text>
-          <Text size="sm" tone="muted">
-            Staff ID: {currentStaff?.staffId || "REC-201"} · Front Desk Token
-            Station
+        <div className="header-title-text">
+          <Text weight="semibold" className="header-main-title">
+            Reception Desk
+          </Text>
+          <Text size="sm" tone="muted" className="header-subtitle">
+            Staff ID: {currentStaff?.staffId || "REC-201"} · Front Desk Station
           </Text>
         </div>
       </div>
       <div className="header-actions">
-        <span
-          style={{
-            background: "#eff6ff",
-            color: "#1d4ed8",
-            padding: "4px 10px",
-            borderRadius: "9999px",
-            fontSize: "12px",
-            fontWeight: 700,
-            border: "1px solid #bfdbfe",
-          }}
-        >
+        <span className="header-badge-pill front-desk-pill">
           FRONT DESK
         </span>
 
@@ -651,7 +639,7 @@ export function DoctorHeader({ mobileMenu }: { mobileMenu: () => void }) {
 
   return (
     <div className="app-header">
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+      <div className="header-title-group">
         <div className="header-mobile">
           <IconButton
             icon={Menu}
@@ -659,41 +647,29 @@ export function DoctorHeader({ mobileMenu }: { mobileMenu: () => void }) {
             onClick={mobileMenu || toggleSidebar}
           />
         </div>
-        <div>
-          <Text weight="semibold">
+        <div className="header-title-text">
+          <Text weight="semibold" className="header-main-title">
             {currentStaff?.name || "Dr. Arjun Sharma"} —{" "}
             {currentStaff?.room || "Room 2"}
           </Text>
-          <Text size="sm" tone="muted">
-            Staff ID: {currentStaff?.staffId || "DOC-101"} · Clinical Consultation
-            Station
+          <Text size="sm" tone="muted" className="header-subtitle">
+            Staff ID: {currentStaff?.staffId || "DOC-101"} · Clinical Workstation
           </Text>
         </div>
       </div>
       <div className="header-actions">
         {inConsultation && (
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              background: "#f4effb",
-              color: "#7653a6",
-              padding: "4px 10px",
-              borderRadius: "9999px",
-              fontSize: "12px",
-              fontWeight: 700,
-            }}
-          >
+          <div className="header-badge-pill consult-pill">
             <span
               style={{
                 width: "8px",
                 height: "8px",
                 borderRadius: "50%",
                 background: "#7653a6",
+                display: "inline-block",
               }}
             />
-            Inside: {inConsultation.token}
+            <span>Inside: {inConsultation.token}</span>
           </div>
         )}
 
@@ -802,7 +778,7 @@ export function AdminHeader({ mobileMenu }: { mobileMenu: () => void }) {
 
   return (
     <div className="app-header">
-      <div style={{ display: "flex", alignItems: "center", gap: "14px" }}>
+      <div className="header-title-group">
         <div className="header-mobile">
           <IconButton
             icon={Menu}
@@ -810,28 +786,18 @@ export function AdminHeader({ mobileMenu }: { mobileMenu: () => void }) {
             onClick={mobileMenu || toggleSidebar}
           />
         </div>
-        <div>
-          <Text weight="semibold">
-            Hospital & Clinic Operations Administration
+        <div className="header-title-text">
+          <Text weight="semibold" className="header-main-title">
+            Clinic Operations Admin
           </Text>
-          <Text size="sm" tone="muted">
-            Staff ID: {currentStaff?.staffId || "ADM-301"} · Master Control Portal
+          <Text size="sm" tone="muted" className="header-subtitle">
+            Staff ID: {currentStaff?.staffId || "ADM-301"} · Master Portal
           </Text>
         </div>
       </div>
       <div className="header-actions">
-        <span
-          style={{
-            background: "#fef3f2",
-            color: "#b42318",
-            padding: "4px 10px",
-            borderRadius: "9999px",
-            fontSize: "12px",
-            fontWeight: 700,
-            border: "1px solid #fecdca",
-          }}
-        >
-          ADMINISTRATOR
+        <span className="header-badge-pill admin-pill">
+          ADMIN
         </span>
 
         {/* Profile Avatar Popover Menu */}
@@ -920,69 +886,190 @@ export function AdminSidebar({ close }: { close?: () => void }) {
 }
 
 // ==========================================
-// 5. QUICK PORTAL SWITCHER (TESTING & REVIEW)
+// 5. MOBILE BOTTOM NAVIGATION BARS FOR STAFF
+// ==========================================
+
+export function ReceptionBottomNav() {
+  const { receptionPage, setReceptionPage } = useQueue()
+  const items: [string, LucideIcon][] = [
+    ["Live queue", ListChecks],
+    ["Quick walk-in", UserRoundPlus],
+    ["Arrivals", LocateFixed],
+    ["Activity log", Activity],
+  ]
+
+  return (
+    <div className="bottom-nav staff-bottom-nav">
+      {items.map(([name, Icon]) => (
+        <button
+          key={name}
+          type="button"
+          className={receptionPage === name ? "bottom-active" : ""}
+          onClick={() => setReceptionPage(name)}
+        >
+          <Icon size={20} />
+          <span>{name === "Quick walk-in" ? "Walk-in" : name === "Activity log" ? "Activity" : name}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export function DoctorBottomNav() {
+  const { doctorPage, setDoctorPage } = useQueue()
+  const items: [string, LucideIcon][] = [
+    ["Overview", Home],
+    ["Live queue", ListChecks],
+    ["Consultation", Stethoscope],
+    ["Completed visits", CheckCircle2],
+  ]
+
+  return (
+    <div className="bottom-nav staff-bottom-nav">
+      {items.map(([name, Icon]) => (
+        <button
+          key={name}
+          type="button"
+          className={doctorPage === name ? "bottom-active" : ""}
+          onClick={() => setDoctorPage(name)}
+        >
+          <Icon size={20} />
+          <span>{name === "Completed visits" ? "Completed" : name === "Live queue" ? "Queue" : name}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+export function AdminBottomNav() {
+  const { adminPage, setAdminPage } = useQueue()
+  const items: [string, LucideIcon][] = [
+    ["Clinic settings", Settings],
+    ["People", Users],
+    ["Analytics", Activity],
+  ]
+
+  return (
+    <div className="bottom-nav staff-bottom-nav admin-bottom-nav">
+      {items.map(([name, Icon]) => (
+        <button
+          key={name}
+          type="button"
+          className={adminPage === name ? "bottom-active" : ""}
+          onClick={() => setAdminPage(name)}
+        >
+          <Icon size={20} />
+          <span>{name === "Clinic settings" ? "Settings" : name === "People" ? "Roster" : name}</span>
+        </button>
+      ))}
+    </div>
+  )
+}
+
+// ==========================================
+// 6. QUICK PORTAL SWITCHER (TESTING & REVIEW)
 // ==========================================
 
 export function PortalSwitcher() {
   const { portal, setPortal } = useQueue()
+  const [mobileOpen, setMobileOpen] = useState(false)
 
-  const portals: [ActivePortal, string][] = [
-    ["landing", "🌐 Public Site"],
-    ["patient", "👤 Patient"],
-    ["receptionist", "📋 Reception"],
-    ["doctor", "🩺 Doctor"],
-    ["admin", "⚙️ Admin"],
-    ["display", "📺 TV Board"],
+  const portals: [ActivePortal, string, string][] = [
+    ["landing", "🌐 Public Site", "Patient info, clinic intro & portals gateway"],
+    ["patient", "👤 Patient Portal", "Live queue status, late pass & token tracker"],
+    ["receptionist", "📋 Reception Desk", "Walk-in registration & front desk queue"],
+    ["doctor", "🩺 Doctor Station", "Patient callouts, notes & digital prescriptions"],
+    ["admin", "⚙️ Clinic Admin", "Queue policies, grace window & staff roster"],
+    ["display", "📺 TV Waiting Board", "Waiting lounge digital signage & audio chimes"],
   ]
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "12px",
-        right: "12px",
-        zIndex: 9999,
-        background: "#102624",
-        border: "1px solid #294541",
-        borderRadius: "30px",
-        padding: "4px 6px",
-        display: "flex",
-        alignItems: "center",
-        gap: "4px",
-        boxShadow: "0 4px 14px rgba(0,0,0,0.25)",
-      }}
-    >
-      <span
-        style={{
-          color: "#5eead4",
-          fontSize: "11px",
-          fontWeight: 700,
-          paddingLeft: "8px",
-          paddingRight: "4px",
-        }}
-      >
-        PORTAL:
-      </span>
-      {portals.map(([p, label]) => (
+    <>
+      {/* Desktop Floating Bar (hidden on mobile <= 768px) */}
+      <div className="portal-switcher-desktop">
+        <span className="portal-switcher-label">PORTAL:</span>
+        {portals.map(([p, label]) => (
+          <button
+            key={p}
+            type="button"
+            className={portal === p ? "portal-btn-active" : "portal-btn"}
+            onClick={() => setPortal(p)}
+          >
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Mobile Floating Action Button (visible only on <= 768px) */}
+      <div className="portal-switcher-mobile">
         <button
-          key={p}
           type="button"
-          onClick={() => setPortal(p)}
-          style={{
-            background: portal === p ? "#0f766e" : "transparent",
-            color: portal === p ? "#ffffff" : "#b7c9c6",
-            border: "none",
-            borderRadius: "20px",
-            padding: "5px 10px",
-            fontSize: "12px",
-            fontWeight: portal === p ? 700 : 500,
-            cursor: "pointer",
-            transition: "all 0.15s ease",
-          }}
+          className="portal-fab"
+          onClick={() => setMobileOpen(true)}
+          aria-label="Switch QTrack Portal"
         >
-          {label}
+          <Sparkles size={16} />
+          <span>Switch Portal</span>
         </button>
-      ))}
-    </div>
+      </div>
+
+      {/* Mobile Slide-Up Modal / Bottom Sheet */}
+      {mobileOpen && (
+        <div
+          className="portal-modal-overlay"
+          onClick={() => setMobileOpen(false)}
+        >
+          <div
+            className="portal-modal-sheet"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="portal-modal-head">
+              <div>
+                <strong style={{ fontSize: "16px", color: "#0f172a" }}>
+                  Switch Workstation Portal
+                </strong>
+                <p style={{ fontSize: "12px", color: "#64748b", margin: "2px 0 0" }}>
+                  Jump to any clinic role or patient dashboard
+                </p>
+              </div>
+              <button
+                type="button"
+                className="portal-modal-close"
+                onClick={() => setMobileOpen(false)}
+                aria-label="Close portal switcher"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <div className="portal-modal-list">
+              {portals.map(([p, label, desc]) => (
+                <button
+                  key={p}
+                  type="button"
+                  className={`portal-choice-card ${
+                    portal === p ? "portal-choice-active" : ""
+                  }`}
+                  onClick={() => {
+                    setPortal(p)
+                    setMobileOpen(false)
+                  }}
+                >
+                  <div className="portal-choice-info">
+                    <span className="portal-choice-title">{label}</span>
+                    <span className="portal-choice-desc">{desc}</span>
+                  </div>
+                  {portal === p && (
+                    <span className="portal-choice-check">
+                      <CheckCircle2 size={18} color="#0f766e" />
+                    </span>
+                  )}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }

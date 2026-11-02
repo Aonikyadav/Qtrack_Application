@@ -105,30 +105,11 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
   }
 
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background: "#f8fafc",
-        color: "#0f172a",
-        fontFamily: "Inter, system-ui, -apple-system, sans-serif",
-        display: "flex",
-        flexDirection: "column",
-      }}
-    >
+    <div className="tv-display-container">
       {/* 1. TOP HOSPITAL DIGITAL SIGNAGE HEADER */}
-      <header
-        style={{
-          background: "#ffffff",
-          borderBottom: "2px solid #e2e8f0",
-          padding: "16px 36px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          boxShadow: "0 4px 14px rgba(0, 0, 0, 0.04)",
-        }}
-      >
+      <header className="tv-display-header">
         {/* Clinic Identity */}
-        <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+        <div className="tv-header-identity">
           <div
             style={{
               width: "48px",
@@ -197,7 +178,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
         </div>
 
         {/* Live Clock & Action Controls */}
-        <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
+        <div className="tv-header-controls">
           {/* Digital Clock Box */}
           <div
             style={{
@@ -299,17 +280,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
       </header>
 
       {/* 2. CLINIC STATUS STRIP */}
-      <div
-        style={{
-          background: "#ffffff",
-          borderBottom: "1px solid #e2e8f0",
-          padding: "10px 36px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          fontSize: "13px",
-        }}
-      >
+      <div className="tv-status-strip">
         <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
           <div
             style={{
@@ -361,15 +332,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
       </div>
 
       {/* 3. MAIN DASHBOARD CONTENT */}
-      <div
-        style={{
-          flex: 1,
-          padding: "28px 36px",
-          display: "flex",
-          flexDirection: "column",
-          gap: "24px",
-        }}
-      >
+      <div className="tv-main-content">
         {/* Section Title */}
         <div
           style={{
@@ -423,15 +386,10 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
         </div>
 
         {/* 4. DOCTOR ROOM CONSULTATION CARDS (LARGE, ULTRA-LEGIBLE) */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(auto-fit, minmax(460px, 1fr))",
-            gap: "24px",
-          }}
-        >
+        <div className="tv-doctor-board-grid">
           {/* ROOM 1: DR. ARJUN SHARMA */}
           <div
+            className="tv-doctor-card"
             style={{
               background: "#ffffff",
               borderRadius: "20px",
@@ -646,6 +604,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
 
           {/* ROOM 2: DR. MEERA NAIR */}
           <div
+            className="tv-doctor-card"
             style={{
               background: "#ffffff",
               borderRadius: "20px",
@@ -860,27 +819,9 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
         </div>
 
         {/* 5. BOTTOM SECTION: UPCOMING TOKENS & QR CHECK-IN */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 340px",
-            gap: "24px",
-            alignItems: "stretch",
-          }}
-        >
+        <div className="tv-bottom-grid">
           {/* UP NEXT TOKENS TABLE / CARD */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "16px",
-              border: "1px solid #e2e8f0",
-              padding: "20px 24px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "space-between",
-            }}
-          >
+          <div className="tv-upcoming-card">
             <div>
               <div
                 style={{
@@ -1031,20 +972,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
           </div>
 
           {/* QR CODE ARRIVAL CHECK-IN CARD */}
-          <div
-            style={{
-              background: "#ffffff",
-              borderRadius: "16px",
-              border: "1px solid #e2e8f0",
-              padding: "20px 24px",
-              boxShadow: "0 4px 12px rgba(0,0,0,0.03)",
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              textAlign: "center",
-              justifyContent: "center",
-            }}
-          >
+          <div className="tv-qr-box">
             <div
               style={{
                 width: "100px",

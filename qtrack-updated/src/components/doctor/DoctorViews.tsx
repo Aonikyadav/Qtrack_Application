@@ -258,20 +258,26 @@ export function DoctorLiveQueueView({
             </div>
           ) : (
             doctorQueue.map((item) => (
-              <div className="table-row" key={item.token}>
-                <span>
+              <div className="table-row queue-card" key={item.token}>
+                <span className="cell-token">
                   <strong>{item.token}</strong>
                 </span>
-                <span>
+                <span className="cell-patient">
                   <strong>{item.patientName}</strong>
                   {item.isPriority && <Badge dot={false}>Priority</Badge>}
                 </span>
-                <span>
+                <span className="cell-status">
                   <Badge>{item.status}</Badge>
                 </span>
-                <span>{item.estimatedWaitMinutes}m</span>
-                <span>{item.strikes}/3</span>
-                <span className="row-actions">
+                <span className="cell-wait">
+                  <span className="meta-label">Wait: </span>
+                  {item.estimatedWaitMinutes}m
+                </span>
+                <span className="cell-strikes">
+                  <span className="meta-label">Strikes: </span>
+                  {item.strikes}/3
+                </span>
+                <span className="row-actions cell-actions">
                   <Button
                     variant="secondary"
                     onClick={() => onStartConsultation(item)}

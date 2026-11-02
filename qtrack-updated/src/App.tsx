@@ -8,10 +8,13 @@ import {
   PatientBottomNav,
   ReceptionHeader,
   ReceptionSidebar,
+  ReceptionBottomNav,
   DoctorHeader,
   DoctorSidebar,
+  DoctorBottomNav,
   AdminHeader,
   AdminSidebar,
+  AdminBottomNav,
   PortalSwitcher,
 } from "./components/layout/LayoutComponents"
 
@@ -205,6 +208,7 @@ function ReceptionistDashboard() {
         <ReceptionHeader mobileMenu={toggleSidebar} />
         <main className="main-content">{renderReceptionContent()}</main>
       </div>
+      <ReceptionBottomNav />
     </div>
   )
 }
@@ -276,6 +280,7 @@ function DoctorDashboard() {
         <DoctorHeader mobileMenu={toggleSidebar} />
         <main className="main-content">{renderDoctorContent()}</main>
       </div>
+      <DoctorBottomNav />
     </div>
   )
 }
@@ -331,6 +336,7 @@ function AdminDashboard() {
         <AdminHeader mobileMenu={toggleSidebar} />
         <main className="main-content">{renderAdminContent()}</main>
       </div>
+      <AdminBottomNav />
     </div>
   )
 }
