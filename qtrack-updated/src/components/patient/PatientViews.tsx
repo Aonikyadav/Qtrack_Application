@@ -17,6 +17,7 @@ import {
   MapPin,
   Phone,
   Plus,
+  Printer,
   QrCode,
   Search,
   ShieldCheck,
@@ -24,6 +25,7 @@ import {
   X,
 } from "lucide-react"
 import { useQueue } from "../../context/QueueContext"
+import { generatePrescriptionPdf } from "../../utils/prescriptionPdf"
 import type { Doctor } from "../../types"
 import { Badge } from "../common/Badge"
 import { Button, IconButton } from "../common/Button"
@@ -912,9 +914,10 @@ export function NoticePageView() {
 }
 
 export function HistoryPageView() {
-  const { consultations } = useQueue()
+  const { consultations, showToast } = useQueue()
   const [selectedVisit, setSelectedVisit] =
-    useState<typeof consultations[0] | null>(null)
+    useState<(typeof consultations)[0] | null>(null)
+  const [isDownloading, setIsDownloading] = useState(false)
 
   return (
     <div className="content-stack patient-width">
@@ -970,75 +973,182 @@ export function HistoryPageView() {
       <Modal
         isOpen={selectedVisit !== null}
         onClose={() => setSelectedVisit(null)}
-        title="Consultation Summary & Prescription"
+        title="Consultation & Prescription"
         subtitle={`Visit on ${selectedVisit?.date} · ${selectedVisit?.doctorName}`}
       >
         {selectedVisit && (
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "16px" }}
+            style={{ display: "flex", flexDirection: "column", gap: "14px" }}
           >
+            {/* Diagnosis Banner */}
             <div
               style={{
-                padding: "12px",
-                background: "#f7f9f8",
-                borderRadius: "8px",
+                padding: "12px 14px",
+                background: "var(--teal-50)",
+                border: "1px solid var(--border)",
+                borderRadius: "10px",
               }}
             >
-              <Text size="sm" weight="bold" tone="muted">
-                DIAGNOSIS
-              </Text>
-              <Text weight="semibold">{selectedVisit.diagnosis}</Text>
-            </div>
-
-            <div>
-              <Text size="sm" weight="bold" tone="muted">
-                CLINICAL NOTES
-              </Text>
-              <Text>{selectedVisit.clinicalNotes}</Text>
-            </div>
-
-            <div>
-              <Text
-                size="sm"
-                weight="bold"
-                tone="muted"
-                style={{ marginBottom: "8px" }}
+              <div
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: "var(--teal-800)",
+                  textTransform: "uppercase",
+                  marginBottom: "3px",
+                }}
               >
-                PRESCRIBED MEDICINES
-              </Text>
-              {selectedVisit.prescriptions.map((p) => (
-                <div
-                  key={p.id}
-                  style={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    padding: "8px 12px",
-                    borderBottom: "1px solid #dfe5e3",
-                  }}
-                >
-                  <div>
-                    <Text weight="semibold">{p.medicine}</Text>
-                    <Text size="xs" tone="muted">
-                      {p.dose} · {p.frequency}
-                    </Text>
-                  </div>
-                  <Badge>{p.duration}</Badge>
-                </div>
-              ))}
+                Provisional Diagnosis
+              </div>
+              <div
+                style={{
+                  fontSize: "15px",
+                  fontWeight: 700,
+                  color: "var(--ink)",
+                }}
+              >
+                {selectedVisit.diagnosis}
+              </div>
             </div>
 
-            <Button
-              icon={Download}
-              full
-              onClick={() => {
-                alert(
-                  `Downloading digital prescription PDF for ${selectedVisit.patientName}...`,
-                )
-                setSelectedVisit(null)
+            {/* Clinical Observations */}
+            <div
+              style={{
+                padding: "12px 14px",
+                background: "var(--surface)",
+                border: "1px solid var(--border)",
+                borderRadius: "10px",
               }}
             >
-              Download official PDF summary
-            </Button>
+              <div
+                style={{
+                  fontSize: "10px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: "var(--muted)",
+                  textTransform: "uppercase",
+                  marginBottom: "4px",
+                }}
+              >
+                Clinical Observations
+              </div>
+              <div
+                style={{
+                  fontSize: "13px",
+                  lineHeight: 1.5,
+                  color: "var(--ink)",
+                }}
+              >
+                {selectedVisit.clinicalNotes}
+              </div>
+            </div>
+
+            {/* Prescribed Medications */}
+            <div>
+              <div
+                style={{
+                  fontSize: "11px",
+                  fontWeight: 700,
+                  letterSpacing: "0.06em",
+                  color: "var(--muted)",
+                  textTransform: "uppercase",
+                  marginBottom: "8px",
+                }}
+              >
+                Prescribed Medicines ({selectedVisit.prescriptions.length})
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "6px",
+                }}
+              >
+                {selectedVisit.prescriptions.map((p) => (
+                  <div
+                    key={p.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 12px",
+                      background: "var(--surface)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                    }}
+                  >
+                    <div>
+                      <div
+                        style={{
+                          fontSize: "13px",
+                          fontWeight: 700,
+                          color: "var(--ink)",
+                        }}
+                      >
+                        {p.medicine}
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "11px",
+                          color: "var(--muted)",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {p.dose} · {p.frequency}
+                      </div>
+                    </div>
+                    <Badge>{p.duration}</Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Actions: Download Official PDF & Print */}
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "8px",
+                marginTop: "6px",
+              }}
+            >
+              <Button
+                icon={Download}
+                full
+                disabled={isDownloading}
+                onClick={() => {
+                  try {
+                    setIsDownloading(true)
+                    generatePrescriptionPdf(selectedVisit)
+                    showToast(
+                      "Official Prescription PDF downloaded successfully!",
+                      "success",
+                    )
+                    setTimeout(() => setIsDownloading(false), 1200)
+                  } catch (err) {
+                    console.error("PDF generation error:", err)
+                    showToast("Could not generate PDF file.", "danger")
+                    setIsDownloading(false)
+                  }
+                }}
+              >
+                {isDownloading
+                  ? "Generating Official PDF..."
+                  : "Download official PDF summary"}
+              </Button>
+
+              <Button
+                variant="secondary"
+                icon={Printer}
+                full
+                onClick={() => {
+                  window.print()
+                }}
+              >
+                Print prescription
+              </Button>
+            </div>
           </div>
         )}
       </Modal>

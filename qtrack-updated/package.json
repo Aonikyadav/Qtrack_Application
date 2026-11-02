@@ -10,6 +10,7 @@
     "format": "oxfmt src"
   },
   "dependencies": {
+    "jspdf": "^4.2.1",
     "lucide-react": "^1.64.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

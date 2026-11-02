@@ -3,6 +3,7 @@ import {
   AlertCircle,
   ArrowLeft,
   Bell,
+  Check,
   CheckCircle2,
   ChevronDown,
   ClipboardList,
@@ -15,6 +16,7 @@ import {
   LocateFixed,
   LogOut,
   Menu,
+  Moon,
   PanelLeftClose,
   Phone,
   QrCode,
@@ -23,6 +25,7 @@ import {
   ShieldCheck,
   Sparkles,
   Stethoscope,
+  Sun,
   User,
   UserRound,
   UserRoundPlus,
@@ -73,7 +76,9 @@ export function UserMenuDropdown({
   onProfileClick,
   onSignOutClick,
 }: UserMenuDropdownProps) {
+  const { theme, setTheme, showToast } = useQueue()
   const [open, setOpen] = useState(false)
+  const [themeExpanded, setThemeExpanded] = useState(false)
   const menuRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
@@ -238,7 +243,7 @@ export function UserMenuDropdown({
                 borderRadius: "8px",
                 background: "transparent",
                 border: "none",
-                color: "#1e293b",
+                color: "var(--ink)",
                 fontSize: "13px",
                 fontWeight: 600,
                 cursor: "pointer",
@@ -246,7 +251,7 @@ export function UserMenuDropdown({
                 transition: "background 0.12s ease",
               }}
               onMouseEnter={(e) =>
-                (e.currentTarget.style.background = "#f1f5f9")
+                (e.currentTarget.style.background = "var(--gray-bg)")
               }
               onMouseLeave={(e) =>
                 (e.currentTarget.style.background = "transparent")
@@ -257,7 +262,149 @@ export function UserMenuDropdown({
             </button>
 
             <div
-              style={{ height: "1px", background: "#f1f5f9", margin: "4px 0" }}
+              style={{ height: "1px", background: "var(--border)", margin: "4px 0" }}
+            />
+
+            {/* 2. Theme Option (Between Profile and Sign Out) */}
+            <div className="user-menu-theme-container">
+              <button
+                type="button"
+                onClick={() => setThemeExpanded(!themeExpanded)}
+                className="user-menu-item user-menu-theme-btn"
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  padding: "9px 12px",
+                  borderRadius: "8px",
+                  background: themeExpanded ? "var(--gray-bg)" : "transparent",
+                  border: "none",
+                  color: "var(--ink)",
+                  fontSize: "13px",
+                  fontWeight: 600,
+                  cursor: "pointer",
+                  textAlign: "left",
+                  transition: "background 0.12s ease",
+                }}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.background = "var(--gray-bg)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.background = themeExpanded ? "var(--gray-bg)" : "transparent")
+                }
+              >
+                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                  {theme === "dark" ? (
+                    <Moon size={16} color="#38bdf8" />
+                  ) : (
+                    <Sun size={16} color="#f59e0b" />
+                  )}
+                  <span>Theme</span>
+                </div>
+                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      fontWeight: 700,
+                      padding: "2px 6px",
+                      borderRadius: "6px",
+                      background: theme === "dark" ? "rgba(56, 189, 248, 0.15)" : "#f1f5f9",
+                      color: theme === "dark" ? "#38bdf8" : "#0f766e",
+                      border: "1px solid var(--border)",
+                      textTransform: "uppercase",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    {theme === "dark" ? "Dark" : "Original"}
+                  </span>
+                  <ChevronDown
+                    size={14}
+                    style={{
+                      transform: themeExpanded ? "rotate(180deg)" : "rotate(0deg)",
+                      transition: "transform 0.18s ease",
+                      color: "var(--muted)",
+                    }}
+                  />
+                </div>
+              </button>
+
+              {themeExpanded && (
+                <div
+                  className="user-menu-theme-sublist"
+                  style={{
+                    padding: "4px 4px 4px 14px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "2px",
+                  }}
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTheme("original")
+                      showToast("Theme switched to Original (Bright)", "info")
+                    }}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "7px 10px",
+                      borderRadius: "6px",
+                      background:
+                        theme === "original" ? "var(--teal-50)" : "transparent",
+                      border: "none",
+                      color:
+                        theme === "original" ? "var(--teal-900)" : "var(--muted)",
+                      fontSize: "12px",
+                      fontWeight: theme === "original" ? 700 : 500,
+                      cursor: "pointer",
+                      transition: "background 0.12s ease",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Sun size={14} color="#f59e0b" />
+                      <span>Original (Bright)</span>
+                    </div>
+                    {theme === "original" && <Check size={14} color="#0f766e" />}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setTheme("dark")
+                      showToast("Theme switched to Dark mode", "info")
+                    }}
+                    style={{
+                      width: "100%",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "7px 10px",
+                      borderRadius: "6px",
+                      background:
+                        theme === "dark" ? "rgba(56, 189, 248, 0.12)" : "transparent",
+                      border: "none",
+                      color: theme === "dark" ? "#38bdf8" : "var(--muted)",
+                      fontSize: "12px",
+                      fontWeight: theme === "dark" ? 700 : 500,
+                      cursor: "pointer",
+                      transition: "background 0.12s ease",
+                    }}
+                  >
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <Moon size={14} color="#38bdf8" />
+                      <span>Dark</span>
+                    </div>
+                    {theme === "dark" && <Check size={14} color="#38bdf8" />}
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div
+              style={{ height: "1px", background: "var(--border)", margin: "4px 0" }}
             />
 
             <button

@@ -80,6 +80,11 @@ interface QueueContextType {
   setSidebarOpen: React.Dispatch<React.SetStateAction<boolean>>
   toggleSidebar: () => void
 
+  // Theme (Original / Bright vs Dark)
+  theme: "original" | "dark"
+  setTheme: (t: "original" | "dark") => void
+  toggleTheme: () => void
+
   // Authentication
   isPatientLoggedIn: boolean
   isStaffLoggedIn: boolean
@@ -271,6 +276,37 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({
   const [activePatientToken, setActivePatientToken] = useState<string | null>(
     "A-024",
   )
+
+  // Theme: "original" (bright) vs "dark"
+  const [theme, setThemeState] = useState<"original" | "dark">(() => {
+    try {
+      const saved = localStorage.getItem("qtrack_theme")
+      if (saved === "dark" || saved === "original") return saved
+      return "original"
+    } catch {
+      return "original"
+    }
+  })
+
+  const setTheme = (t: "original" | "dark") => {
+    setThemeState(t)
+    try {
+      localStorage.setItem("qtrack_theme", t)
+    } catch {}
+  }
+
+  const toggleTheme = () => {
+    setTheme(theme === "dark" ? "original" : "dark")
+  }
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme)
+    if (theme === "dark") {
+      document.body.classList.add("dark-theme")
+    } else {
+      document.body.classList.remove("dark-theme")
+    }
+  }, [theme])
   const [latestCalledToken, setLatestCalledToken] = useState<QueueItem | null>(
     () => {
       return initialQueueItems.find((q) => q.status === "Called") || null
@@ -998,6 +1034,10 @@ export const QueueProvider: React.FC<{ children: ReactNode }> = ({
         sidebarOpen,
         setSidebarOpen,
         toggleSidebar,
+
+        theme,
+        setTheme,
+        toggleTheme,
 
         isPatientLoggedIn,
         isStaffLoggedIn,
