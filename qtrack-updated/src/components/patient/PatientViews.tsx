@@ -81,6 +81,49 @@ export function PatientHome() {
         <span>Search doctor, specialty, disease or clinic</span>
       </button>
 
+      <div className="mobile-only mobile-quick-grid">
+        <button
+          type="button"
+          className="mobile-quick-tile"
+          onClick={() => setPage("Find a doctor")}
+        >
+          <span className="mobile-quick-icon mqi-teal">
+            <Search size={18} />
+          </span>
+          <span>Find Doctor</span>
+        </button>
+        <button
+          type="button"
+          className="mobile-quick-tile"
+          onClick={() => setPage("QR check-in")}
+        >
+          <span className="mobile-quick-icon mqi-blue">
+            <QrCode size={18} />
+          </span>
+          <span>QR Check-in</span>
+        </button>
+        <button
+          type="button"
+          className="mobile-quick-tile"
+          onClick={() => setPage("My queue")}
+        >
+          <span className="mobile-quick-icon mqi-amber">
+            <Clock3 size={18} />
+          </span>
+          <span>Live Token</span>
+        </button>
+        <button
+          type="button"
+          className="mobile-quick-tile"
+          onClick={() => setPage("History")}
+        >
+          <span className="mobile-quick-icon mqi-purple">
+            <FileText size={18} />
+          </span>
+          <span>Rx History</span>
+        </button>
+      </div>
+
       <div className="location-row">
         <Button variant="secondary" icon={LocateFixed}>
           Use my location
@@ -188,14 +231,25 @@ export function DoctorSearch({
   const [query, setQuery] = useState("")
   const [activeFilter, setActiveFilter] = useState("Nearest")
 
-  const filteredDoctors = doctors.filter((d) => {
-    const matchesSearch =
-      d.name.toLowerCase().includes(query.toLowerCase()) ||
-      d.specialty.toLowerCase().includes(query.toLowerCase())
-    if (activeFilter === "Available today")
-      return matchesSearch && d.availableToday
-    return matchesSearch
-  })
+  const filteredDoctors = doctors
+    .filter((d) => {
+      const matchesSearch =
+        d.name.toLowerCase().includes(query.toLowerCase()) ||
+        d.specialty.toLowerCase().includes(query.toLowerCase())
+      if (activeFilter === "Available today")
+        return matchesSearch && d.availableToday
+      return matchesSearch
+    })
+    .slice()
+    .sort((a, b) => {
+      if (activeFilter === "Shortest wait")
+        return a.activeQueueCount - b.activeQueueCount
+      if (activeFilter === "Fee") return a.fee - b.fee
+      if (activeFilter === "Nearest") return a.distanceKm - b.distanceKm
+      if (activeFilter === "Language")
+        return b.languages.length - a.languages.length
+      return 0
+    })
 
   return (
     <div className="content-stack patient-width">
@@ -472,6 +526,25 @@ export function JoinQueueFlow({ doctor }: { doctor?: Doctor }) {
           </button>
         </div>
 
+        <div className="mobile-only symptom-chip-row">
+          {[
+            "Fever & Cold",
+            "Follow-up visit",
+            "Routine checkup",
+            "Joint / Body pain",
+            "BP / Sugar review",
+          ].map((preset) => (
+            <button
+              key={preset}
+              type="button"
+              className={`symptom-chip ${reason === preset ? "symptom-chip-active" : ""}`}
+              onClick={() => setReason(preset)}
+            >
+              {preset}
+            </button>
+          ))}
+        </div>
+
         <TextArea
           label="Reason for visit"
           placeholder="Briefly describe symptoms, concern, or follow-up reason"
@@ -577,7 +650,7 @@ export function LiveQueueView() {
     <div className="content-stack queue-page patient-width">
       {isCalled && (
         <div
-          className="toast toast-wide"
+          className="toast toast-wide called-toast-banner"
           style={{
             backgroundColor: "#0f766e",
             color: "#ffffff",
@@ -652,6 +725,40 @@ export function LiveQueueView() {
                         : "25%",
               }}
             />
+          </div>
+          <div className="mobile-only ticket-milestones">
+            <span className="milestone-done">Booked</span>
+            <span
+              className={
+                ["Window open", "Checked in", "Called", "In consultation"].includes(
+                  currentItem.status,
+                )
+                  ? "milestone-done"
+                  : ""
+              }
+            >
+              Window
+            </span>
+            <span
+              className={
+                ["Checked in", "Called", "In consultation"].includes(
+                  currentItem.status,
+                )
+                  ? "milestone-done"
+                  : ""
+              }
+            >
+              Checked In
+            </span>
+            <span
+              className={
+                ["Called", "In consultation"].includes(currentItem.status)
+                  ? "milestone-done"
+                  : ""
+              }
+            >
+              Called
+            </span>
           </div>
         </div>
       </Card>
@@ -774,6 +881,7 @@ export function QRCheckinView() {
       {scanState === "idle" ? (
         <>
           <div className="scanner-box">
+            <span className="scanner-laser" />
             <span className="corner corner-1" />
             <span className="corner corner-2" />
             <span className="corner corner-3" />
@@ -1068,17 +1176,19 @@ export function HistoryPageView() {
                 {selectedVisit.prescriptions.map((p) => (
                   <div
                     key={p.id}
+                    className="history-med-row"
                     style={{
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "space-between",
+                      gap: "10px",
                       padding: "10px 12px",
                       background: "var(--surface)",
                       border: "1px solid var(--border)",
                       borderRadius: "8px",
                     }}
                   >
-                    <div>
+                    <div style={{ minWidth: 0 }}>
                       <div
                         style={{
                           fontSize: "13px",
@@ -1236,7 +1346,7 @@ export function ProfilePageView() {
       )}
 
       {/* Modern Compact Identifier & Referral Chips Strip */}
-      <div className="profile-id-strip">
+      <div className="profile-id-strip patient-id-strip">
         <div className="profile-id-chip">
           <div className="id-chip-meta">
             <span className="id-chip-label">PATIENT IDENTIFIER</span>

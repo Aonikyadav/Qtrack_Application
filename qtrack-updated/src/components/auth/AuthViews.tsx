@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useRef, useState } from "react"
 import {
   ArrowLeft,
   CheckCircle2,
@@ -26,6 +26,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
   const [password, setPassword] = useState("")
   const [otpSent, setOtpSent] = useState(false)
   const [otpDigits, setOtpDigits] = useState(["4", "8", "2", "1", "9", "0"])
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([])
   const [errorMessage, setErrorMessage] = useState("")
 
   // New registration state
@@ -117,19 +118,35 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
       className="auth-page"
       style={{ minHeight: "100vh", padding: "24px 16px" }}
     >
+      <div className="mobile-only mobile-auth-hero">
+        <div className="mobile-auth-hero-top">
+          <div className="mobile-auth-badge">
+            <HeartPulse size={18} />
+            <span>Aarogya Family Clinic</span>
+          </div>
+          {onBack && (
+            <button type="button" className="mobile-auth-back" onClick={onBack}>
+              <ArrowLeft size={14} /> Site
+            </button>
+          )}
+        </div>
+        <h2>Patient Care Portal</h2>
+        <p>Live queue tracking, QR check-in & digital prescriptions</p>
+      </div>
       <Card className="auth-card" style={{ maxWidth: "440px", width: "100%" }}>
         <div
+          className="auth-card-head"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
             <span className="logo-mark">
               <HeartPulse size={20} />
             </span>
-            <Text size="lg" weight="bold">
+            <Text size="lg" weight="bold" className="auth-brand-title">
               QTrack Patient Portal
             </Text>
           </div>
@@ -240,6 +257,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
             {/* Toggle Mode: OTP vs Password */}
             {!otpSent && (
               <div
+                className="auth-segmented"
                 style={{
                   display: "flex",
                   background: "#f1f3f2",
@@ -250,6 +268,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
               >
                 <button
                   type="button"
+                  className={`auth-seg-btn ${mode === "otp" ? "auth-seg-active" : ""}`}
                   onClick={() => setMode("otp")}
                   style={{
                     flex: 1,
@@ -272,6 +291,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
                 </button>
                 <button
                   type="button"
+                  className={`auth-seg-btn ${mode === "password" ? "auth-seg-active" : ""}`}
                   onClick={() => setMode("password")}
                   style={{
                     flex: 1,
@@ -316,9 +336,32 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
                 <>
                   <div className="otp">
                     {otpDigits.map((digit, i) => (
-                      <span key={i} style={{ fontWeight: 600 }}>
-                        {digit}
-                      </span>
+                      <input
+                        key={i}
+                        ref={(el) => {
+                          otpRefs.current[i] = el
+                        }}
+                        type="text"
+                        inputMode="numeric"
+                        maxLength={1}
+                        aria-label={`OTP digit ${i + 1}`}
+                        value={digit}
+                        onChange={(e) => {
+                          const val = e.target.value.replace(/\D/g, "").slice(-1)
+                          const next = [...otpDigits]
+                          next[i] = val
+                          setOtpDigits(next)
+                          if (val && i < 5) {
+                            otpRefs.current[i + 1]?.focus()
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Backspace" && !otpDigits[i] && i > 0) {
+                            otpRefs.current[i - 1]?.focus()
+                          }
+                        }}
+                        className="otp-input-box"
+                      />
                     ))}
                   </div>
                   <div
@@ -422,6 +465,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
               >
                 <button
                   type="button"
+                  className="auth-shortcut-btn"
                   onClick={() => handleQuickLogin("+91 98765 43210")}
                   style={{
                     display: "flex",
@@ -447,6 +491,7 @@ export function PatientAuthView({ onBack }: { onBack?: () => void }) {
 
                 <button
                   type="button"
+                  className="auth-shortcut-btn"
                   onClick={() => handleQuickLogin("+91 98123 12010")}
                   style={{
                     display: "flex",
@@ -523,19 +568,35 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
       className="auth-page"
       style={{ minHeight: "100vh", padding: "24px 16px" }}
     >
+      <div className="mobile-only mobile-auth-hero mobile-auth-hero-staff">
+        <div className="mobile-auth-hero-top">
+          <div className="mobile-auth-badge">
+            <ShieldCheck size={18} />
+            <span>Aarogya Staff Console</span>
+          </div>
+          {onBack && (
+            <button type="button" className="mobile-auth-back" onClick={onBack}>
+              <ArrowLeft size={14} /> Site
+            </button>
+          )}
+        </div>
+        <h2>Clinical & Desk Sign In</h2>
+        <p>Doctor station, front desk queue & clinic operations</p>
+      </div>
       <Card className="auth-card" style={{ maxWidth: "440px", width: "100%" }}>
         <div
+          className="auth-card-head"
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
           }}
         >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "8px", minWidth: 0 }}>
             <span className="logo-mark">
               <ShieldCheck size={20} />
             </span>
-            <Text size="lg" weight="bold">
+            <Text size="lg" weight="bold" className="auth-brand-title">
               QTrack Staff Workspace
             </Text>
           </div>
@@ -571,6 +632,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
 
         {/* Role Selector Tabs */}
         <div
+          className="auth-segmented"
           style={{
             display: "flex",
             background: "#f1f3f2",
@@ -581,6 +643,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
         >
           <button
             type="button"
+            className={`auth-seg-btn ${role === "Doctor" ? "auth-seg-active" : ""}`}
             onClick={() => handleRoleChange("Doctor")}
             style={{
               flex: 1,
@@ -604,6 +667,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
           </button>
           <button
             type="button"
+            className={`auth-seg-btn ${role === "Receptionist" ? "auth-seg-active" : ""}`}
             onClick={() => handleRoleChange("Receptionist")}
             style={{
               flex: 1,
@@ -627,6 +691,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
           </button>
           <button
             type="button"
+            className={`auth-seg-btn ${role === "Admin" ? "auth-seg-active" : ""}`}
             onClick={() => handleRoleChange("Admin")}
             style={{
               flex: 1,
@@ -698,6 +763,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
           <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
             <button
               type="button"
+              className="auth-shortcut-btn"
               onClick={() => {
                 handleRoleChange("Doctor")
                 staffLogin({
@@ -730,6 +796,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
 
             <button
               type="button"
+              className="auth-shortcut-btn"
               onClick={() => {
                 handleRoleChange("Doctor")
                 staffLogin({
@@ -762,6 +829,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
 
             <button
               type="button"
+              className="auth-shortcut-btn"
               onClick={() => {
                 handleRoleChange("Receptionist")
                 staffLogin({
@@ -794,6 +862,7 @@ export function StaffAuthView({ onBack }: { onBack?: () => void }) {
 
             <button
               type="button"
+              className="auth-shortcut-btn"
               onClick={() => {
                 handleRoleChange("Admin")
                 staffLogin({

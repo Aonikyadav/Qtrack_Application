@@ -2,6 +2,7 @@ import {
   Activity,
   AlertCircle,
   ArrowLeft,
+  ArrowLeftRight,
   Bell,
   Check,
   CheckCircle2,
@@ -446,6 +447,43 @@ export function UserMenuDropdown({
   )
 }
 
+export function MobilePortalHeaderButton() {
+  return (
+    <button
+      type="button"
+      className="mobile-only mobile-portal-header-btn"
+      onClick={() => window.dispatchEvent(new Event("qtrack-open-portal-switcher"))}
+      aria-label="Switch portal"
+      title="Switch portal"
+    >
+      <ArrowLeftRight size={14} />
+      <span>Portal</span>
+    </button>
+  )
+}
+
+function MobileSidebarThemeRow() {
+  const { theme, toggleTheme, showToast } = useQueue()
+  return (
+    <button
+      type="button"
+      className="mobile-only sidebar-theme-row"
+      onClick={() => {
+        const next = theme === "dark" ? "original" : "dark"
+        toggleTheme()
+        showToast(
+          next === "dark" ? "Switched to Dark theme" : "Switched to Original theme",
+          "info",
+        )
+      }}
+    >
+      <span>{theme === "dark" ? <Moon size={16} /> : <Sun size={16} />}</span>
+      <span>{theme === "dark" ? "Dark Mode" : "Light Mode"}</span>
+      <span className="sidebar-theme-pill">{theme === "dark" ? "ON" : "OFF"}</span>
+    </button>
+  )
+}
+
 // ==========================================
 // 1. PATIENT DASHBOARD LAYOUT
 // ==========================================
@@ -497,6 +535,8 @@ export function PatientHeader({ mobileMenu }: { mobileMenu: () => void }) {
           <Languages size={17} /> {patient.preferredLanguage}{" "}
           <ChevronDown size={15} />
         </button>
+
+        <MobilePortalHeaderButton />
 
         {/* Profile Avatar Popover Menu */}
         <UserMenuDropdown
@@ -590,6 +630,7 @@ export function PatientSidebar({ close }: { close?: () => void }) {
       </nav>
 
       <div className="sidebar-foot">
+        <MobileSidebarThemeRow />
         <div className="help-card" style={{ marginBottom: 0 }}>
           <ShieldCheck size={20} />
           <Text size="sm" weight="semibold">
@@ -606,24 +647,27 @@ export function PatientSidebar({ close }: { close?: () => void }) {
 
 export function PatientBottomNav() {
   const { patientPage, setPatientPage } = useQueue()
-  const items: [string, LucideIcon][] = [
-    ["Home", Home],
-    ["Find a doctor", Search],
-    ["My queue", ListChecks],
-    ["History", History],
+  const items: [string, string, LucideIcon][] = [
+    ["Home", "Home", Home],
+    ["Find a doctor", "Doctors", Search],
+    ["My queue", "Queue", ListChecks],
+    ["QR check-in", "Scan", QrCode],
+    ["History", "History", History],
   ]
 
   return (
-    <div className="bottom-nav">
-      {items.map(([name, Icon]) => (
+    <div className="bottom-nav bottom-nav-5">
+      {items.map(([pageKey, label, Icon]) => (
         <button
-          key={name}
+          key={pageKey}
           type="button"
-          className={patientPage === name ? "bottom-active" : ""}
-          onClick={() => setPatientPage(name)}
+          className={patientPage === pageKey ? "bottom-active" : ""}
+          onClick={() => setPatientPage(pageKey)}
         >
-          <Icon size={21} />
-          <span>{name}</span>
+          <span className="bottom-nav-icon">
+            <Icon size={19} />
+          </span>
+          <span>{label}</span>
         </button>
       ))}
     </div>
@@ -674,6 +718,8 @@ export function ReceptionHeader({ mobileMenu }: { mobileMenu: () => void }) {
         <span className="header-badge-pill front-desk-pill">
           FRONT DESK
         </span>
+
+        <MobilePortalHeaderButton />
 
         {/* Profile Avatar Popover Menu */}
         <UserMenuDropdown
@@ -749,6 +795,7 @@ export function ReceptionSidebar({ close }: { close?: () => void }) {
       </nav>
 
       <div className="sidebar-foot">
+        <MobileSidebarThemeRow />
         <div className="help-card" style={{ marginBottom: 0 }}>
           <ClipboardList size={20} />
           <Text size="sm" weight="semibold">
@@ -820,6 +867,8 @@ export function DoctorHeader({ mobileMenu }: { mobileMenu: () => void }) {
             <span>Inside: {inConsultation.token}</span>
           </div>
         )}
+
+        <MobilePortalHeaderButton />
 
         {/* Profile Avatar Popover Menu */}
         <UserMenuDropdown
@@ -895,6 +944,7 @@ export function DoctorSidebar({ close }: { close?: () => void }) {
       </nav>
 
       <div className="sidebar-foot">
+        <MobileSidebarThemeRow />
         <div className="help-card" style={{ marginBottom: 0 }}>
           <Stethoscope size={20} />
           <Text size="sm" weight="semibold">
@@ -948,6 +998,8 @@ export function AdminHeader({ mobileMenu }: { mobileMenu: () => void }) {
         <span className="header-badge-pill admin-pill">
           ADMIN
         </span>
+
+        <MobilePortalHeaderButton />
 
         {/* Profile Avatar Popover Menu */}
         <UserMenuDropdown
@@ -1020,6 +1072,7 @@ export function AdminSidebar({ close }: { close?: () => void }) {
       </nav>
 
       <div className="sidebar-foot">
+        <MobileSidebarThemeRow />
         <div className="help-card" style={{ marginBottom: 0 }}>
           <ShieldCheck size={20} />
           <Text size="sm" weight="semibold">
@@ -1039,25 +1092,34 @@ export function AdminSidebar({ close }: { close?: () => void }) {
 // ==========================================
 
 export function ReceptionBottomNav() {
-  const { receptionPage, setReceptionPage } = useQueue()
-  const items: [string, LucideIcon][] = [
-    ["Live queue", ListChecks],
-    ["Quick walk-in", UserRoundPlus],
-    ["Arrivals", LocateFixed],
-    ["Activity log", Activity],
+  const { receptionPage, setReceptionPage, queue } = useQueue()
+  const activeCount = queue.filter(
+    (q) => !["Done", "Removed"].includes(q.status),
+  ).length
+  const items: [string, string, LucideIcon, number?][] = [
+    ["Live queue", "Queue", ListChecks, activeCount],
+    ["Quick walk-in", "Walk-in", UserRoundPlus],
+    ["Arrivals", "Arrivals", LocateFixed],
+    ["Activity log", "Activity", Activity],
+    ["Profile", "Profile", UserRound],
   ]
 
   return (
-    <div className="bottom-nav staff-bottom-nav">
-      {items.map(([name, Icon]) => (
+    <div className="bottom-nav bottom-nav-5 staff-bottom-nav">
+      {items.map(([pageKey, label, Icon, badgeCount]) => (
         <button
-          key={name}
+          key={pageKey}
           type="button"
-          className={receptionPage === name ? "bottom-active" : ""}
-          onClick={() => setReceptionPage(name)}
+          className={receptionPage === pageKey ? "bottom-active" : ""}
+          onClick={() => setReceptionPage(pageKey)}
         >
-          <Icon size={20} />
-          <span>{name === "Quick walk-in" ? "Walk-in" : name === "Activity log" ? "Activity" : name}</span>
+          <span className="bottom-nav-icon">
+            <Icon size={19} />
+            {typeof badgeCount === "number" && badgeCount > 0 && (
+              <span className="bottom-nav-badge">{badgeCount}</span>
+            )}
+          </span>
+          <span>{label}</span>
         </button>
       ))}
     </div>
@@ -1065,25 +1127,36 @@ export function ReceptionBottomNav() {
 }
 
 export function DoctorBottomNav() {
-  const { doctorPage, setDoctorPage } = useQueue()
-  const items: [string, LucideIcon][] = [
-    ["Overview", Home],
-    ["Live queue", ListChecks],
-    ["Consultation", Stethoscope],
-    ["Completed visits", CheckCircle2],
+  const { doctorPage, setDoctorPage, queue } = useQueue()
+  const waitingCount = queue.filter(
+    (q) =>
+      q.doctorId === "doc-sharma" &&
+      ["Waiting", "Window open", "Checked in"].includes(q.status),
+  ).length
+  const items: [string, string, LucideIcon, number?][] = [
+    ["Overview", "Home", Home],
+    ["Live queue", "Queue", ListChecks, waitingCount],
+    ["Consultation", "Consult", Stethoscope],
+    ["Completed visits", "Completed", CheckCircle2],
+    ["Profile", "Profile", UserRound],
   ]
 
   return (
-    <div className="bottom-nav staff-bottom-nav">
-      {items.map(([name, Icon]) => (
+    <div className="bottom-nav bottom-nav-5 staff-bottom-nav">
+      {items.map(([pageKey, label, Icon, badgeCount]) => (
         <button
-          key={name}
+          key={pageKey}
           type="button"
-          className={doctorPage === name ? "bottom-active" : ""}
-          onClick={() => setDoctorPage(name)}
+          className={doctorPage === pageKey ? "bottom-active" : ""}
+          onClick={() => setDoctorPage(pageKey)}
         >
-          <Icon size={20} />
-          <span>{name === "Completed visits" ? "Completed" : name === "Live queue" ? "Queue" : name}</span>
+          <span className="bottom-nav-icon">
+            <Icon size={19} />
+            {typeof badgeCount === "number" && badgeCount > 0 && (
+              <span className="bottom-nav-badge">{badgeCount}</span>
+            )}
+          </span>
+          <span>{label}</span>
         </button>
       ))}
     </div>
@@ -1107,7 +1180,9 @@ export function AdminBottomNav() {
           className={adminPage === name ? "bottom-active" : ""}
           onClick={() => setAdminPage(name)}
         >
-          <Icon size={20} />
+          <span className="bottom-nav-icon">
+            <Icon size={19} />
+          </span>
           <span>{name === "Clinic settings" ? "Settings" : name === "People" ? "Roster" : name}</span>
         </button>
       ))}
@@ -1120,8 +1195,29 @@ export function AdminBottomNav() {
 // ==========================================
 
 export function PortalSwitcher() {
-  const { portal, setPortal } = useQueue()
+  const { portal, setPortal, isPatientLoggedIn, isStaffLoggedIn, currentStaff } =
+    useQueue()
   const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const handleOpen = () => setMobileOpen(true)
+    window.addEventListener("qtrack-open-portal-switcher", handleOpen)
+    return () =>
+      window.removeEventListener("qtrack-open-portal-switcher", handleOpen)
+  }, [])
+
+  const hasDashboardHeader =
+    (portal === "patient" && isPatientLoggedIn) ||
+    (portal === "receptionist" &&
+      isStaffLoggedIn &&
+      currentStaff?.role === "Receptionist") ||
+    (portal === "doctor" &&
+      isStaffLoggedIn &&
+      currentStaff?.role === "Doctor") ||
+    (portal === "admin" &&
+      isStaffLoggedIn &&
+      currentStaff?.role === "Admin") ||
+    portal === "display"
 
   const portals: [ActivePortal, string, string][] = [
     ["landing", "🌐 Public Site", "Patient info, clinic intro & portals gateway"],
@@ -1149,18 +1245,20 @@ export function PortalSwitcher() {
         ))}
       </div>
 
-      {/* Mobile Floating Action Button (visible only on <= 768px) */}
-      <div className="portal-switcher-mobile">
-        <button
-          type="button"
-          className="portal-fab"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Switch QTrack Portal"
-        >
-          <Sparkles size={16} />
-          <span>Switch Portal</span>
-        </button>
-      </div>
+      {/* Mobile Floating Action Button (only shown when header switcher isn't mounted) */}
+      {!hasDashboardHeader && (
+        <div className="portal-switcher-mobile">
+          <button
+            type="button"
+            className="portal-fab"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Switch QTrack Portal"
+          >
+            <Sparkles size={15} />
+            <span>Switch Portal</span>
+          </button>
+        </div>
+      )}
 
       {/* Mobile Slide-Up Modal / Bottom Sheet */}
       {mobileOpen && (
@@ -1172,6 +1270,7 @@ export function PortalSwitcher() {
             className="portal-modal-sheet"
             onClick={(e) => e.stopPropagation()}
           >
+            <div className="portal-sheet-handle" />
             <div className="portal-modal-head">
               <div>
                 <strong style={{ fontSize: "16px", color: "#0f172a" }}>

@@ -30,6 +30,8 @@ export function ReceptionLiveQueue({
   const [selectedDoctorTab, setSelectedDoctorTab] =
     useState<"all" | "doc-sharma" | "doc-nair">("all")
   const [searchQuery, setSearchQuery] = useState("")
+  const [showFilters, setShowFilters] = useState(false)
+  const [statusFilter, setStatusFilter] = useState<string>("all")
   const [actionItem, setActionItem] = useState<QueueItem | null>(null)
   const [priorityReason, setPriorityReason] = useState("")
   const [showAnnouncement, setShowAnnouncement] = useState(true)
@@ -46,6 +48,13 @@ export function ReceptionLiveQueue({
 
   const filteredQueue = activeQueue.filter((item) => {
     if (selectedDoctorTab !== "all" && item.doctorId !== selectedDoctorTab)
+      return false
+    if (statusFilter === "priority" && !item.isPriority) return false
+    if (
+      statusFilter !== "all" &&
+      statusFilter !== "priority" &&
+      item.status !== statusFilter
+    )
       return false
     if (searchQuery.trim()) {
       const q = searchQuery.toLowerCase()
@@ -68,6 +77,7 @@ export function ReceptionLiveQueue({
           </Text>
           <button
             type="button"
+            className="alert-dismiss-btn"
             onClick={() => setShowAnnouncement(false)}
             style={{ background: "transparent", border: "none", cursor: "pointer", display: "grid", placeItems: "center" }}
             title="Dismiss announcement"
@@ -148,10 +158,36 @@ export function ReceptionLiveQueue({
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <Button variant="secondary">
-          Filter <ChevronDown size={16} />
+        <Button
+          variant="secondary"
+          onClick={() => setShowFilters((prev) => !prev)}
+        >
+          {statusFilter === "all" ? "Filter" : statusFilter}{" "}
+          <ChevronDown size={16} />
         </Button>
       </div>
+
+      {showFilters && (
+        <div className="mobile-filter-pills" style={{ display: "flex" }}>
+          {[
+            ["all", "All"],
+            ["Checked in", "Checked in"],
+            ["Window open", "Window open"],
+            ["Waiting", "Waiting"],
+            ["Skipped", "Skipped"],
+            ["priority", "Priority"],
+          ].map(([key, label]) => (
+            <button
+              key={key}
+              type="button"
+              className={`mobile-pill-btn ${statusFilter === key ? "mobile-pill-active" : ""}`}
+              onClick={() => setStatusFilter(key)}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <Card className="table-card">
         <div className="queue-table">
@@ -182,6 +218,10 @@ export function ReceptionLiveQueue({
                 <span className="cell-phone">
                   <span className="meta-label">Phone: </span>
                   {item.patientPhone}
+                </span>
+                <span className="mobile-only queue-submeta">
+                  {item.doctorName} · {item.room}
+                  {item.reasonForVisit ? ` · ${item.reasonForVisit}` : ""}
                 </span>
                 <span className="cell-status">
                   <Badge>{item.status}</Badge>
@@ -302,7 +342,11 @@ export function QuickWalkInView() {
           </Text>
           <Text tone="muted">Issue an arrival token in about 10 seconds.</Text>
         </div>
-        <Button variant="ghost" onClick={() => setPage("Live queue")}>
+        <Button
+          variant="ghost"
+          className="walkin-back-btn"
+          onClick={() => setPage("Live queue")}
+        >
           View live queue
         </Button>
       </div>
@@ -341,6 +385,25 @@ export function QuickWalkInView() {
               value={reason}
               onChange={(e) => setReason(e.target.value)}
             />
+          </div>
+
+          <div className="mobile-only symptom-chip-row">
+            {[
+              "Walk-in consultation",
+              "Fever & Cold",
+              "Follow-up visit",
+              "Report review",
+              "Dressing / Injection",
+            ].map((preset) => (
+              <button
+                key={preset}
+                type="button"
+                className={`symptom-chip ${reason === preset ? "symptom-chip-active" : ""}`}
+                onClick={() => setReason(preset)}
+              >
+                {preset}
+              </button>
+            ))}
           </div>
 
           <label className="toggle-row">
@@ -405,10 +468,19 @@ export function QuickWalkInView() {
 
 export function ArrivalsPageView() {
   const { queue, markArrived } = useQueue()
+  const [arrivalTab, setArrivalTab] = useState<"all" | "pending" | "arrived">(
+    "all",
+  )
 
   const arrivalCandidates = queue.filter((q) =>
     ["Window open", "Checked in", "Waiting"].includes(q.status),
   )
+
+  const filteredArrivals = arrivalCandidates.filter((item) => {
+    if (arrivalTab === "pending") return item.status !== "Checked in"
+    if (arrivalTab === "arrived") return item.status === "Checked in"
+    return true
+  })
 
   return (
     <div className="content-stack">
@@ -425,33 +497,65 @@ export function ArrivalsPageView() {
         <Badge>Window open</Badge>
       </div>
 
+      <div className="mobile-only mobile-filter-pills">
+        <button
+          type="button"
+          className={`mobile-pill-btn ${arrivalTab === "all" ? "mobile-pill-active" : ""}`}
+          onClick={() => setArrivalTab("all")}
+        >
+          All ({arrivalCandidates.length})
+        </button>
+        <button
+          type="button"
+          className={`mobile-pill-btn ${arrivalTab === "pending" ? "mobile-pill-active" : ""}`}
+          onClick={() => setArrivalTab("pending")}
+        >
+          Awaiting Check-in (
+          {arrivalCandidates.filter((i) => i.status !== "Checked in").length})
+        </button>
+        <button
+          type="button"
+          className={`mobile-pill-btn ${arrivalTab === "arrived" ? "mobile-pill-active" : ""}`}
+          onClick={() => setArrivalTab("arrived")}
+        >
+          Checked In (
+          {arrivalCandidates.filter((i) => i.status === "Checked in").length})
+        </button>
+      </div>
+
       <div className="arrival-grid">
-        {arrivalCandidates.slice(0, 6).map((item) => {
-          const isArrived = item.status === "Checked in"
-          return (
-            <Card className="arrival-card" key={item.token}>
-              <div>
-                <Badge>{item.status}</Badge>
-                <Text size="xl" weight="bold">
-                  {item.token} · {item.patientName}
-                </Text>
-                <Text tone="muted">
-                  {item.doctorName} ·{" "}
-                  {isArrived
-                    ? "Arrived & present"
-                    : `Window closes in ${item.windowClosesInMinutes || 12} min`}
-                </Text>
-              </div>
-              <Button
-                disabled={isArrived}
-                icon={Check}
-                onClick={() => markArrived(item.token)}
-              >
-                {isArrived ? "Arrived" : "Mark arrived"}
-              </Button>
-            </Card>
-          )
-        })}
+        {filteredArrivals.length === 0 ? (
+          <Card>
+            <Text tone="muted">No arrival candidates in queue right now.</Text>
+          </Card>
+        ) : (
+          filteredArrivals.slice(0, 6).map((item) => {
+            const isArrived = item.status === "Checked in"
+            return (
+              <Card className="arrival-card" key={item.token}>
+                <div>
+                  <Badge>{item.status}</Badge>
+                  <Text size="xl" weight="bold">
+                    {item.token} · {item.patientName}
+                  </Text>
+                  <Text tone="muted">
+                    {item.doctorName} ·{" "}
+                    {isArrived
+                      ? "Arrived & present"
+                      : `Window closes in ${item.windowClosesInMinutes || 12} min`}
+                  </Text>
+                </div>
+                <Button
+                  disabled={isArrived}
+                  icon={Check}
+                  onClick={() => markArrived(item.token)}
+                >
+                  {isArrived ? "Arrived" : "Mark arrived"}
+                </Button>
+              </Card>
+            )
+          })
+        )}
       </div>
     </div>
   )
@@ -459,6 +563,11 @@ export function ArrivalsPageView() {
 
 export function ActivityLogView() {
   const { auditLogs } = useQueue()
+  const [typeFilter, setTypeFilter] = useState<string>("all")
+
+  const filteredLogs = auditLogs.filter((log) =>
+    typeFilter === "all" ? true : log.type === typeFilter,
+  )
 
   return (
     <div className="content-stack">
@@ -474,22 +583,48 @@ export function ActivityLogView() {
         </div>
       </div>
 
-      <Card>
-        {auditLogs.map((log, index) => (
-          <div className="log-row" key={log.id}>
-            <span className={`log-icon log-${index % 3}`}>
-              <Activity size={17} />
-            </span>
-            <div style={{ flex: 1 }}>
-              <Text weight="semibold">{log.action}</Text>
-              <Text size="sm" tone="muted">
-                {log.actor} · {log.time}
-              </Text>
-              <Text size="sm">Reason: {log.reason}</Text>
-            </div>
-            <Badge dot={false}>{log.type}</Badge>
-          </div>
+      <div className="mobile-only mobile-filter-pills">
+        {[
+          ["all", "All"],
+          ["priority", "Priority"],
+          ["checkin", "Check-in"],
+          ["call", "Calls"],
+          ["reorder", "Reorder"],
+          ["remove", "Removed"],
+        ].map(([key, label]) => (
+          <button
+            key={key}
+            type="button"
+            className={`mobile-pill-btn ${typeFilter === key ? "mobile-pill-active" : ""}`}
+            onClick={() => setTypeFilter(key)}
+          >
+            {label}
+          </button>
         ))}
+      </div>
+
+      <Card className="activity-log-card">
+        {filteredLogs.length === 0 ? (
+          <Text tone="muted">No activity recorded for this filter.</Text>
+        ) : (
+          filteredLogs.map((log, index) => (
+            <div className="log-row" key={log.id}>
+              <span className={`log-icon log-${index % 3}`}>
+                <Activity size={17} />
+              </span>
+              <div className="log-body" style={{ flex: 1 }}>
+                <Text weight="semibold">{log.action}</Text>
+                <Text size="sm" tone="muted">
+                  {log.actor} · {log.time}
+                </Text>
+                <Text size="sm">Reason: {log.reason}</Text>
+              </div>
+              <Badge dot={false} className="log-type-badge">
+                {log.type}
+              </Badge>
+            </div>
+          ))
+        )}
       </Card>
     </div>
   )
@@ -614,6 +749,7 @@ export function ReceptionProfilePageView() {
           FRONT DESK STATION STATUS
         </Text>
         <div
+          className="status-choice-grid status-choice-grid-2"
           style={{
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
@@ -622,7 +758,7 @@ export function ReceptionProfilePageView() {
         >
           <button
             type="button"
-            className={`choice ${deskStatus === "online" ? "choice-active" : ""}`}
+            className={`choice status-choice-btn ${deskStatus === "online" ? "choice-active" : ""}`}
             style={{
               minHeight: "44px",
               padding: "6px",
@@ -635,7 +771,7 @@ export function ReceptionProfilePageView() {
           </button>
           <button
             type="button"
-            className={`choice ${deskStatus === "break" ? "choice-active" : ""}`}
+            className={`choice status-choice-btn ${deskStatus === "break" ? "choice-active" : ""}`}
             style={{
               minHeight: "44px",
               padding: "6px",

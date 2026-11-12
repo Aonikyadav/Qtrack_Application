@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import { useQueue } from "../../context/QueueContext"
 import type { QueueItem } from "../../types"
+import { MobilePortalHeaderButton } from "../layout/LayoutComponents"
 
 export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
   const { queue, speakTokenAnnouncement, settings } = useQueue()
@@ -125,7 +126,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
             <HeartPulse size={28} />
           </div>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+            <div className="tv-brand-title-row" style={{ display: "flex", alignItems: "center", gap: "10px" }}>
               <h1
                 style={{
                   fontSize: "22px",
@@ -181,6 +182,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
         <div className="tv-header-controls">
           {/* Digital Clock Box */}
           <div
+            className="tv-clock-box"
             style={{
               textAlign: "right",
               padding: "6px 16px",
@@ -258,6 +260,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
           </button>
 
           {/* Exit TV View */}
+          <MobilePortalHeaderButton />
           {onExit && (
             <button
               type="button"
@@ -335,6 +338,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
       <div className="tv-main-content">
         {/* Section Title */}
         <div
+          className="tv-section-head"
           style={{
             display: "flex",
             alignItems: "center",
@@ -413,6 +417,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
           >
             {/* Top Bar with Doctor & Room */}
             <div
+              className="tv-card-top"
               style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -512,6 +517,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
 
             {/* Bottom Status Callout */}
             <div
+              className="tv-card-foot"
               style={{
                 borderTop: "1px solid #f1f5f9",
                 paddingTop: "16px",
@@ -628,6 +634,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
           >
             {/* Top Bar with Doctor & Room */}
             <div
+              className="tv-card-top"
               style={{
                 display: "flex",
                 alignItems: "flex-start",
@@ -727,6 +734,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
 
             {/* Bottom Status Callout */}
             <div
+              className="tv-card-foot"
               style={{
                 borderTop: "1px solid #f1f5f9",
                 paddingTop: "16px",
@@ -1025,6 +1033,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
 
       {/* 6. BOTTOM MARQUEE / ANNOUNCEMENT TICKER */}
       <footer
+        className="tv-footer"
         style={{
           background: "#0f172a",
           color: "#ffffff",
@@ -1036,7 +1045,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
           fontWeight: 600,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+        <div className="tv-footer-notice" style={{ display: "flex", alignItems: "center", gap: "12px" }}>
           <span
             style={{
               background: "#ef4444",
@@ -1057,6 +1066,7 @@ export function DisplayBoardView({ onExit }: { onExit?: () => void }) {
         </div>
 
         <div
+          className="tv-footer-meta"
           style={{
             display: "flex",
             alignItems: "center",

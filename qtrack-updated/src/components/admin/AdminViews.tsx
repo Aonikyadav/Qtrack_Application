@@ -60,6 +60,16 @@ export function AdminClinicSettingsView() {
             </Text>
           </div>
           <div className="number-input">
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Decrease check-in window"
+              onClick={() =>
+                setWindowMins(String(Math.max(5, (parseInt(windowMins, 10) || 15) - 1)))
+              }
+            >
+              −
+            </button>
             <input
               type="number"
               value={windowMins}
@@ -73,6 +83,16 @@ export function AdminClinicSettingsView() {
               }}
             />
             <span>minutes</span>
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Increase check-in window"
+              onClick={() =>
+                setWindowMins(String((parseInt(windowMins, 10) || 15) + 1))
+              }
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -85,6 +105,16 @@ export function AdminClinicSettingsView() {
             </Text>
           </div>
           <div className="number-input">
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Decrease skip demotion"
+              onClick={() =>
+                setSkipPlaces(String(Math.max(1, (parseInt(skipPlaces, 10) || 3) - 1)))
+              }
+            >
+              −
+            </button>
             <input
               type="number"
               value={skipPlaces}
@@ -98,6 +128,16 @@ export function AdminClinicSettingsView() {
               }}
             />
             <span>places</span>
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Increase skip demotion"
+              onClick={() =>
+                setSkipPlaces(String((parseInt(skipPlaces, 10) || 3) + 1))
+              }
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -110,6 +150,16 @@ export function AdminClinicSettingsView() {
             </Text>
           </div>
           <div className="number-input">
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Decrease max strikes"
+              onClick={() =>
+                setMaxStrikes(String(Math.max(1, (parseInt(maxStrikes, 10) || 3) - 1)))
+              }
+            >
+              −
+            </button>
             <input
               type="number"
               value={maxStrikes}
@@ -123,6 +173,16 @@ export function AdminClinicSettingsView() {
               }}
             />
             <span>strikes</span>
+            <button
+              type="button"
+              className="mobile-only stepper-btn"
+              aria-label="Increase max strikes"
+              onClick={() =>
+                setMaxStrikes(String((parseInt(maxStrikes, 10) || 3) + 1))
+              }
+            >
+              +
+            </button>
           </div>
         </div>
 
@@ -154,6 +214,9 @@ export function AdminPeopleView() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false)
   const [newName, setNewName] = useState("")
   const [newRole, setNewRole] = useState("Doctor (Room 3)")
+  const [managingPerson, setManagingPerson] = useState<
+    (typeof people)[0] | null
+  >(null)
 
   const handleAddPerson = () => {
     if (newName.trim()) {
@@ -164,6 +227,13 @@ export function AdminPeopleView() {
       setNewName("")
       setIsAddModalOpen(false)
     }
+  }
+
+  const updatePersonStatus = (name: string, nextStatus: string) => {
+    setPeople((prev) =>
+      prev.map((p) => (p.name === name ? { ...p, status: nextStatus } : p)),
+    )
+    setManagingPerson(null)
   }
 
   return (
@@ -199,11 +269,61 @@ export function AdminPeopleView() {
                   {person.role} · {person.status}
                 </Text>
               </div>
-              <IconButton icon={MoreHorizontal} label="Manage staff member" />
+              <IconButton
+                icon={MoreHorizontal}
+                label="Manage staff member"
+                onClick={() => setManagingPerson(person)}
+              />
             </Card>
           )
         })}
       </div>
+
+      <Modal
+        isOpen={managingPerson !== null}
+        onClose={() => setManagingPerson(null)}
+        title={managingPerson?.name || "Staff Member"}
+        subtitle={
+          managingPerson
+            ? `${managingPerson.role} · ${managingPerson.status}`
+            : undefined
+        }
+      >
+        {managingPerson && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+            <Button
+              variant="secondary"
+              full
+              onClick={() =>
+                updatePersonStatus(managingPerson.name, "Active today")
+              }
+            >
+              Set Active Today
+            </Button>
+            <Button
+              variant="secondary"
+              full
+              onClick={() =>
+                updatePersonStatus(managingPerson.name, "On break")
+              }
+            >
+              Mark On Break
+            </Button>
+            <Button
+              variant="danger"
+              full
+              onClick={() => {
+                setPeople((prev) =>
+                  prev.filter((p) => p.name !== managingPerson.name),
+                )
+                setManagingPerson(null)
+              }}
+            >
+              Remove from Roster
+            </Button>
+          </div>
+        )}
+      </Modal>
 
       <Modal
         isOpen={isAddModalOpen}
@@ -248,7 +368,7 @@ export function AdminAnalyticsView() {
         </div>
       </div>
 
-      <div className="stats-grid">
+      <div className="stats-grid admin-stats-grid">
         <Card>
           <Text size="sm" tone="muted">
             AVG. WAIT
@@ -294,6 +414,7 @@ export function AdminAnalyticsView() {
         <div className="bar-chart">
           {[32, 46, 70, 92, 76, 48, 35, 58].map((val, i) => (
             <div key={i} title={`${9 + i}:00 — ${val} patients`}>
+              <em className="mobile-only bar-val">{val}</em>
               <span
                 className={`bar-height-${i}`}
                 style={{ height: `${val}%` }}
